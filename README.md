@@ -11,7 +11,7 @@ Brandon Tjandra
 - [ ] Corporate-user (CU)
   - [ ] Can post ads and job openings  
 - [ ] Trendy-user (TU)
-  - [ ] All permissions of an ordinary use
+  - [ ] All permissions of an ordinary user (OU)
   - [ ] Subscribed by >10 users
   - [ ] Received >$100 tips or #likes-#dislikes > 10
   - [ ] Author of at least 2 trendy messages 
