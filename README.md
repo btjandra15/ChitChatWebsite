@@ -1,5 +1,5 @@
 
-# Mini Twitter Application
+# Chit Chat Social Media Website
 Final project for CSc 322 - Software Engineering Fall 2023
 
 # Team Members
