@@ -3,7 +3,7 @@
 Final project for CSc 322 - Software Engineering Fall 2023
 
 # Team Members
-Brandon Tjandra
+Brandon Tjandra, Sohail Ahmad
 
 ## Specifications: 5 user Types
 - [ ] Super-user (SU)
