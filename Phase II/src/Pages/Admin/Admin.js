@@ -1,9 +1,12 @@
 import React from 'react'
+import "./Admin.css"
 
 const Admin = () => {
   return (
-    <div>Admin</div>
+    <div className='admin'>
+      Hello
+    </div>
   )
 }
 
-export default Admin
+export default Admin;

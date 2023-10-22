@@ -1,0 +1,41 @@
+.container{
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.container div {
+    background-color: #ffffff;
+    height: 832px;
+    position: relative;
+    width: 1280px;
+}
+
+.chit-chat-text {
+    color: #000000;
+    font-family: "Mirza-Bold", Arial, Helvetica, sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    left: 141px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 382px;
+    white-space: nowrap;
+    width: 221px;
+}
+
+.text-wrapper {
+    text-decoration: underline;
+}
+
+.span {
+    color: #000000;
+    font-family:  "Mirza-Bold", Arial, Helvetica, sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
