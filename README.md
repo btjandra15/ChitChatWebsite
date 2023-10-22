@@ -1,9 +1,6 @@
-
-# Mini Twitter Application
-Final project for CSc 322 - Software Engineering Fall 2023
-
+![chitChatLogo](https://github.com/btjandra15/ChitChatWebsite/assets/48455670/e9b87b73-ce25-4638-abef-477a21491c77)
 # Team Members
-Brandon Tjandra
+Brandon Tjandra, Sohail Ahmad
 
 ## Specifications: 5 user Types
 - [ ] Super-user (SU)
