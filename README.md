@@ -1,6 +1,6 @@
 ![chitChatLogo](https://github.com/btjandra15/ChitChatWebsite/assets/48455670/e9b87b73-ce25-4638-abef-477a21491c77)
 # Team Members
-Brandon Tjandra, Sohail Ahmad
+Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 
 ## Specifications: 5 user Types
 - [ ] Super-user (SU)
