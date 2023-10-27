@@ -1,0 +1,38 @@
+/* px will scale off this font size */
+html {
+    font-size: 1.2vmax;
+  }
+  
+body {
+    font-family: 'Inter';
+    color: #363738;
+    background: #f5f7f9
+  }
+  
+button {
+    font-family: 'Inter';
+    color: #1B1F23;
+    font-size: 16px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+button:hover {
+    color: rgb(160, 215, 233);
+}
+  
+input {
+    font-family: 'Inter';
+    color: #637381;
+    font-size: 14px;
+  }
+  
+.app {
+    display: flex;
+    height: 100vh;
+    max-width: 1300px; /*twitter width*/
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 10px;
+    font-size: 16px;
+  }
