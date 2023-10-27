@@ -1,66 +1,76 @@
-  .navBarSide {
-    border-right: 1px;
-    flex: 0.3;
-    margin-top: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.navBarSide {
+  border-right: 1px;
+  flex: 0.3;
+  margin-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
 
-  .navBarSide .contentContainer {
-    background-color: rgba(174, 174, 174, 0.63);
-    border-radius: 30px;
-    padding : 20px;
-  }
+.navBarSide .contentContainer {
+  background-color: rgba(174, 174, 174, 0.63);
+  border-radius: 30px;
+  padding : 20px;
+}
 
-  .navBarChitChatLogo {
-    padding-right: 50px;
-  }
+.navBarChitChatLogo {
+  padding-right: 50px;
+}
 
-  .navBarChitChatLogo img {
-    height: 100%;
-    width: 100%;
-  }
+.navBarChitChatLogo img {
+  height: 100%;
+  width: 100%;
+}
 
-  .navBarSideOptions:hover {
-    background-color: rgb(238, 249, 253);
-    border-radius: 30px;
-    color: rgb(160, 215, 233);
-    transition: color 100ms ease-out;
-  }
+.navBarSideOptions:hover {
+  background-color: rgb(238, 249, 253);
+  border-radius: 30px;
+  color: rgb(160, 215, 233);
+  transition: color 100ms ease-out;
+}
 
-  .navBarSideOptions {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
+.navBarSideOptions {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
-  .navBarSideOptions > .MuiSvgIcon-root {
-    padding: 20px;
-  }
+.navBarSideOptions > .MuiSvgIcon-root {
+  padding: 20px;
+}
 
-  .navBarSideOptions > h2 {
-    font-weight: 800;
-    font-size: 20px;
-    margin-right: 20px;
-  }
+.navBarSideOptions > h2 {
+  font-weight: 800;
+  font-size: 20px;
+  margin-right: 20px;
+}
 
-  .navBarSideOptions--active {
-    color: rgb(160, 215, 233);
-  }
+.navBarSideOptions--active {
+  color: rgb(160, 215, 233);
+}
 
 .navBarSide .profileBox {
-    background-color: rgba(174, 174, 174, 0.63);
-    display: flex;
-    align-items: center;
-    border-radius: 228px;
-    width: 200px;
-    bottom: 0px;
-    margin: 20px;
+  background-color: rgba(174, 174, 174, 0.63);
+  display: flex;
+  align-items: center;
+  border-radius: 228px;
+  width: 200px;
+  bottom: 0px;
+  margin: 20px;
+  margin-left: 80px;
+  text-decoration: none;
+  color: black;
+}
+.navBarSide .profileBox:hover {
+  color: white;
 }
 
 .profileBox .profileIcon {
-    border-radius: 20px;
-    height: 40px;
-    width: 40px;
-    margin-left: 20px;
+  border-radius: 20px;
+  height: 40px;
+  width: 40px;
+  margin-left: 20px;
+}
+
+.signup-text {
+  margin-left: 10px;
 }

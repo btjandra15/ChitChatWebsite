@@ -8,16 +8,15 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import DefaultProfileIcon from "../../images/defaultProfileIcon.jpg";
 import NavBarSideOptions from "./NavBarSideOptions";
 import ChitChatIcon from "../../images/ChitChat_Logo.jpg"
-import { useAuth0 } from "@auth0/auth0-react";
+import { Link } from "react-router-dom";
 
 const NavBarSide = () => {
-    const { loginWithRedirect } = useAuth0();
-
     return(
         <nav className="navBarSide">
             <div className='navBarChitChatLogo'>
-                <img src={ChitChatIcon}/>
+                <img src={ChitChatIcon} alt="ChitChatLogo"/>
             </div>
+
             <div className='contentContainer'>
                 <NavBarSideOptions Icon={HomeIcon} text="Home"/>
                 <NavBarSideOptions Icon={SearchIcon} text="Trending"/>
@@ -25,10 +24,11 @@ const NavBarSide = () => {
                 <NavBarSideOptions Icon={ShoppingCartIcon} text="Payment"/>
                 <NavBarSideOptions Icon={SettingsIcon} text="Settings"/>
             </div>
-            <div className="profileBox">
-                    <img src={DefaultProfileIcon} alt="defaultProfileIcon" className="profileIcon"/>
-                    <button className="login-button" onClick={() => loginWithRedirect()}><h2>Login</h2></button>
-            </div>
+            
+            <Link className="profileBox" to="/signup">
+                <img src={DefaultProfileIcon} alt="defaultProfileIcon" className="profileIcon"/>
+                <h2 className="signup-text">Sign up</h2>
+            </Link>
         </nav>
     )
 };

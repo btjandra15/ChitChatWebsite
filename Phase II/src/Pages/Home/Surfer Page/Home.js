@@ -3,7 +3,6 @@ import "../Surfer Page/Home.css"
 import HomeOptions from "./HomeOptions";
 
 const Home = () => {
-
     return(
         <div className='home'>
             <div className='home__top'>
