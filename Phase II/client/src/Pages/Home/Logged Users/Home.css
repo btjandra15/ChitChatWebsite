@@ -1,0 +1,45 @@
+.home {
+    flex: 0.4;
+    border-right: 1px;
+    min-width: fit-content;
+    overflow-y: scroll;
+}
+
+.home__top {
+    position: sticky;
+    display: flex;
+    top: 0;
+    background-color: rgb(208, 209, 212);
+    z-index: 100;
+    border: 1px;
+    padding:  15px 20px
+}
+
+.home::-webkit-scrollbar {
+    display: none;
+}
+
+.home {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.homeOptions {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.homeOptions:hover {
+    color: rgb(160, 215, 233);
+    transition: color 100ms ease-out;
+}
+
+.homeOptions > h2 {
+    font-weight: 800;
+    font-size: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
