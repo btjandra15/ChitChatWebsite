@@ -4,7 +4,7 @@ import Admin from './Pages/Admin/Admin';
 import Home_SurferUsers from "./Pages/Home/Surfer Page/Home_SurferUsers";
 import Home_LoggedUsers from "./Pages/Home/Logged Users/Home_LoggedUsers";
 import NavBarSide from "./Pages/NavBar/NavBarSide";
-import Widgets from './Pages/Widgets/Widgets';
+import Widgets from './Pages/Widgets/NavWidgets';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signup from "./Pages/Signup/Signup"
 import Login from './Pages/Login/Login'
@@ -17,9 +17,9 @@ function App() {
             {/*Home Surfer User Route*/}
             <Route path='/' element={
                 <>
-                  <NavBarSide/>
+                  {/*<NavBarSide/>*/}
                   <Home_SurferUsers/>
-                  <Widgets/>
+                  {/*<Widgets/>*/}
                 </>
               }
             />

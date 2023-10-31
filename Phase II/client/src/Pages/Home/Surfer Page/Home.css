@@ -1,3 +1,9 @@
+.home__grid {
+    display: grid;
+    grid-template-columns:
+    30% 40% 30%;
+}
+
 .home {
     flex: 0.4;
     border-right: 1px;
