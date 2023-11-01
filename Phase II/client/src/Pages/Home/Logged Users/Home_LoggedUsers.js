@@ -13,29 +13,20 @@ const Home = () => {
             </div>
 
             <div className="post-box">
-                <form action="">
-                    <Avatar/>
-
-                    <div className="post-box-form-field">
-                        <div className="post-box-input">
-                            <input type="text" placeholder="What's happening?"/>
-                        </div>
-
-                        <div className="post-box-input">
-                           <div className="post-box-icons">
-                                <ImageOutlined/>
-                                <GifBoxOutlined/>
-                                <PollOutlined/>
-                                <SentimentSatisfiedAltOutlined/>
-                                <CalendarTodayOutlined/>
-                                <LocationCityOutlined/>
-                           </div>
-
-                           <button>Post</button>
-                        </div>
-                    </div>
-                </form>
+    <form>
+      <div className="post-box-input">
+          <Avatar/>
+          <input placeholder="What's Happening?" type="text"/>
+        </div> 
+    
+            <div class="button-container">
+            <button className="Image-Video">
+                Image/Video
+                </button>
+            <button className="Tweet">Post</button> 
             </div>
+    </form>
+</div>
 
             <h3>Lorem ipsum</h3>
             <h3>Lorem ipsum</h3>
