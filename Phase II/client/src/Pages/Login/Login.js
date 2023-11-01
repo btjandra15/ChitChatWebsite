@@ -10,7 +10,7 @@ const cookies = new Cookies();
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const setLogin = useState(false);
+  const [login, setLogin] = useState(false);
 
   const submitLogin = (e) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const Login = () => {
           path: "/",
         })
 
-        window.location.href = "/auth";
+        window.location.href = "/";
       })
       .catch((e) => { 
         console.log(e); 

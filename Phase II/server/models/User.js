@@ -25,6 +25,15 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true,
         default: 'Ordinary User',
+    },
+    followingList: {
+        type: Array,
+        require: true
+    },
+    warningCount: {
+        type: Number,
+        require: true,
+        default: 0,
     }
 });
 

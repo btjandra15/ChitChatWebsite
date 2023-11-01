@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DefaultProfilePicture from '../../../../images/defaultProfileIcon.jpg'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
@@ -7,6 +7,12 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import './Leftbar.scss';
 import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import axios from 'axios';
+
+const cookies = new Cookies();
+const token = cookies.get("TOKEN");
+
 
 const Leftbar = () => {
   const items = [
@@ -41,16 +47,45 @@ const Leftbar = () => {
       link: "/settings"
     }
   ]
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+      const configuration = {
+          method: "GET",
+          url: `http://localhost:3001/user`,
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+      };
   
+      axios(configuration)
+          .then((result) => {
+              setLoggedIn(true);
+              setUserData(result.data);
+          })
+          .catch((error) => {
+              error = new Error();
+              
+              console.log(error);
+          })
+  }, [])
+
   return (
     <div className='leftbar'>
         <div className="container">
           <div className="menu">
             <div className="user">
-              <Link className='link' to="/profile/:id">
-                <img src={DefaultProfilePicture} alt="" />
-                <span>John Doe</span>
-              </Link>
+
+              {loggedIn ?
+                  <Link className='link' to="/profile/:id">
+                    <img src={DefaultProfilePicture} alt="" />
+                    <span>{userData.firstName} {userData.lastName}</span>
+                  </Link>
+                  :
+                  <div></div>
+              }
             </div>
             
             {items.map((item) => {
