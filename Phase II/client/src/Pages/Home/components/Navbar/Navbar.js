@@ -83,7 +83,7 @@ const Navbar = () => {
                 </Link>
 
                 {loggedIn ? 
-                    <Link className="user" to="/signup">
+                    <Link className="user" to={`/profile/${userData._id}`}>
                         <img src={DefaultProfilePicture} alt="" />
                         <span>{userData.username}</span>
                     </Link>
