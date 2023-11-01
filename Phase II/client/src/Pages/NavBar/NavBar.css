@@ -32,6 +32,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  flex-flow: row wrap;
 }
 
 .navBarSideOptions > .MuiSvgIcon-root {

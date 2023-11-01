@@ -41,7 +41,7 @@ const Signup = () => {
 
   return (
     <div className="home">
-      <div className="home-top">
+      <div className="home-top-grid">
         <div className='home-top-left'>
           <img className='home-top-left-image' src={ChitChatHome} alt="ChitChat Logo" />
         </div>
