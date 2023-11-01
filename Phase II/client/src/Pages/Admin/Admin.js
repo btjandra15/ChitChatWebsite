@@ -1,6 +1,6 @@
 import React from 'react';
-import "./Admin.css";
-import ChitChatIcon from "../../images/ChitChat_Logo.jpg";
+import "./Admin.scss";
+import ChitChatIcon from "../../images/ChitChatLogo.jpg";
 import DefaultProfileIcon from "../../images/defaultProfileIcon.jpg";
 
 const Admin = () => {

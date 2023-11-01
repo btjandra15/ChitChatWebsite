@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import "./Signup.css"
-import ChitChatHome from "../../images/ChitChat_Logo.jpg";
+import "./Signup.scss"
+import ChitChatHome from "../../images/ChitChatLogo.jpg";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 

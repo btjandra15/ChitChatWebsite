@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import "./Login.css"
-import ChitChatHome from "../../images/ChitChat_Logo.jpg";
+import "./Login.scss"
+import ChitChatHome from "../../images/ChitChatLogo.jpg";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
@@ -10,7 +10,7 @@ const cookies = new Cookies();
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [login, setLogin] = useState(false);
+  const setLogin = useState(false);
 
   const submitLogin = (e) => {
     e.preventDefault();

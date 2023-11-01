@@ -1,28 +1,19 @@
-/* eslint-disable react/jsx-pascal-case */
-import './App.css';
 import Admin from './Pages/Admin/Admin';
-import Home_SurferUsers from "./Pages/Home/Surfer Page/Home_SurferUsers";
-import Home_LoggedUsers from "./Pages/Home/Logged Users/Home_LoggedUsers";
-import NavBarSide from "./Pages/NavBar/NavBarSide";
-import Widgets from './Pages/Widgets/NavWidgets';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Signup from "./Pages/Signup/Signup"
 import Login from './Pages/Login/Login'
-import ProtectedRoutes from './components/ProtectedRoutes';
+import Home from './Pages/Home/Home';
+import Profile from './Pages/Profile/Profile';
+import Trending from './Pages/Trending/Trending';
+import Payment from './Pages/Payment/Payment';
+import Settings from './Pages/Settings/Settings';
 
 function App() {
   return (
       <div className="app">
           <Routes>
             {/*Home Surfer User Route*/}
-            <Route path='/' element={
-                <>
-                  {/*<NavBarSide/>*/}
-                  <Home_SurferUsers/>
-                  {/*<Widgets/>*/}
-                </>
-              }
-            />
+            <Route path='/' element={<Home/>}/>
 
             {/*Admin Route*/}
             <Route path='/admin' element={<Admin/>}/>
@@ -32,6 +23,18 @@ function App() {
 
             {/*Login Route*/}
             <Route path='/login' element={<Login/>}/> 
+
+            {/*Profile Route*/}
+            <Route path='/profile/:id' element={<Profile/>}/> 
+
+            {/*Trending Route*/}
+            <Route path='/trending' element={<Trending/>}/> 
+
+            {/*Payment Route*/}
+            <Route path='/payment' element={<Payment/>}/> 
+
+            {/*Settings Route*/}
+            <Route path='/settings' element={<Settings/>}/> 
           </Routes>
       </div>
   );
