@@ -39,17 +39,20 @@
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                border: 1px solid themed("border");
-                border-radius: 5px;
-                padding: 5px;
+                border: 1px solid lightgray;
+                border-radius: 20px;
+                padding: 0px;
+                width: 400px; /* Adjust the width as needed */
             
                 input {
-                    border: none; 
-                    width: 500px; 
-                    background-color: transparent;
-                    color: themed('textColor');
+                    outline: none;
+                    border: none; /* Remove input border */
+                    border-radius: 20px;
+                    width: 100%; /* Adjust the width of the input element */
+                    padding: 10px; /* Adjust input padding to match the container */
                 }
             }
+            
         }
              
         .right{
