@@ -21,6 +21,7 @@ import "./Navbar.scss"
 import "./RightBar.scss"
 import { DarkModeContext } from "../../context/darkModeContext";
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
+import Post from "./post";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -190,6 +191,7 @@ const Home = () => {
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
                         <h1>MiddleBar</h1>
+                        <Post />
                         <h1>MiddleBar</h1>
                         <h1>MiddleBar</h1>
                         <h1>MiddleBar</h1>
