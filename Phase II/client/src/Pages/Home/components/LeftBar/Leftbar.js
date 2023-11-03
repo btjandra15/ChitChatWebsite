@@ -9,6 +9,7 @@ import './Leftbar.scss';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -50,6 +51,11 @@ const Leftbar = () => {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  const logout = () => {
+    cookies.remove("TOKEN", { path: "/" });
+    setLoggedIn(false);
+  }
 
   useEffect(() => {
       const configuration = {
@@ -98,6 +104,17 @@ const Leftbar = () => {
                 </div>
               )
             })}
+
+              {loggedIn ?
+                  <div className="item">
+                    <Link className='link' onClick={logout}>
+                      <LogoutIcon className='item-icon'/>
+                      <span>Logout</span>
+                    </Link>
+                  </div>
+                  :
+                  <div></div>
+              }
           </div>
         </div>
     </div>

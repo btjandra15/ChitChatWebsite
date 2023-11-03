@@ -1,11 +1,13 @@
-const express = require('express');
 const mongoose = require('mongoose');
+const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const app = express();
-const User = require('./models/User.js');
 const jwt = require('jsonwebtoken');
 const auth = require('./auth.js');
+const User = require('./models/User.js');
+const Post = require('./models/Post.js');
+
+const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -15,7 +17,8 @@ app.listen(3001, () => {
     console.log('Server running');
 });
 
-app.post('/register', async (req, res) => {
+// User Endpoints
+app.post('/register', (req, res) => {
     const { firstName, lastName, username, email, password } = req.body;
 
     User.findOne({ $or: [{ email: email }, { username: username }]})
@@ -104,3 +107,26 @@ app.get('/user', auth, (req, res) => {
             res.status(500).json({message: `Error ${error.message}`});
         })
 })
+// User Endpoints
+
+// Post Endpoints
+app.post('/create-post', auth, async(req, res) => {
+    const { username, content } = req.body;
+    const userId = req.user.userId;
+
+    const newPost = Post({
+        authorId: userId,
+        author: username,
+        content: content,
+    });
+
+    newPost
+        .save()
+        .then((result) => {
+            res.status(201).send({message: "Post created sucessfully", result});
+        })
+        .catch((error) => {
+            res.status(500).send({message: "Error creating post", error});
+        });
+});
+// Post Endpoints
