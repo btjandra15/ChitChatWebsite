@@ -6,12 +6,13 @@ const jwt = require('jsonwebtoken');
 const auth = require('./auth.js');
 const User = require('./models/User.js');
 const Post = require('./models/Post.js');
-
+const dotenv = require('dotenv');
 const app = express();
 
+dotenv.config();
 app.use(express.json());
 app.use(cors());
-mongoose.connect('mongodb+srv://btjandra15:kZ2HglGxeMWfJj2h@csc322chitchat.zwl6xio.mongodb.net/Users?retryWrites=true&w=majority');
+mongoose.connect(process.env.MONGODB_URI);
 
 app.listen(3001, () => {
     console.log('Server running');
