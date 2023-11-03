@@ -67,7 +67,7 @@ const Navbar = () => {
                     <SearchOutlinedIcon/>
                     <input type="text" placeholder='Search...'/>
                 </div>
-            </div>
+            </div> 
 
             <div className="right">
                 <Link className='right-icons'>
