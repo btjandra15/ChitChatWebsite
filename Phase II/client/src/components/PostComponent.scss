@@ -34,7 +34,7 @@
   padding: 10px;
   margin: 10px;
   margin-left: 1px;
-  width: 96%;
+  width: 93%;
 
   @include themify($themes){
     background-color: themed('bgSoft');
