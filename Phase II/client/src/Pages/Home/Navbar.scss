@@ -29,6 +29,15 @@
                 font-size: 30px;
                 color: themed("logo");
             }
+
+            .nav-logo{
+                width: 15%;
+            }
+
+            .nav-logo img{
+                width: 100%;
+                height: auto;
+            }
     
             .left-icons{
                 color: themed("textColor");

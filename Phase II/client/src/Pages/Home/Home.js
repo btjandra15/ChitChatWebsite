@@ -21,7 +21,9 @@ import "./Navbar.scss"
 import "./RightBar.scss"
 import { DarkModeContext } from "../../context/darkModeContext";
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
-import Post from "./Post.js";
+import ChitChatLogo2 from "../../images/ChitChatLogo2.png";
+import ChitChatLogo2darkmode from "../../images/ChitChatLogo2-darkmode.png"
+import Post from "./post"
 import PostComponent from "../../components/PostComponent";
 
 const cookies = new Cookies();
@@ -97,9 +99,8 @@ const Home = () => {
             <div className='navbar'>
                 <div className="left">
                     {/* <img src={ChitChatLogo} alt="" /> */}
-
-                    <Link to="/" style={{ textDecoration: 'none' }}>
-                        <span>ChitChat</span>
+                    <Link className="nav-logo" to="/" style={{ textDecoration: 'none' }}>
+                        <img src={darkMode ? ChitChatLogo2darkmode : ChitChatLogo2} alt="ChitChat Logo 2" />
                     </Link>
 
                     <Link className='left-icons'>
