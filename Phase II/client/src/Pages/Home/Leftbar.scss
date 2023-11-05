@@ -54,18 +54,25 @@
                     }
     
                     .link{
+                        display: flex;
+                        align-items: center;
                         text-decoration: none;
                         color: black;
                     }
     
-                    .link:hover{
-                        color: blue;
-                    }
-    
                     span{
+                        padding-left: 5px;
                         font-size: 20px;
                         color: themed("textColor");
                     }
+                }
+
+                .item:hover{
+
+                    background-color: #e8f5fe;
+                    border-radius: 30px;
+                    color: rgb(164, 246, 254);
+                    transition: color 100ms ease-out;
                 }
             }
         }

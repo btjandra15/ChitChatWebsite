@@ -40,52 +40,60 @@ const Signup = () => {
   };
 
   return (
-    <div className="home">
-      <div className="home-top-grid">
-        <div className='home-top-left'>
-          <img className='home-top-left-image' src={ChitChatHome} alt="ChitChat Logo" />
+    <div className="split-screen">
+      <div className="logo-section">
+        <img src={ChitChatHome} alt="ChitChat Logo" className="logo"/>
+      </div>
+      <div className="form-section">
+        <div className="form-header">
+          <h1>Join ChitChat</h1>
+          <p className="form-subheading">Create an account to get started.</p>
         </div>
-
-        <div className="home-top-right">
-          <img className='logo' src="" alt="" />
-          <h1 className='home-top-right-header'>Happening now</h1>
-          <h2 className='home-top-right-subheader'>Join ChitChat today!</h2>
-
-          {signupWithEmail ? 
-            <div className="home-top-right-auth-buttons">
-              <input type='text' className='signupFormInputBox' placeholder='First Name...' onChange={(event) => { setFirstName(event.target.value)}}/>
-              <input type='text' className='signupFormInputBox' placeholder='Last Name...' onChange={(event) => { setLastName(event.target.value)}}/>
-              <input type='text' className='signupFormInputBox' placeholder='Username... ' onChange={(event) => { setUsername(event.target.value)}}/>
-              <input type='text' className='signupFormInputBox' placeholder='Email...' onChange={(event) => { setEmail(event.target.value)}}/>
-              <input type='password' className='signupFormInputBox' placeholder='Password...' onChange={(event) => { setPassword(event.target.value)}}/>
-              <button className='signup-button' onClick={addNewUser}>Sign up</button>
-
-              <p className='policies'>
-                By signing up, you agree to the <a href="/">Terms of Service</a> and <a href="/">Privacy Policy</a>, including <a href="/">Cookie Use</a>
-              </p>
-            </div>
-            :
-
-            <div className="home-top-right-auth-buttons">
-              <button className='button-primary'>Sign up with Google</button>
-              <button className='button-primary'>Sign up with Facebook</button>
-              <button className='button-primary'>Sign up with Microsoft</button>
-              <button className='button-primary' onClick={signupButton}>Sign up with phone and email</button>
-
-              <p className='policies'>
-                By signing up, you agree to the <a href="/">Terms of Service</a> and <a href="/">Privacy Policy</a>, including <a href="/">Cookie Use</a>
-              </p>
-            </div>
-          }
-
-          <div className="home-top-right-login-buttons">
-            <h2>Already have an account?</h2>
-            <Link className='login-button' to="/login">Login</Link>
-          </div>
+        <form onSubmit={addNewUser} className="signup-form">
+          <input
+            type="text"
+            className="form-input"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="email"
+            className="form-input"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            className="form-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit" className="signup-button">Sign Up</button>
+        </form>
+        <div className="signup-links">
+          <span>Already have an account?</span>
+          <Link to="/login" className="login-link">Login</Link>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Signup
