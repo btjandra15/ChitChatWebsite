@@ -5,9 +5,22 @@ import Cookies from 'universal-cookie';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import S3FileUpload from 'react-s3';
+import { Buffer } from 'buffer';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Adding 1 to the month to make it 1-based
+const day = currentDate.getDate().toString().padStart(2, '0');
+const hours = currentDate.getHours().toString().padStart(2, '0');
+const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+Buffer.from('anything', 'base64');
+window.Buffer = window.Buffer || require('buffer').Buffer;
 
 const Post = () => {
     const [warning, setWarning] = useState(false);
@@ -16,14 +29,12 @@ const Post = () => {
     const [userData, setUserData] = useState();
     const [totalWordCount, setTotalWordCount] = useState();
 
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Adding 1 to the month to make it 1-based
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    const hours = currentDate.getHours().toString().padStart(2, '0');
-    const minutes = currentDate.getMinutes().toString().padStart(2, '0');
-    const seconds = currentDate.getSeconds().toString().padStart(2, '0');
-    const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const config = {
+        bucketName: 'chitchatwebsite',
+        region: 'us-east-1',
+        accessKeyId: 'AKIA5IQUIWIGA23UHNFQ',
+        secretAccessKey: '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',
+    }
 
     const handleTextChange = (inputText) => {
         setText(inputText);
@@ -48,6 +59,16 @@ const Post = () => {
 
         setMediaFiles(filteredFiles);
         updateWordCount();
+
+        S3FileUpload
+            .uploadFile(mediaFiles, config)
+            .then((data) => {
+                console.log(data);
+                alert("Successfully uploaded image");
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     };
 
     const updateWordCount = () => {
@@ -149,18 +170,21 @@ const Post = () => {
                                 />
                             </div>
                         </form>
+
                         <div className="post_bottom">
                             <div className="post_icons">
                                 <label className="media_upload">
                                     <input type="file" className="image_input" onChange={handleFileUpload} accept="image/*, video/*" multiple />
                                     {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
-                                    <InsertPhotoOutlinedIcon/>
+                                    <InsertPhotoOutlinedIcon className='icon'/>
                                 </label>
+                                
                                 <label className="gif">
-                                    <GifBoxOutlinedIcon/>
+                                    <GifBoxOutlinedIcon className='icon'/>
                                 </label>
+
                                 <label className="emoji">
-                                    <EmojiEmotionsOutlinedIcon/>
+                                    <EmojiEmotionsOutlinedIcon className='icon'/>
                                 </label>
                             </div>
                             <button className='post_button' onClick={submitPost}>Post</button>

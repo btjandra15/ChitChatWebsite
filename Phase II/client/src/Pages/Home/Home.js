@@ -192,7 +192,7 @@ const Home = () => {
                 {/* MIDDLE CONTENT */}
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
-                        <Post />
+                        {loggedIn ? <Post/> : <div></div>}
                         <PostComponent/>
                     </div>
                 </div>
