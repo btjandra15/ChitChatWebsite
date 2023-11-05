@@ -111,14 +111,18 @@ app.get('/user', auth, (req, res) => {
 // User Endpoints
 
 // Post Endpoints
-app.post('/create-post', auth, async(req, res) => {
-    const { username, content } = req.body;
+app.post('/create-post', auth, (req, res) => {
+    const { userFirstName, userLastName, username, content, wordCount, dateAndTime } = req.body;
     const userId = req.user.userId;
 
     const newPost = Post({
         authorId: userId,
-        author: username,
+        authorFirstName: userFirstName,
+        authorLastName: userLastName,
+        authorUsername: username,
         content: content,
+        wordCount: wordCount,
+        dateAndTime: dateAndTime,
     });
 
     newPost
@@ -129,5 +133,42 @@ app.post('/create-post', auth, async(req, res) => {
         .catch((error) => {
             res.status(500).send({message: "Error creating post", error});
         });
+});
+
+app.get('/get-post', async(req, res) => {
+    try {
+        // Use the `find` method and `await` the result
+        const posts = await Post.find({}).exec();
+    
+        // Send the retrieved posts as a JSON response
+        res.json(posts);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving posts from the database');
+      }
+});
+
+app.post('/like-post', async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try {
+        const post = await Post.findOne({ _id: postId });
+    
+        if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if(post.userLiked.includes(userId)) return res.status(400).json({message:'User already liked the post'});
+    
+        post.userLiked.push(userId);
+        post.likes++;
+
+        await post.save();
+    
+        res.json({ message: 'Post liked successfully!', likes: post.likes });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+      }
 });
 // Post Endpoints

@@ -21,7 +21,8 @@ import "./Navbar.scss"
 import "./RightBar.scss"
 import { DarkModeContext } from "../../context/darkModeContext";
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
-import Post from "./post";
+import Post from "./Post.js";
+import PostComponent from "../../components/PostComponent";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -87,7 +88,7 @@ const Home = () => {
                 error = new Error();
                 
                 console.log(error);
-            })
+            });
     }, [])
 
     return(
@@ -115,7 +116,7 @@ const Home = () => {
 
                     <div className="search">
                         <SearchOutlined/>
-                        <input type="text" placeholder='Search...'/>
+                        <input type="text" placeholder='Search...' className="search-input"/>
                     </div>
                 </div> 
 
@@ -190,29 +191,8 @@ const Home = () => {
                 {/* MIDDLE CONTENT */}
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
-                        <h1>MiddleBar</h1>
                         <Post />
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
-                        <h1>MiddleBar</h1>
+                        <PostComponent/>
                     </div>
                 </div>
 

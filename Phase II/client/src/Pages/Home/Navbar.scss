@@ -41,7 +41,7 @@
                 gap: 10px;
                 border: 1px solid lightgray;
                 border-radius: 20px;
-                padding: 0px;
+                padding: 5px;
                 width: 400px; /* Adjust the width as needed */
             
                 input {
@@ -50,6 +50,7 @@
                     border-radius: 20px;
                     width: 100%; /* Adjust the width of the input element */
                     padding: 10px; /* Adjust input padding to match the container */
+                    background-color: themed("bg");
                 }
             }
             

@@ -5,7 +5,15 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    author: {
+    authorFirstName: {
+        type: String,
+        require: true,
+    },
+    authorLastName: {
+        type: String,
+        require: true,
+    },
+    authorUsername: {
         type: String,
         require: true,
     },
@@ -23,11 +31,7 @@ const PostSchema = new mongoose.Schema({
         require: true,
         default: 0
     },
-    time: {
-        type: String,
-        require: true,
-    },
-    date: {
+    dateAndTime: {
         type: String,
         require: true,
     },
@@ -38,6 +42,17 @@ const PostSchema = new mongoose.Schema({
     wordCount: {
         type: Number,
         require: true,
+        default: 0,
+    },
+    trendyPost: {
+        type: Boolean,
+        require: true,
+        default: false,
+    },
+    userLiked: {
+        type: Array,
+        require: true,
+        default: [],
     }
 });
 
