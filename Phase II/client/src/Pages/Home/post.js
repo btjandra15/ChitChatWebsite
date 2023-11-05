@@ -187,6 +187,7 @@ const Post = () => {
                                     <EmojiEmotionsOutlinedIcon className='icon'/>
                                 </label>
                             </div>
+                            
                             <button className='post_button' onClick={submitPost}>Post</button>
                         </div>
                     </div>
