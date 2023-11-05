@@ -41,32 +41,39 @@ const Login = () => {
   }
 
   return (
-    <div className="home">
-      <div className="home-top">
-        <div className='home-top-left'>
-          <img className='home-top-left-image' src={ChitChatHome} alt="ChitChat Logo" />
+    <div className="split-screen">
+      <div className="logo-section">
+        <img src={ChitChatHome} alt="ChitChat Logo" className="logo"/>
+      </div>
+      <div className="form-section">
+        <div className="form-header">
+          <h1>What's Happening</h1>
+          <p className="form-subheading">Stay connected with the latest chats.</p>
         </div>
-
-        <div className="home-top-right">
-          <img className='logo' src="" alt="" />
-          <h1 className='home-top-right-header'>Happening now</h1>
-          <h2 className='home-top-right-subheader'>Join ChitChat today!</h2>
-
-          <div className="home-top-right-auth-buttons">
-            <input type='text' className='signupFormInputBox' placeholder='Email...' onChange={(event) => { setEmail(event.target.value)}}/>
-            <input type='password' className='signupFormInputBox' placeholder='Password...' onChange={(event) => { setPassword(event.target.value)}}/>
-            
-            <button className='signup-button' onClick={submitLogin}>Login</button>
-          </div>
-
-          <div className="home-top-right-login-buttons">
-            <h2>Don't have an account?</h2>
-            <Link className='signup-button' to="/signup">Sign up</Link>
-          </div>
+        <form onSubmit={submitLogin} className="login-form">
+          <input 
+            type="text" 
+            className="form-input" 
+            placeholder="Email..." 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input 
+            type="password" 
+            className="form-input" 
+            placeholder="Password..." 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit" className="login-button">Login</button>
+        </form>
+        <div className="login-links">
+          <span>Don't have an account?</span>
+          <Link to="/signup" className="signup-link">Sign up</Link>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Login;
