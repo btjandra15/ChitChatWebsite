@@ -89,7 +89,15 @@ padding: 10px;
 
 .post_icons > label {
   margin-right: 10px;
+  cursor: pointer;
 }
+
+// .post_icons > label:hover {
+//   background-color: #e8f5fe;
+//   border-radius: 5px;
+//   color: var(--twitter-color);
+//   transition: color 100ms ease-out;
+// }
 
 .post_icons > label > input[type=file] {
   display:none;
