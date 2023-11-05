@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import "./Post.scss";
+import "./post.scss";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
+import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
+import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -137,20 +140,31 @@ const Post = () => {
                     <div className='text_description'>
                         <form>
                             <div className="formgroup" style={{display: 'block'}}>
-                                <textarea
+                                <input
                                     value={text}
                                     onChange={(e) => handleTextChange(e.target.value)}
-                                    placeholder="Write your post here..."
+                                    placeholder="Spill the Tea ☕ What's the latest buzz in your world of chitchat?"
                                     cols="138"
                                     rows={5}
                                 />
                             </div>
                         </form>
-
-                        <input type="file" onChange={handleFileUpload} accept="image/*, video/*" multiple />
-                        {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
-
-                        <button className='submit-button' onClick={submitPost}>Submit</button>
+                        <div className="post_bottom">
+                            <div className="post_icons">
+                                <label className="media_upload">
+                                    <input type="file" className="image_input" onChange={handleFileUpload} accept="image/*, video/*" multiple />
+                                    {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
+                                    <InsertPhotoOutlinedIcon/>
+                                </label>
+                                <label className="gif">
+                                    <GifBoxOutlinedIcon/>
+                                </label>
+                                <label className="emoji">
+                                    <EmojiEmotionsOutlinedIcon/>
+                                </label>
+                            </div>
+                            <button className='post_button' onClick={submitPost}>Post</button>
+                        </div>
                     </div>
                 </div>
             </div>
