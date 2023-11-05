@@ -21,7 +21,7 @@ import "./Navbar.scss"
 import "./RightBar.scss"
 import { DarkModeContext } from "../../context/darkModeContext";
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
-import Post from "./Post.js";
+import Post from "./post.js";
 import PostComponent from "../../components/PostComponent";
 
 const cookies = new Cookies();

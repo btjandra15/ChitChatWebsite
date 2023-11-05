@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import "./Post.scss";
+import "./post.scss";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
