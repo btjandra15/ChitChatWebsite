@@ -1,0 +1,31 @@
+.text_name{
+    display:flex;
+    align-items:center;
+    margin:0;
+}
+.text_name h3 {
+  // margin-right: 5px;
+  margin: 0;
+padding: 0; 
+  font-weight: bold;
+}
+.text_name h3:last-child {
+  color: #657786;
+   margin-left: 10px;
+}
+
+.text_description{
+  margin: 0;
+  padding: 0;
+}
+
+.post{
+transition: background-color 0.3s;
+background-color: white;
+border:1px solid #e1e8ed;
+padding: 10px;
+margin: 10px;
+}
+.post:hover{
+  background-color:#f5f5f5
+}
