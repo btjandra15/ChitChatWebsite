@@ -22,17 +22,18 @@
    margin-left: 10px;
 }
 
-.text_description{
+.text-description{
   margin: 0;
-  padding: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .post{
   transition: background-color 0.3s;
   background-color: white;
   border:1px solid #e1e8ed;
-  padding: 10px;
-  margin: 20px;
+  padding: 5px;
+  margin: 10px;
   margin-left: 1px;
   width: 93%;
   border-radius: 10px;
@@ -45,6 +46,7 @@
 .post:hover{
   background-color: white;
   color: black;
+  cursor: pointer;
 
   h3{
     color: black;
@@ -57,7 +59,7 @@
 
 .text-footer{
   display: flex;
-  padding-top: 10px;
+  padding-top: 5px;
 
   .footer-content {
     opacity: 0.3;
@@ -77,4 +79,6 @@
   }
 }
 
-
+button{
+  opacity: 1;
+}

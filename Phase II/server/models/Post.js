@@ -21,6 +21,11 @@ const PostSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    views: {
+        type: Number,
+        require: true,
+        default: 0
+    },
     likes: {
         type: Number,
         require: true,
@@ -30,6 +35,11 @@ const PostSchema = new mongoose.Schema({
         type: Number,
         require: true,
         default: 0
+    },
+    reports: {
+        type: Number,
+        require: true,
+        default: 0,
     },
     dateAndTime: {
         type: String,
@@ -54,6 +64,11 @@ const PostSchema = new mongoose.Schema({
         require: true,
         default: [],
     },
+    userReported: {
+        type: Array,
+        require: true,
+        default: [],
+    }
 });
 
 const Post = mongoose.model('Post', PostSchema);

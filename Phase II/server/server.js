@@ -112,7 +112,7 @@ app.get('/user', auth, (req, res) => {
 
 // Post Endpoints
 app.post('/create-post', auth, (req, res) => {
-    const { userFirstName, userLastName, username, content, wordCount, dateAndTime } = req.body;
+    const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
     const userId = req.user.userId;
 
     const newPost = Post({
@@ -123,6 +123,7 @@ app.post('/create-post', auth, (req, res) => {
         content: content,
         wordCount: wordCount,
         dateAndTime: dateAndTime,
+        keywords: keywords,
     });
 
     newPost
@@ -148,6 +149,25 @@ app.get('/get-post', async(req, res) => {
       }
 });
 
+app.post('/view-post' , async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try{
+        const post = await Post.findOne({ _id: postId });
+
+        if(!post) return res.status(404).json({ message: 'Post not found' });
+
+        post.views++;
+
+        await post.save();
+
+        res.json({ message: 'Post viewed successfully', views: post.views });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+    }
+});
+
 app.post('/like-post', async(req, res) => {
     const { postId, userId } = req.body;
 
@@ -161,14 +181,35 @@ app.post('/like-post', async(req, res) => {
         if(post.userLiked.includes(userId)) return res.status(400).json({message:'User already liked the post'});
     
         post.userLiked.push(userId);
+
         post.likes++;
         
         await post.save();
-    
         res.json({ message: 'Post liked successfully!', likes: post.likes });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'An error occurred while processing your request' });
       }
+});
+
+app.post('/report-post', async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try{
+        const post = await Post.findOne({ _id: postId });
+
+        if(!post) return res.status(404).json({ message: 'Post not found' });
+        if(post.userReported.includes(userId)) return res.status(400).json({message:'User reported liked the post'});
+
+        post.userReported.push(userId);
+
+        post.reports++;
+
+        await post.save();
+        res.json({ message: 'Post reported successfully!', likes: post.likes });
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+    }
 });
 // Post Endpoints

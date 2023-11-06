@@ -23,11 +23,13 @@ Buffer.from('anything', 'base64');
 window.Buffer = window.Buffer || require('buffer').Buffer;
 
 const Post = () => {
-    const [warning, setWarning] = useState(false);
-    const [text, setText] = useState('');
-    const [mediaFiles, setMediaFiles] = useState([]);
-    const [userData, setUserData] = useState();
-    const [totalWordCount, setTotalWordCount] = useState();
+    const [ warning, setWarning ] = useState(false);
+    const [ text, setText ] = useState('');
+    const [ mediaFiles, setMediaFiles ] = useState([]);
+    const [ userData, setUserData ] = useState();
+    const [ totalWordCount, setTotalWordCount ] = useState();
+    const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
+    const [ inputValue, setInputValue ] = useState('');
 
     const config = {
         bucketName: 'chitchatwebsite',
@@ -48,6 +50,21 @@ const Post = () => {
             setWarning(false);
         }
     };
+
+    const handleKeywordsChange = (e) => {
+        setInputValue(e.target.value);
+    }
+
+    const handleAddKeyword = () => {
+        if(inputValue.trim() !== ''){
+            if(selectKeyWords.length > 2){
+                alert("Too many tags!");
+            }else{
+                setSelectedKeyWords([...selectKeyWords, inputValue]);
+                setInputValue('');
+            }
+        }
+    }
 
     const handleFileUpload = (event) => {
         const files = event.target.files;
@@ -108,6 +125,7 @@ const Post = () => {
                     username: userData.username,
                     wordCount: totalWordCount,
                     dateAndTime: currentDateTimeString,
+                    keywords: selectKeyWords,
                 },
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -186,6 +204,18 @@ const Post = () => {
                                 <label className="emoji">
                                     <EmojiEmotionsOutlinedIcon className='icon'/>
                                 </label>
+
+                                <span>Keywords: </span>
+                                <input type="text" value={inputValue} onChange={handleKeywordsChange} placeholder='Type keywords...'/>
+                                <button onClick={handleAddKeyword}>Add keyword</button>
+
+                                <ul>
+                                    {selectKeyWords.map((item, index) => {
+                                        return(
+                                            <ul key={index}>{item}</ul>
+                                        )
+                                    })}
+                                </ul>
                             </div>
                             
                             <button className='post_button' onClick={submitPost}>Post</button>
