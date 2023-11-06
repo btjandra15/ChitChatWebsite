@@ -116,6 +116,7 @@ const PostComponent = ({post, index}) => {
               <div className='text-name'>
                 <h3>{post.authorFirstName} {post.authorLastName}</h3>
                 <h3 className='username'>@{post.authorUsername}</h3>
+                <button>Follow</button>
                 <button onClick={() => reportPost(post._id, userData._id)} className='report-button'>Report</button>
               </div>
     
