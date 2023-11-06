@@ -1,0 +1,80 @@
+@import "../../styles.scss";
+
+.leftbar{
+    @include themify($themes){
+        flex: 2;
+        position: sticky;
+        top: 70px;
+        height: calc(100vh - 70vh);
+    
+        .container{
+            padding: 20px;
+    
+            .menu{
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+    
+                .user{
+                    display: flex;
+                    align-items: center;
+    
+                    .link{
+                        text-decoration: none;
+                        color: black;
+                    }
+    
+                    .link:hover{
+                        color: lightgray;
+                    }
+    
+                    img{
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+    
+                    span{
+                        font-size: 20px;
+                        margin: 40px 10px;
+                        color: themed("textColor");
+                    }
+                }
+    
+                .item{
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 10px;
+    
+                    .item-icon{
+                        width: 30px;
+                        color: themed("textColor");
+                    }
+    
+                    .link{
+                        display: flex;
+                        align-items: center;
+                        text-decoration: none;
+                        color: black;
+                    }
+    
+                    span{
+                        padding-left: 5px;
+                        font-size: 20px;
+                        color: themed("textColor");
+                    }
+                }
+
+                .item:hover{
+
+                    background-color: #e8f5fe;
+                    border-radius: 30px;
+                    color: rgb(164, 246, 254);
+                    transition: color 100ms ease-out;
+                }
+            }
+        }
+    }
+}

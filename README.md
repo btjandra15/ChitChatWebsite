@@ -46,4 +46,5 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 - [ ]  CU is allowed to post ads and job applications that other can click and apply
   - [ ]  CU will pay the system (SU) by $0.1 for each click and application
 - [ ]  Any TU/OU who post ads or job opportunites will be fined $10 and one warning
-- [ ] Custom Features
+- [x] Custom Features
+  - [x] User can turn on or off dark mode and saves the choice even when the user reloads the page

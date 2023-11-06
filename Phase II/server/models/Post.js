@@ -1,33 +1,61 @@
 const mongoose = require('mongoose');
 
 const PostSchema = new mongoose.Schema({
-    author: {
+    authorId: {
+        type: String,
+        required: true,
+    },
+    authorFirstName: {
         type: String,
         require: true,
     },
-    lastName: {
+    authorLastName: {
         type: String,
         require: true,
     },
-    username: {
+    authorUsername: {
         type: String,
         require: true,
     },
-    email: {
+    content: {
         type: String,
         require: true,
     },
-    password: {
+    likes: {
+        type: Number,
+        require: true,
+        default: 0
+    },
+    dislikes: {
+        type: Number,
+        require: true,
+        default: 0
+    },
+    dateAndTime: {
         type: String,
         require: true,
     },
-    userType: {
-        type: String,
+    keywords: {
+        type: Array,
         require: true,
-        default: 'Ordinary User',
+    },
+    wordCount: {
+        type: Number,
+        require: true,
+        default: 0,
+    },
+    trendyPost: {
+        type: Boolean,
+        require: true,
+        default: false,
+    },
+    userLiked: {
+        type: Array,
+        require: true,
+        default: [],
     }
 });
 
-const Post = mongoose.model('User', PostSchema);
+const Post = mongoose.model('Post', PostSchema);
 
 module.exports = Post;

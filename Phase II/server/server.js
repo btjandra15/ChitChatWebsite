@@ -1,21 +1,25 @@
-const express = require('express');
 const mongoose = require('mongoose');
+const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const app = express();
-const User = require('./models/User.js');
 const jwt = require('jsonwebtoken');
 const auth = require('./auth.js');
+const User = require('./models/User.js');
+const Post = require('./models/Post.js');
+const dotenv = require('dotenv');
+const app = express();
 
+dotenv.config();
 app.use(express.json());
 app.use(cors());
-mongoose.connect('mongodb+srv://btjandra15:kZ2HglGxeMWfJj2h@csc322chitchat.zwl6xio.mongodb.net/Users?retryWrites=true&w=majority');
+mongoose.connect(process.env.MONGODB_URI);
 
 app.listen(3001, () => {
     console.log('Server running');
 });
 
-app.post('/register', async (req, res) => {
+// User Endpoints
+app.post('/register', (req, res) => {
     const { firstName, lastName, username, email, password } = req.body;
 
     User.findOne({ $or: [{ email: email }, { username: username }]})
@@ -104,3 +108,67 @@ app.get('/user', auth, (req, res) => {
             res.status(500).json({message: `Error ${error.message}`});
         })
 })
+// User Endpoints
+
+// Post Endpoints
+app.post('/create-post', auth, (req, res) => {
+    const { userFirstName, userLastName, username, content, wordCount, dateAndTime } = req.body;
+    const userId = req.user.userId;
+
+    const newPost = Post({
+        authorId: userId,
+        authorFirstName: userFirstName,
+        authorLastName: userLastName,
+        authorUsername: username,
+        content: content,
+        wordCount: wordCount,
+        dateAndTime: dateAndTime,
+    });
+
+    newPost
+        .save()
+        .then((result) => {
+            res.status(201).send({message: "Post created sucessfully", result});
+        })
+        .catch((error) => {
+            res.status(500).send({message: "Error creating post", error});
+        });
+});
+
+app.get('/get-post', async(req, res) => {
+    try {
+        // Use the `find` method and `await` the result
+        const posts = await Post.find({}).exec();
+    
+        // Send the retrieved posts as a JSON response
+        res.json(posts);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving posts from the database');
+      }
+});
+
+app.post('/like-post', async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try {
+        const post = await Post.findOne({ _id: postId });
+    
+        if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if(post.userLiked.includes(userId)) return res.status(400).json({message:'User already liked the post'});
+    
+        post.userLiked.push(userId);
+        post.likes++;
+
+        await post.save();
+    
+        res.json({ message: 'Post liked successfully!', likes: post.likes });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+      }
+});
+// Post Endpoints

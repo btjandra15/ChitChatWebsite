@@ -1,160 +1,101 @@
-.home {
-    display: flex;
+// Import a Google Font for a modern look, same as in the login page
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+.split-screen {
+  display: flex;
+  height: 100vh;
 }
 
-.home-top-grid {
-    /* display: flex;
-    align-items: center; */
+.logo-section {
+  width: 50%;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  img.logo {
+    max-width: 80%;
     height: auto;
-    display: grid;
-    grid-template-columns:
-    50% 50%;
+  }
 }
 
-.home-top-left {
-    width: 100%;
-    height: 100%;
-    text-align: center; /* Center the content horizontally */
-    display: flex;
-    align-items: center; /* Center the content vertically */
-    justify-content: center; /* Center the content horizontally */
+.form-section {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f5f5f5;
+  padding: 2rem;
+  font-family: 'Open Sans', sans-serif;
 }
 
-.home-top-left img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.home-top-right {
-    width: 100%;
-    height: 100%;
-    align-items: flex-start;
-    /* margin-top: -40px; */
-}
-
-.home-top-right-header {
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  
+  h1 {
     font-size: 2rem;
-    padding-top: 5px;
-    width: 700px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
 
+  .form-subheading {
+    font-size: 1rem;
+    font-weight: 400;
+  }
 }
 
-.home-top-right-subheader {
-    font-size: 2rem;
-    margin: 0px;
+.signup-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.home-top-right-auth-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 20px;
-    padding-left: 5px;
-}
-
-.home-top-right-auth-buttons button {
-    width: 20rem;
-    margin-bottom: 1rem;
-    background-color: lightgray;
-    height: 50px;
-}
-
-.home-top-right-auth-buttons .button-primary {
-    background-color: lightgray;
-    border-radius: 30px;
-    padding: 0.5 rem 0;
-}
-
-.home-top-right-auth-buttons .button-primary:hover {
-    background-color: gray;
-    color: white;
-    border-radius: 30px;
-    padding: 0.5 rem 0;
-}
-
-.home-top-right-login-buttons .button-primary {
-    background-color: lightgray;
-    border-radius: 30px;
-    width: 100px;
-    height: 50px;
-}
-
-.home-top-right-login-buttons .button-primary:hover {
-    background-color: gray;
-    color: white;
-    border-radius: 30px;
-    width: 100px;
-    height: 50px;
-}
-
-.signupFormInputBox {
-    margin: 10px;
-    padding: 20px;
-    font-size: 20px;
-    border-width: 0px;
-    border-color: #CCCCCC;
-    background-color: #FFFFFF;
-    color: #000000;
-    border-style: solid;
-    border-radius: 23px;
-    box-shadow: -1px 12px 9px rgba(66,66,66,.75);
-    width: 400px;
+.form-input {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  width: calc(100% - 4rem);
+  max-width: 300px;
 }
 
 .signup-button {
-    margin: 10px;
-    background: #3498db;
-    background-image: -webkit-linear-gradient(top, #3498db, #073e61);
-    background-image: -moz-linear-gradient(top, #3498db, #073e61);
-    background-image: -ms-linear-gradient(top, #3498db, #073e61);
-    background-image: -o-linear-gradient(top, #3498db, #073e61);
-    background-image: linear-gradient(to bottom, #3498db, #073e61);
-    -webkit-border-radius: 30;
-    -moz-border-radius: 30;
-    border-radius: 30px;
-    font-family: Arial;
-    color: #ffffff;
-    font-size: 20px;
-    padding: 10px 20px 10px 20px;
-    border: solid #1f628d 2px;
-    text-decoration: none;
+  padding: 0.5rem;
+  width: calc(100% - 4rem);
+  max-width: 300px;
 }
 
-.signup-button:hover {
-    background: #3cb0fd;
-    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-    text-decoration: none;
+.signup-links {
+  margin-top: 2rem;
 }
 
-.login-button {
-    margin: 10px;
-    background: #3498db;
-    background-image: -webkit-linear-gradient(top, #3498db, #073e61);
-    background-image: -moz-linear-gradient(top, #3498db, #073e61);
-    background-image: -ms-linear-gradient(top, #3498db, #073e61);
-    background-image: -o-linear-gradient(top, #3498db, #073e61);
-    background-image: linear-gradient(to bottom, #3498db, #073e61);
-    -webkit-border-radius: 30;
-    -moz-border-radius: 30;
-    border-radius: 30px;
-    font-family: Arial;
-    color: #ffffff;
-    font-size: 20px;
-    padding: 10px 20px 10px 20px;
-    border: solid #1f628d 2px;
-    text-decoration: none;
+.login-link {
+  margin-left: 0.5rem;
 }
 
-.login-button:hover {
-    background: #3cb0fd;
-    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-    text-decoration: none;
+@media (max-width: 768px) {
+  .split-screen {
+    flex-direction: column;
+  }
+
+  .logo-section {
+    width: 100%;
+    padding: 1rem;
+    
+    img.logo {
+      max-width: 50%;
+    }
+  }
+
+  .form-section {
+    width: 100%;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  .form-input,
+  .signup-button {
+    width: calc(100% - 2rem);
+  }
 }

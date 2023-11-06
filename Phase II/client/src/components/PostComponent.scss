@@ -1,0 +1,79 @@
+@import '../styles.scss';
+
+.text_name{
+    display:flex;
+    align-items:center;
+    margin:0;
+
+    @include themify($themes){
+      color: themed("textColor");
+    }
+}
+
+.text_name h3 {
+  margin: 0;
+  padding: 0; 
+  font-weight: bold;
+  
+}
+
+.text_name h3:last-child {
+  color: #657786;
+   margin-left: 10px;
+}
+
+.text_description{
+  margin: 0;
+  padding: 0;
+}
+
+.post{
+  transition: background-color 0.3s;
+  background-color: white;
+  border:1px solid #e1e8ed;
+  padding: 10px;
+  margin: 10px;
+  margin-left: 1px;
+  width: 93%;
+
+  @include themify($themes){
+    background-color: themed('bgSoft');
+  }
+}
+
+.post:hover{
+  background-color: white;
+  color: black;
+
+  h3{
+    color: black;
+  }
+
+  .footer-content:hover{
+    opacity: 1;
+  }
+}
+
+.text-footer{
+  display: flex;
+  padding-top: 10px;
+
+  .footer-content {
+    opacity: 0.3;
+    padding-right: 5px;
+
+    span{
+      padding-right: 10px;
+    }
+
+    .icon{
+      padding-right: 5px;
+    }
+
+    .icon:hover{
+      cursor: pointer;
+    }
+  }
+}
+
+
