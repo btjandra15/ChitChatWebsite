@@ -31,13 +31,6 @@ const Post = () => {
     const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
     const [ inputValue, setInputValue ] = useState('');
 
-    const config = {
-        bucketName: 'chitchatwebsite',
-        region: 'us-east-1',
-        accessKeyId: 'AKIA5IQUIWIGA23UHNFQ',
-        secretAccessKey: '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',
-    }
-
     const handleTextChange = (inputText) => {
         setText(inputText);
 
