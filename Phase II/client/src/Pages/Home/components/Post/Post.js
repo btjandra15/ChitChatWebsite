@@ -70,15 +70,15 @@ const Post = () => {
         setMediaFiles(filteredFiles);
         updateWordCount();
 
-        S3FileUpload
-            .uploadFile(mediaFiles, config)
-            .then((data) => {
-                console.log(data);
-                alert("Successfully uploaded image");
-            })
-            .catch((err) => {
-                console.error(err);
-            })
+        // S3FileUpload
+        //     .uploadFile(mediaFiles, config)
+        //     .then((data) => {
+        //         console.log(data);
+        //         alert("Successfully uploaded image");
+        //     })
+        //     .catch((err) => {
+        //         console.error(err);
+        //     })
     };
 
     const updateWordCount = () => {
