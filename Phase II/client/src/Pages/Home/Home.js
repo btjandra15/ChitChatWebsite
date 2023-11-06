@@ -21,13 +21,9 @@ import "./Navbar.scss"
 import "./RightBar.scss"
 import { DarkModeContext } from "../../context/darkModeContext";
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
-<<<<<<< HEAD
 import Post from "./post.js";
-=======
 import ChitChatLogo2 from "../../images/ChitChatLogo2.png";
 import ChitChatLogo2darkmode from "../../images/ChitChatLogo2-darkmode.png"
-import Post from "./post"
->>>>>>> 8c5e5ac0ccbdd60dc49fbaf9308d95446f6e33d2
 import PostComponent from "../../components/PostComponent";
 
 const cookies = new Cookies();
