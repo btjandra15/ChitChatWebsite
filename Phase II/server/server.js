@@ -162,7 +162,7 @@ app.post('/like-post', async(req, res) => {
     
         post.userLiked.push(userId);
         post.likes++;
-
+        
         await post.save();
     
         res.json({ message: 'Post liked successfully!', likes: post.likes });

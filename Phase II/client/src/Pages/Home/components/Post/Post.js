@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import "./post.scss";
+import "./Post.scss";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';

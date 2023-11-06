@@ -1,4 +1,4 @@
-@import "../../styles.scss";
+@import "../../../../styles.scss";
 
 .leftbar{
     @include themify($themes){
@@ -67,13 +67,12 @@
                     }
                 }
 
-                .item:hover{
-
-                    background-color: #e8f5fe;
-                    border-radius: 30px;
-                    color: rgb(164, 246, 254);
-                    transition: color 100ms ease-out;
-                }
+                // .item:hover{
+                //     background-color: #e8f5fe;
+                //     border-radius: 30px;
+                //     color: black;
+                //     transition: color 100ms ease-out;
+                // }
             }
         }
     }

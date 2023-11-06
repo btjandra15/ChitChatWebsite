@@ -53,7 +53,7 @@ const PostSchema = new mongoose.Schema({
         type: Array,
         require: true,
         default: [],
-    }
+    },
 });
 
 const Post = mongoose.model('Post', PostSchema);
