@@ -1,33 +1,5 @@
 @import '../styles.scss';
 
-.text_name{
-    display:flex;
-    align-items:center;
-    margin:0;
-
-    @include themify($themes){
-      color: themed("textColor");
-    }
-}
-
-.text_name h3 {
-  margin: 0;
-  padding: 0; 
-  font-weight: bold;
-  
-}
-
-.text_name h3:last-child {
-  color: #657786;
-   margin-left: 10px;
-}
-
-.text-description{
-  margin: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 .post{
   transition: background-color 0.3s;
   background-color: white;
@@ -40,6 +12,59 @@
 
   @include themify($themes){
     background-color: themed('bgSoft');
+  }
+
+  .text-body{
+    .text-header{
+      .text-name{
+        display: flex;
+        align-items: center;
+        
+        h3{
+          padding-left: 5px;
+        }
+
+        .username{
+          opacity: 0.5;
+        }
+
+        .report-button {
+          margin-left: 5px;
+        }
+      }
+
+      .text-description{
+        display: flex;
+        margin-left: 5px;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .text-bottom{
+    .text-footer{
+      display: flex;
+      padding-top: 5px;
+      margin-top: 10px;
+      margin-left: 5px;
+    
+      .footer-content {
+        opacity: 0.3;
+        padding-right: 5px;
+    
+        span{
+          padding-right: 10px;
+        }
+    
+        .icon{
+          padding-right: 5px;
+        }
+    
+        .icon:hover{
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 
@@ -55,30 +80,4 @@
   .footer-content:hover{
     opacity: 1;
   }
-}
-
-.text-footer{
-  display: flex;
-  padding-top: 5px;
-
-  .footer-content {
-    opacity: 0.3;
-    padding-right: 5px;
-
-    span{
-      padding-right: 10px;
-    }
-
-    .icon{
-      padding-right: 5px;
-    }
-
-    .icon:hover{
-      cursor: pointer;
-    }
-  }
-}
-
-button{
-  opacity: 1;
 }

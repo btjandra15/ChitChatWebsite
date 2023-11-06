@@ -111,11 +111,12 @@ const PostComponent = ({post, index}) => {
             <Avatar/>
           </div>  */}
 
-          <div className='text_body' key={index}>
-            <div className='text_header'>
-              <div className='text_name'>
+          <div className='text-body' key={index}>
+            <div className='text-header'>
+              <div className='text-name'>
                 <h3>{post.authorFirstName} {post.authorLastName}</h3>
-                <h3>@{post.authorUsername}</h3>
+                <h3 className='username'>@{post.authorUsername}</h3>
+                <button onClick={() => reportPost(post._id, userData._id)} className='report-button'>Report</button>
               </div>
     
               <div className='text-description'>
@@ -141,7 +142,6 @@ const PostComponent = ({post, index}) => {
                   <AccessTimeIcon className='icon'/>
                   <span>{post.dateAndTime}</span>
 
-                  <button onClick={() => reportPost(post._id, userData._id)}>Report</button>
                 </div>
               </div>
             </div>
