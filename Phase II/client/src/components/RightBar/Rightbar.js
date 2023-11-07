@@ -1,5 +1,5 @@
 import React from 'react'
-import DefaultProfilePicture from '../../../../images/defaultProfileIcon.jpg';
+import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg';
 import './Rightbar.scss';
 
 const Rightbar = () => {

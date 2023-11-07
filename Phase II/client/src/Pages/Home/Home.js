@@ -3,11 +3,11 @@ import "./Home.scss"
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 import { DarkModeContext } from "../../context/darkModeContext";
-import PostComponent from "../../components/PostComponent";
-import Navbar from "./components/Navbar/Navbar";
-import Leftbar from "./components/LeftBar/Leftbar";
-import Post from "./components/Post/Post.js";
-import Rightbar from "./components/RightBar/Rightbar.js";
+import Navbar from "../../components/Navbar/Navbar";
+import Leftbar from "../../components/LeftBar/Leftbar";
+import PostComponent from "../../components/Post/PostComponent";
+import CreatePost from "../../components/CreatePost/CreatePost";
+import Rightbar from "../../components/RightBar/Rightbar";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -69,7 +69,7 @@ const Home = () => {
                 {/* MIDDLE CONTENT */}
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
-                        {loggedIn ? <Post/> : <div></div>}
+                        {loggedIn ? <CreatePost/> : <div></div>}
 
                         {postData.map((post, index) => {
                             return(

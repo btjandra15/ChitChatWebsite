@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import ChitChatLogo2 from "../../../../images/ChitChatLogo2.png";
-import ChitChatLogo2darkmode from "../../../../images/ChitChatLogo2-darkmode.png"
+import ChitChatLogo2 from "../../images/ChitChatLogo2.png";
+import ChitChatLogo2darkmode from "../../images/ChitChatLogo2-darkmode.png"
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import DarkModeOutlined from '@mui/icons-material/DarkModeOutlined';
 import WbSunnyOutlined from '@mui/icons-material/WbSunnyOutlined';
@@ -10,9 +10,9 @@ import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import Person2Outlined from '@mui/icons-material/Person2Outlined';
 import EmailOutlined from '@mui/icons-material/EmailOutlined';
 import NotificationsOutlined from '@mui/icons-material/NotificationsOutlined';
-import { DarkModeContext } from '../../../../context/darkModeContext';
+import { DarkModeContext } from '../../context/darkModeContext';
 import './Navbar.scss'
-import DefaultProfilePicture from '../../../../images/defaultProfileIcon.jpg'
+import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg'
 
 const Navbar = (props) => {
     const { darkMode, toggle } = useContext(DarkModeContext);

@@ -7,7 +7,7 @@ import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import Person2Outlined from '@mui/icons-material/Person2Outlined';
 import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
-import DefaultProfilePicture from '../../../../images/defaultProfileIcon.jpg'
+import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg'
 
 const Leftbar = (props) => {
     const userData = props.userData;
