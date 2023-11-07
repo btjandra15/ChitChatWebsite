@@ -5,16 +5,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const Signup = () => {
-  const [signupWithEmail, setSignupWithEmail] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  
-  const signupButton = () => { 
-    setSignupWithEmail(true); 
-  };
 
   const addNewUser = (e) => {
     e.preventDefault();
@@ -35,6 +30,7 @@ const Signup = () => {
       .then((result) => { 
         console.log(result); 
         alert("Successfully signed up!");
+        window.location.href = '/login';
       })
       .catch((e) => { console.log(e); })
   };
@@ -57,6 +53,7 @@ const Signup = () => {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
+
           <input
             type="text"
             className="form-input"
@@ -64,6 +61,7 @@ const Signup = () => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
+
           <input
             type="text"
             className="form-input"
@@ -71,6 +69,7 @@ const Signup = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+          
           <input
             type="email"
             className="form-input"
@@ -78,6 +77,7 @@ const Signup = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+
           <input
             type="password"
             className="form-input"
@@ -85,6 +85,7 @@ const Signup = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
           <button type="submit" className="signup-button">Sign Up</button>
         </form>
         <div className="signup-links">

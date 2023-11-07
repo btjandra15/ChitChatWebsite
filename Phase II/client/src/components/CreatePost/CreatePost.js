@@ -5,8 +5,6 @@ import Cookies from 'universal-cookie';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import S3FileUpload from 'react-s3';
-import { Buffer } from 'buffer';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -19,9 +17,6 @@ const minutes = currentDate.getMinutes().toString().padStart(2, '0');
 const seconds = currentDate.getSeconds().toString().padStart(2, '0');
 const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-Buffer.from('anything', 'base64');
-window.Buffer = window.Buffer || require('buffer').Buffer;
-
 const CreatePost = () => {
     const [ warning, setWarning ] = useState(false);
     const [ text, setText ] = useState('');
@@ -30,13 +25,6 @@ const CreatePost = () => {
     const [ totalWordCount, setTotalWordCount ] = useState();
     const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
     const [ inputValue, setInputValue ] = useState('');
-
-    const config = {
-        bucketName: 'chitchatwebsite',
-        region: 'us-east-1',
-        accessKeyId: 'AKIA5IQUIWIGA23UHNFQ',
-        secretAccessKey: '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',
-    }
 
     const handleTextChange = (inputText) => {
         setText(inputText);
@@ -76,16 +64,6 @@ const CreatePost = () => {
 
         setMediaFiles(filteredFiles);
         updateWordCount();
-
-        S3FileUpload
-            .uploadFile(mediaFiles, config)
-            .then((data) => {
-                console.log(data);
-                alert("Successfully uploaded image");
-            })
-            .catch((err) => {
-                console.error(err);
-            })
     };
 
     const updateWordCount = () => {

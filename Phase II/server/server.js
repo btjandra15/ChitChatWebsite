@@ -212,4 +212,24 @@ app.post('/report-post', async(req, res) => {
         res.status(500).json({ message: 'An error occurred while processing your request' });
     }
 });
+
+app.put('/update-post/:postId', async(req, res) => {
+    const postId = req.params.postId;
+    const { fieldToUpdate, newValue } = req.body;
+
+    try{
+        const updatedPost = await Post.findByIdAndUpdate(
+            postId, 
+            { [fieldToUpdate]: newValue },
+            { new: true }
+        );
+
+        if(!updatedPost) return res.status(404).json({ error: 'Post not found' });
+
+        res.json(updatedPost);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 // Post Endpoints

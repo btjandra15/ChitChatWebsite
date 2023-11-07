@@ -26,14 +26,35 @@ const UserSchema = new mongoose.Schema({
         require: true,
         default: 'Ordinary User',
     },
+    subscribersList: {
+        type: Array,
+        require: true,
+        default: []
+    },
     followingList: {
         type: Array,
-        require: true
+        require: true,
+        default: []
     },
     warningCount: {
         type: Number,
         require: true,
         default: 0,
+    },
+    balance: {
+        type: Number,
+        require: true,
+        default: 0,
+    },
+    tips: {
+        type: Number,
+        require: true,
+        default: 0,
+    },
+    trendyMessages: {
+        type: Array,
+        require: true,
+        default: [],
     }
 });
 

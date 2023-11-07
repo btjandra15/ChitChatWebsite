@@ -51,6 +51,25 @@ const Home = () => {
         axios(postConfig)
             .then((res) => {
               setPostData(res.data);
+
+              res.data.map((post) => {
+                const difference = post.likes - post.dislikes;
+                const views = post.views;
+
+                if(difference > 3 && views > 10){
+                    if(post.trendyPost === false){
+                        axios.put(`http://localhost:3001/update-post/${post._id}`, { fieldToUpdate: 'trendyPost', newValue: true })
+                            .then((res) => {
+                                console.log("TrendyPost status updated sucessfully");
+                            })
+                            .catch((err) => {
+                                console.error(`Error updating Trendypost: ${err}`);
+                            })
+                    }
+                }
+
+                return null;
+              })
             })
             .catch((err) => {
               console.log(err);
@@ -73,14 +92,14 @@ const Home = () => {
 
                         {postData.map((post, index) => {
                             return(
-                                <PostComponent post={post} index={index}/>
+                                <PostComponent post={post} key={index}/>
                             )
                         })}
                     </div>
                 </div>
 
                 {/* RIGHT CONTENT */}
-                <Rightbar/>
+                <Rightbar loggedIn={loggedIn} post={postData}/>
             </div>
         </div>
     )
