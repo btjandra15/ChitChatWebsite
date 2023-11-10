@@ -1,5 +1,10 @@
 @import '../../styles.scss';
 
+* {
+    margin: 0;
+    padding: 0;
+}
+
 .home{
     display: block;
 }
@@ -11,9 +16,4 @@
         color: themed("textColor");
         height: 100vh;
     }
-}
-
-* {
-    margin: 0;
-    padding: 0;
 }
