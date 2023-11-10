@@ -2,7 +2,7 @@ import React from 'react'
 
 const Trending = () => {
   return (
-    <div>Trnding</div>
+    <div>Trending</div>
   )
 }
 

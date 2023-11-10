@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+Phase II/server/package-lock.json
+Phase II/server/package.json
