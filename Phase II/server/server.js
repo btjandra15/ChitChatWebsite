@@ -131,7 +131,6 @@ app.post('/login', (req, res) => {
         });
 });
 
-
 //Updates user's fields based on ID
 app.put('/update-user/:userId', async(req, res) => {
     const userId = req.params.userId;
