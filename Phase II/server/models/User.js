@@ -24,7 +24,11 @@ const UserSchema = new mongoose.Schema({
     userType: {
         type: String,
         require: true,
-        default: 'Ordinary User',
+    },
+    trendyUser: {
+        type: Boolean,
+        require: true,
+        default: false,
     },
     subscribersList: {
         type: Array,

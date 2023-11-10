@@ -7,6 +7,7 @@ import Profile from './Pages/Profile/Profile';
 import Trending from './Pages/Trending/Trending';
 import Payment from './Pages/Payment/Payment';
 import Settings from './Pages/Settings/Settings';
+import Posting from './Pages/Postings/Posting';
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
 
             {/*Trending Route*/}
             <Route path='/trending' element={<Trending/>}/> 
+
+            {/*Postings Route*/}
+            <Route path='/postings' element={<Posting/>}/> 
 
             {/*Payment Route*/}
             <Route path='/payment' element={<Payment/>}/> 

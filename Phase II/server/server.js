@@ -19,8 +19,46 @@ app.listen(3001, () => {
 });
 
 // User Endpoints
+//Gets all the users from the database
+app.get('/get-all-users', (req, res) => {
+    User.find()
+        .then(users => {
+            res.status(200).json(users);
+        }) 
+        .catch(err => {
+            res.status(500).json({message: `Error: ${err}`});
+        });
+});
+
+//Gets a specific user by ID
+app.get('/get-user', auth, (req, res) => {
+    const userId = req.user.userId;
+
+    User.findById(userId)
+        .then(user => {
+            if(!user) return res.status(404).json({message: "User not found."});
+
+            res.status(200).json(user);
+        })
+        .catch(error => {
+            res.status(500).json({message: `Error ${error.message}`});
+        })
+})
+
+//Gets all trendy users
+app.get('/get-trendy-users', async(req, res) => {
+    try{
+        const trendyUsers = await User.find({userType: 'Trendy User'});
+
+        res.status(200).json(trendyUsers);
+    }catch(err) {
+        res.status(500).json({message: `Error: ${err.message}`});
+    }
+});
+
+//Creates new user
 app.post('/register', (req, res) => {
-    const { firstName, lastName, username, email, password } = req.body;
+    const { firstName, lastName, username, email, password, selectedUserType } = req.body;
 
     User.findOne({ $or: [{ email: email }, { username: username }]})
         .then((existingUser) => {
@@ -34,7 +72,8 @@ app.post('/register', (req, res) => {
                         lastName: lastName,
                         username: username,
                         email: email,
-                        password: hashedPassword
+                        password: hashedPassword,
+                        userType: selectedUserType,
                     });
 
                     user
@@ -52,6 +91,7 @@ app.post('/register', (req, res) => {
         });
 });
 
+//Logs user into the website
 app.post('/login', (req, res) => {
     User.findOne({email: req.body.email})
         .then((user) => {
@@ -91,26 +131,57 @@ app.post('/login', (req, res) => {
         });
 });
 
-app.get("/free-endpoint", (req, res) => {
-    res.json({message: "Free to access this endpoint at any time"})
+
+//Updates user's fields based on ID
+app.put('/update-user/:userId', async(req, res) => {
+    const userId = req.params.userId;
+    const { fieldToUpdate, newValue } = req.body;
+
+    try{
+        const updatedUser = await User.findByIdAndUpdate(
+            userId, 
+            { [fieldToUpdate]: newValue },
+            { new: true }
+        );
+
+        if(!updatedUser) return res.status(404).json({ error: 'User not found' });
+
+        res.json(updatedUser);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
-app.get('/user', auth, (req, res) => {
-    const userId = req.user.userId;
-
-    User.findById(userId)
-        .then(user => {
-            if(!user) return res.status(404).json({message: "User not found."});
-
-            res.status(200).json(user);
-        })
-        .catch(error => {
-            res.status(500).json({message: `Error ${error.message}`});
-        })
-})
 // User Endpoints
 
 // Post Endpoints
+//Gets all posts]
+app.get('/get-post', async(req, res) => {
+    try {
+        // Use the `find` method and `await` the result
+        const posts = await Post.find({}).exec();
+    
+        // Send the retrieved posts as a JSON response
+        res.json(posts);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving posts from the database');
+      }
+});
+
+//Gets top 3 liked posts
+app.get('/get-top-liked-post', async(req, res) => {
+    try{
+        const topLikePosts = await Post.find().sort({ 'likes': -1 }).limit(3);
+
+        res.status(200).json(topLikePosts);
+    }catch(err){
+        res.status(500).json({ message: `Error: ${err.message}` });
+    }
+})
+
+//Creates new post
 app.post('/create-post', auth, (req, res) => {
     const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
     const userId = req.user.userId;
@@ -136,19 +207,7 @@ app.post('/create-post', auth, (req, res) => {
         });
 });
 
-app.get('/get-post', async(req, res) => {
-    try {
-        // Use the `find` method and `await` the result
-        const posts = await Post.find({}).exec();
-    
-        // Send the retrieved posts as a JSON response
-        res.json(posts);
-      } catch (err) {
-        console.error(err);
-        res.status(500).send('Error retrieving posts from the database');
-      }
-});
-
+//Adds +1 to views field in the post document in the database
 app.post('/view-post' , async(req, res) => {
     const { postId, userId } = req.body;
 
@@ -168,6 +227,7 @@ app.post('/view-post' , async(req, res) => {
     }
 });
 
+//Adds +1 to likes field in the post document in the database
 app.post('/like-post', async(req, res) => {
     const { postId, userId } = req.body;
 
@@ -192,6 +252,7 @@ app.post('/like-post', async(req, res) => {
       }
 });
 
+//Adds +1 to report field in the post document in the database
 app.post('/report-post', async(req, res) => {
     const { postId, userId } = req.body;
 
@@ -213,6 +274,7 @@ app.post('/report-post', async(req, res) => {
     }
 });
 
+//Update a specific field in the Post doucment in the database
 app.put('/update-post/:postId', async(req, res) => {
     const postId = req.params.postId;
     const { fieldToUpdate, newValue } = req.body;
@@ -232,4 +294,5 @@ app.put('/update-post/:postId', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 // Post Endpoints

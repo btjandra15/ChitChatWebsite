@@ -10,9 +10,16 @@ const Signup = () => {
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [selectedUserType, setSelectedUserType] = useState('');
+
+  const handleSelectUserType = (e) => {
+    setSelectedUserType(e.target.value)
+  }
 
   const addNewUser = (e) => {
     e.preventDefault();
+
+    console.log(selectedUserType);
 
     const configuration = {
       method: "POST",
@@ -22,7 +29,8 @@ const Signup = () => {
         lastName,
         username,
         email,
-        password
+        password,
+        selectedUserType
       }
     };
     
@@ -30,7 +38,7 @@ const Signup = () => {
       .then((result) => { 
         console.log(result); 
         alert("Successfully signed up!");
-        window.location.href = '/login';
+        // window.location.href = '/login';
       })
       .catch((e) => { console.log(e); })
   };
@@ -40,11 +48,13 @@ const Signup = () => {
       <div className="logo-section">
         <img src={ChitChatHome} alt="ChitChat Logo" className="logo"/>
       </div>
+
       <div className="form-section">
         <div className="form-header">
           <h1>Join ChitChat</h1>
           <p className="form-subheading">Create an account to get started.</p>
         </div>
+
         <form onSubmit={addNewUser} className="signup-form">
           <input
             type="text"
@@ -86,8 +96,16 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          <label htmlFor='dropdown'>Select a User Type</label>
+          <select id='dropdown' value={selectedUserType} onChange={handleSelectUserType}>
+            <option value="">Select...</option>
+            <option value="Ordinary User">Ordinary User</option>
+            <option value="Corporate User">Corporate User</option>
+          </select>
+          
           <button type="submit" className="signup-button">Sign Up</button>
         </form>
+        
         <div className="signup-links">
           <span>Already have an account?</span>
           <Link to="/login" className="login-link">Login</Link>

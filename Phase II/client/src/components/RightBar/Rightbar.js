@@ -1,134 +1,86 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg';
 import './Rightbar.scss';
+import axios from 'axios';
 
-const Rightbar = ({loggedIn, userData, postData}) => {
-  return (
-    <div className='rightbar'>
-        <div className="container">
-            <div className="item">
-                <span>{loggedIn ? 'Suggestions for you' : 'Trendy Users'}</span>
+const Rightbar = ({loggedIn, userData, postData, allUserData}) => {
+    const [trendyUsers, setTrendyUsers] = useState([]);
+    const [mostLikedPosts, setMostLikedPosts] = useState([]);
 
-                <div className="user">
-                    <div className="userInfo">
-                        <img src={DefaultProfilePicture} alt="" />
-                        <span>Jane Doe</span>
-                    </div>
+    useEffect(() => {
+        const fetchTrendyUsers = async() => {
+            try{
+                const res = await axios.get('http://localhost:3001/get-trendy-users');
 
-                    <div className="buttons">
-                        <button>Follow</button>
-                        <button>Dimiss</button>
-                    </div>
-                </div>
+                setTrendyUsers(res.data);
+            }catch(err){
+                console.error(`Error: ${err}`);
+            };
+        };
 
-                <div className="user">
-                    <div className="userInfo">
-                        <img src={DefaultProfilePicture} alt="" />
-                        <span>Jane Doe</span>
-                    </div>
+        const fetchTopThreePosts = async() => {
+            try{
+                const res = await axios.get('http://localhost:3001/get-top-liked-post');
 
-                    <div className="buttons">
-                        <button>Follow</button>
-                        <button>Dimiss</button>
-                    </div>
-                </div>
-            </div>
+                setMostLikedPosts(res.data);
+            }catch(err){
+                console.error(`Error: ${err}`);
+            };
+        }
 
-        <div className="item">
-            <span>{loggedIn ? 'Latest Activites' : 'Most liked Posts'}</span>
+        fetchTrendyUsers();
+        fetchTopThreePosts();
+    }, []);
 
-            <div className="user">
-                <div className="userInfo">
-                    <img src={DefaultProfilePicture} alt="" />
+    return (
+        <div className='rightbar'>
+            <div className="container">
+                <div className="item">
+                    <span>{loggedIn ? 'Suggestions for You' : 'Trendy Users'}</span>
 
-                    <p>
-                        <span>Jane Doe</span> changed their cover picture
-                    </p>
-                </div>
+                    <div className="trendy-users">
+                        {trendyUsers.map((user, index) => {
+                                return(
+                                    <div className="user" key={index}>
+                                        <div className="userInfo">
+                                            <img src={DefaultProfilePicture} alt="" />
+                                            <span>{user.firstName} {user.lastName}</span>
+                                        </div>
 
-                <span>1 min ago</span>
-            </div>
-
-            <div className="user">
-                <div className="userInfo">
-                    <img src={DefaultProfilePicture} alt="" />
-                    <p>
-                    <span>Jane Doe</span> liked your photo
-                    </p>
-                </div>
-
-                <span>20 min ago</span>
-            </div>
-
-            <div className="user">
-                <div className="userInfo">
-                    <img src={DefaultProfilePicture} alt="" />
-                    <p>
-                    <span>Jane Doe</span> change their profile picture
-                    </p>
-                </div>
-
-                <span>50 mins ago</span>
-                </div>
-
-            <div className="user">
-                <div className="userInfo">
-                    <img src={DefaultProfilePicture} alt="" />
-                    <p>
-                        <span>Jane Doe</span> posted a new video
-                    </p>
-                </div>
-
-                <span>12 hrs ago</span>
-                </div>
-            </div>
-
-            <div className="item">
-                <span>Online Friends</span>
-
-                <div className="user">
-                <div className="userInfo">
-                    <img src={DefaultProfilePicture} alt="" />
-                    <div className='online'/>
-                    <span>Jane Doe</span>
-                </div>
-                </div>
-                
-                <div className="user">
-                    <div className="userInfo">
-                        <img src={DefaultProfilePicture} alt="" />
-                        <div className='online'/>
-                        <span>Jane Doe</span>
-                    </div>
-                </div>
-                
-                <div className="user">
-                    <div className="userInfo">
-                        <img src={DefaultProfilePicture} alt="" />
-                        <div className='online'/>
-                        <span>Jane Doe</span>
+                                        <div className="buttons">
+                                            <button>Follow</button>
+                                            <button>Dimiss</button>
+                                        </div>
+                                    </div>
+                                )
+                        })}
                     </div>
                 </div>
 
-                <div className="user">
-                    <div className="userInfo">
-                        <img src={DefaultProfilePicture} alt="" />
-                        <div className='online'/>
-                        <span>Jane Doe</span>
-                    </div>
-                </div>
-                
-                <div className="user">
-                    <div className="userInfo">
-                        <img src={DefaultProfilePicture} alt="" />
-                        <div className='online'/>
-                        <span>Jane Doe</span>
-                    </div>
+                <div className="item">
+                    <span>Most Liked Posts</span>
+
+                    {mostLikedPosts.map((post, index) => {
+                        return(
+                            <div className="most-liked-post">
+                                <div className="post-info" key={index}>
+                                    <p className='authorName'>{post.authorFirstName} {post.authorLastName}</p>
+                                                
+                                    <span className='post-content'>{post.content}</span>
+                                                
+                                    <span className='post-footer'>
+                                        <p className="data">Views: {post.views}</p>
+                                        <p className="data">Likes: {post.likes}</p>
+                                        <p className="data">Dislikes: {post.dislikes}</p>
+                                    </span>
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default Rightbar

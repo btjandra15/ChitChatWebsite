@@ -14,10 +14,8 @@ const token = cookies.get("TOKEN");
 const PostComponent = ({post, index}) => {
     const [ userData, setUserData ] = useState([]);
     const [ postData, setPostData ] = useState([]);
-
+    
     const openPost = (postId, userId) => {
-      console.log('viewed posted');
-
       axios.post(`http://localhost:3001/view-post`, { postId, userId })
         .then(() => {
           setPostData(prevData => {
@@ -90,7 +88,7 @@ const PostComponent = ({post, index}) => {
     useEffect(() => {
       const userConfig = {
         method: 'GET',
-        url: 'http://localhost:3001/user',
+        url: 'http://localhost:3001/get-user',
         headers: {
           Authorization: `Bearer ${token}`
         }

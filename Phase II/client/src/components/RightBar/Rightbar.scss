@@ -4,7 +4,6 @@
     @include themify($themes){
         flex: 3;
         background-color: themed('bgSoft');
-
         .container{
             padding: 20px;
     
@@ -57,6 +56,58 @@
                             font-weight: 500;
                             color: themed("textColor");
                         }
+                    }
+    
+                    .buttons{
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+    
+                        button{
+                            border: none;
+                            padding: 5px;
+                            color: themed("textColor");
+                            cursor: pointer;
+    
+                            &:first-child{
+                                background-color: #5271ff;
+                            }
+    
+                            &:last-child{
+                                background-color: #f0544f;
+                            }
+                        }
+                    }
+                }
+
+                .most-liked-post{
+                    display: flex;
+                    flex-direction: column;
+                    // align-items: center;
+                    // justify-content: space-between;
+                    margin: 20px 0px;
+                    background-color: themed('bgSoft');
+                    padding: 10px;
+    
+                    .post-info{
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 20px;
+                        position: relative;
+
+                        .post-footer{
+                            display: flex;
+                            flex-direction: row;
+                        }
+
+                        .data{
+                            padding-left: 10px;
+                        }
+
+                        .authorName{
+                            font-weight: bold;
+                        } 
                     }
     
                     .buttons{

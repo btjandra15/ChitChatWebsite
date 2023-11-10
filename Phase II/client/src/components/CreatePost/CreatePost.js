@@ -128,7 +128,7 @@ const CreatePost = () => {
     useEffect(() => {
         const configuration = {
             method: "GET",
-            url: `http://localhost:3001/user`,
+            url: `http://localhost:3001/get-user`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

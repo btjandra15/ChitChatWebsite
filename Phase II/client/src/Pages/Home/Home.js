@@ -15,6 +15,7 @@ const token = cookies.get("TOKEN");
 const Home = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [allUserData, setAllUserData] = useState([]);
     const { darkMode } = useContext(DarkModeContext);
     const [ postData, setPostData ] = useState([]);
 
@@ -23,31 +24,70 @@ const Home = () => {
         setLoggedIn(false);
     }
 
+    const updateUser = (userId, fieldToUpdateParam, newValueParam) => {
+        axios.put(`http://localhost:3001/update-user/${userId}`, { fieldToUpdate: fieldToUpdateParam, newValue: newValueParam })
+            .then(() => {
+                console.log("Successfuly updated user");
+            })
+            .catch((err) => {
+                console.error(`Error updating User: ${err}`);
+            });
+    }
+
     useEffect(() => {
-        const userConfig = {
+        const loggedInUserConfig = {
             method: "GET",
-            url: `http://localhost:3001/user`,
+            url: `http://localhost:3001/get-user`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
+
+        const allUserConfig = {
+            method: "GET",
+            url: `http://localhost:3001/get-all-users`,
+        }
     
         const postConfig = {
             method: 'GET',
             url: 'http://localhost:3001/get-post',
         }
 
-        axios(userConfig)
-            .then((result) => {
+        //Gets all Users & checks to see if they meet the trendy requirements
+        axios(allUserConfig)
+            .then((res) => {
+                setAllUserData(res.data);
+
+                res.data.map((user) => {
+                    const subscribedUsersCount = user.subscribersList.length;
+                    const likeDislikeDifference = user.likes - user.dislikes;
+                    const trendyMessagesCount = user.trendyMessages.length;
+
+                    if(user.userType !== 'Trendy User'){
+                        if(subscribedUsersCount > 10 && trendyMessagesCount > 2 && (likeDislikeDifference > 10 || user.tips > 100))
+                           updateUser(user._id, 'trendyUser', true);
+                        else
+                            updateUser(user._id, 'trendyUser', false);
+                    }
+
+                    return null;
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        //Checks the current logged in user
+        axios(loggedInUserConfig)
+            .then((res) => {
                 setLoggedIn(true);
-                setUserData(result.data);
+                setUserData(res.data);
             })
             .catch((error) => {
-                error = new Error();
-                
                 console.log(error);
             });
 
+        //Gets all post & checks to see if they meet the trendy requirements
         axios(postConfig)
             .then((res) => {
               setPostData(res.data);
@@ -69,7 +109,7 @@ const Home = () => {
                 }
 
                 return null;
-              })
+              });
             })
             .catch((err) => {
               console.log(err);
@@ -99,7 +139,7 @@ const Home = () => {
                 </div>
 
                 {/* RIGHT CONTENT */}
-                <Rightbar loggedIn={loggedIn} post={postData}/>
+                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData}/>
             </div>
         </div>
     )

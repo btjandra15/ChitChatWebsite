@@ -8,12 +8,9 @@ import Person2Outlined from '@mui/icons-material/Person2Outlined';
 import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg'
+import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
 
-const Leftbar = (props) => {
-    const userData = props.userData;
-    const loggedIn = props.loggedIn;
-    const logout = props.logout
-
+const Leftbar = ({userData, loggedIn, logout}) => {
     const items = [
         {
           id: 1,
@@ -25,22 +22,28 @@ const Leftbar = (props) => {
           id: 2,
           icon: SearchOutlined,
           text: 'Trending',
-          link: "/Trending"
+          link: "/trending"
         },
         {
-          id: 3,
+            id: 3,
+            icon: WorkOutlineOutlinedIcon,
+            text: 'Postings',
+            link: '/postings'
+        },
+        {
+          id: 4,
           icon: Person2Outlined,
           text: 'Profile',
           link: "/profile/:id"
         },
         {
-          id: 4,
+          id: 5,
           icon: ShoppingCartOutlined,
           text: 'Payment',
           link: "/payment"
         },
         {
-          id: 5,
+          id: 6,
           icon: SettingsOutlined,
           text: 'Settings',
           link: "/settings"
@@ -57,12 +60,12 @@ const Leftbar = (props) => {
                                 <img src={DefaultProfilePicture} alt="" />
                                 <span>{userData.firstName} {userData.lastName}</span>
                             </Link>
-                                :
-                                    <div></div>
-                                }
-                            </div>
+                            :
+                            <div></div>
+                        }
+                    </div>
                         
-                        {items.map((item) => {
+                    {items.map((item) => {
                             return(
                                 <div className="item" key={item.id}>
                                     <Link className='link' to={item.link}>
@@ -71,15 +74,24 @@ const Leftbar = (props) => {
                                     </Link>
                                 </div>
                             )
-                        })}
+                    })}
 
-                        {loggedIn ?
-                            <div className="item">
-                                <Link className='link' onClick={logout}>
-                                    <Logout className='item-icon'/>
-                                    <span>Logout</span>
-                                </Link>
-                            </div>
+                    {loggedIn ?
+                        <div className="item2">
+                            {userData.userType === 'Corporate User' ? 
+                                 <Link className='post-link' onClick={logout}>
+                                    <WorkOutlineOutlinedIcon className='item-icon'/>
+                                    <span>Post</span>
+                                 </Link>
+                                : 
+                                <div></div>
+                            }
+
+                            <Link className='logout-link' onClick={logout}>
+                                <Logout className='item-icon'/>
+                                <span>Logout</span>
+                            </Link>
+                        </div>
                         :
                         <div></div>
                     }
