@@ -58,4 +58,34 @@ const PostSchema = new mongoose.Schema({
 
 const Post = mongoose.model('Post', PostSchema);
 
+const tabooWords = ['word1', 'word2', 'word3'];
+
+const checkForTabooWords = (content) => {
+    const contentArray = content.split(' ');
+    const foundTabooWord = contentArray.some(word => tabooWords.includes(word));
+    return foundTabooWord;
+};
+
+PostSchema.pre('save', async function (next) {
+    const post = this;
+
+    if (post.isModified('content')) {
+        const containsTabooWords = checkForTabooWords(post.content);
+
+        if (containsTabooWords) {
+            // Additional actions you wish to perform
+            post.trendyPost = false; // For example, mark the post as not trendy
+           
+
+            // You might also want to notify the author or take other actions
+
+            // Prevent the post from being saved
+            return next(new Error('Post contains taboo words and is not allowed.'));
+        }
+    }
+
+    next();
+});
+
+
 module.exports = Post;
