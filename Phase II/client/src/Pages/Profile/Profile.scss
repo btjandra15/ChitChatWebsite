@@ -1,0 +1,19 @@
+@import '../../styles.scss';
+
+.home{
+    display: block;
+}
+
+.main-content{
+    display: flex;
+
+    @include themify($themes){
+        background-color: themed('bg');
+        color: themed("textColor");
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}

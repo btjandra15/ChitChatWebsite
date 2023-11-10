@@ -10,6 +10,7 @@
         border-bottom: 1px solid lightgray;
         position: sticky;
         top: 0;
+        z-index: 100;
         background-color: themed("bg");
         color: themed("textColor");
         
@@ -91,9 +92,9 @@
                     object-fit: cover;
                 }
     
-                span {
+                // span {
     
-                }
+                // }
             }
     
             .user:hover{
