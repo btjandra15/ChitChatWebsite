@@ -40,19 +40,19 @@ const Rightbar = ({loggedIn, userData, postData, allUserData}) => {
 
                     <div className="trendy-users">
                         {trendyUsers.map((user, index) => {
-                                return(
-                                    <div className="user" key={index}>
-                                        <div className="userInfo">
-                                            <img src={DefaultProfilePicture} alt="" />
-                                            <span>{user.firstName} {user.lastName}</span>
-                                        </div>
-
-                                        <div className="buttons">
-                                            <button>Follow</button>
-                                            <button>Dimiss</button>
-                                        </div>
+                            return(
+                                <div className="user" key={index}>
+                                    <div className="userInfo">
+                                        <img src={DefaultProfilePicture} alt="" />
+                                        <span>{user.firstName} {user.lastName}</span>
                                     </div>
-                                )
+
+                                    <div className="buttons">
+                                        <button>Follow</button>
+                                        <button>Dimiss</button>
+                                    </div>
+                                </div>
+                            )
                         })}
                     </div>
                 </div>
