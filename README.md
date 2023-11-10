@@ -25,8 +25,8 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 - [ ] Any messages with >10 reads, #likes-#dislikes > 3 will be promoted to "trendy post" shown in the "trending tab"
 
 ## Required Features
-- [ ] When a surfer visit the system, the top 3 most liked messages and the top 3 trendy-users will be featured in the top page.
-  - [ ] Sufer is given the choice of applying to be an ordinary or corporate user with their chosen id
+- [x] When a surfer visit the system, the top 3 most liked messages and the top 3 trendy-users will be featured in the top page.
+  - [x] Sufer is given the choice of applying to be an ordinary or corporate user with their chosen id
 - [ ] The super-user processes user applications with accept or deny
   - [ ] If accept, a temporary password is sent to the user and the user must change it when they first log in and an amount of money should be desposited to the system
   - [ ] If denied, a justification should be provided
