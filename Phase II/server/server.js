@@ -14,6 +14,14 @@ app.use(express.json());
 app.use(cors());
 mongoose.connect(process.env.MONGODB_URI);
 
+const checkForTabooWords = (content) => {
+    const tabooWords = ['fuck', 'word2', 'word3'];
+    const contentWithoutSpaces = content.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
+    const foundTabooWord = tabooWords.some(word => contentWithoutSpaces.includes(word));
+    return foundTabooWord;}
+
+
+
 app.listen(3001, () => {
     console.log('Server running');
 });
@@ -181,49 +189,39 @@ app.get('/get-top-liked-post', async(req, res) => {
     }
 })
 
-//Creates new post
-app.post('/create-post', auth, (req, res) => {
-    const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
-    const userId = req.user.userId;
+//
+app.post('/create-post', auth, async (req, res) => {
+    try {
+        const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
+        const userId = req.user.userId;
 
-    const newPost = Post({
-        authorId: userId,
-        authorFirstName: userFirstName,
-        authorLastName: userLastName,
-        authorUsername: username,
-        content: content,
-        wordCount: wordCount,
-        dateAndTime: dateAndTime,
-        keywords: keywords,
-    });
+        const containsTabooWords = checkForTabooWords(content);
 
-    newPost
-        .save()
-        .then((result) => {
-            res.status(201).send({message: "Post created sucessfully", result});
-        })
-        .catch((error) => {
-            res.status(500).send({message: "Error creating post", error});
+        if (containsTabooWords) {
+            // Log a message to the console
+            console.log('Taboo words detected in the post:', containsTabooWords);
+
+            // Additional actions you wish to perform
+            // For example, you can send an error response with the taboo words
+            return res.status(400).json({ message: "Post contains taboo words and is not allowed.", tabooWords: containsTabooWords });
+        }
+
+        const newPost = new Post({
+            authorId: userId,
+            authorFirstName: userFirstName,
+            authorLastName: userLastName,
+            authorUsername: username,
+            content: content,
+            wordCount: wordCount,
+            dateAndTime: dateAndTime,
+            keywords: keywords,
         });
-});
 
-//Adds +1 to views field in the post document in the database
-app.post('/view-post' , async(req, res) => {
-    const { postId, userId } = req.body;
-
-    try{
-        const post = await Post.findOne({ _id: postId });
-
-        if(!post) return res.status(404).json({ message: 'Post not found' });
-
-        post.views++;
-
-        await post.save();
-
-        res.json({ message: 'Post viewed successfully', views: post.views });
-    }catch(err){
-        console.error(err);
-        res.status(500).json({ message: 'An error occurred while processing your request' });
+        const result = await newPost.save();
+        res.status(201).json({ message: "Post created successfully", result });
+    } catch (error) {
+        console.error('Error in create-post route:', error);
+        res.status(500).json({ message: "Error creating post", error });
     }
 });
 
