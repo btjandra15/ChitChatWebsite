@@ -64,6 +64,21 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         require: true,
         default: [],
+    },
+    profilePictureUrl: {
+        type: String,
+        required: false, 
+        default: '' 
+    },
+    bannerUrl: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    bio: {
+        type: String,
+        required: false,
+        default: ''
     }
 });
 

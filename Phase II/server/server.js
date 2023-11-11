@@ -76,6 +76,34 @@ app.get('/get-all-users', (req, res) => {
         });
 });
 
+//Fetch user profile details
+app.get('/api/user/profile/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    User.findById(userId)
+        .then(user => {
+            if (!user) return res.status(404).json({ message: "User not found." });
+
+            res.status(200).json(user);
+        })
+        .catch(error => {
+            res.status(500).json({ message: `Error ${error.message}` });
+        });
+});
+
+
+//Fetch current user posts
+app.get('/api/posts/user/:userId', async (req, res) => {
+    try {
+        const posts = await Post.find({ authorId: req.params.userId });
+        res.json(posts);
+    } catch (error) {
+        res.status(500).send('Server error');
+    }
+});
+
+
+
 //Gets a specific user by ID
 app.get('/get-user', auth, (req, res) => {
     const userId = req.user.userId;
