@@ -13,14 +13,40 @@ const nodemailer = require('nodemailer');
 dotenv.config();
 app.use(express.json());
 app.use(cors());
+
+const updateCollection = async() => {
+    try{
+        const users = await User.find();
+        const posts = await Post.find();
+
+        for(const user of users){
+            await user.save();
+        }
+
+        for(const post of posts){
+            await post.save();
+        }
+
+        console.log("Users updated successfully | Posts updated successfully");
+    }catch(err){
+        console.error("Error updating collection", err);
+    }finally{
+        mongoose.connection.close();
+    }
+};
+
 mongoose.connect(process.env.MONGODB_URI);
+
+//THIS FUNCTION IS TO UPDATE THE USER'S DOUCEMENT WITH THE MOST RECENT USER SCHEMA
+//USE THIS COMMAND IF YOU NEED TO UPDATE THE USER DOUCEMENTS 
+// updateCollection();
 
 const checkForTabooWords = (content) => {
     const tabooWords = ['fuck', 'word2', 'word3'];
     const contentWithoutSpaces = content.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
     const foundTabooWord = tabooWords.some(word => contentWithoutSpaces.includes(word));
     return foundTabooWord;
-}
+};
 
 const generateRandomPassword = (length = 20) => {
     const charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
@@ -32,7 +58,7 @@ const generateRandomPassword = (length = 20) => {
     }
 
     return password;
-}
+};
 
 app.listen(3001, () => {
     console.log(`Server running`);
@@ -97,7 +123,6 @@ app.post('/register', (req, res) => {
 
             user.save()
                 .then((result) => {
-                    const transporter = nodemailer.
 
                     res.status(201).send({message: "User created Successfully", result});
                 })

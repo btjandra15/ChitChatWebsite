@@ -10,7 +10,7 @@ function AccountOptions() {
     })
     .then((res) => res.json())
     .then((data) => {
-        console.log(data, "userData")
+        // console.log(data, "userData")
         setData(data)
     })
   }, [])
@@ -41,10 +41,11 @@ function AccountOptions() {
   return (
       <div className="boxed-section">
         <div className="username-container">
-          {data.map((user) => (
-            <div className="username-row" key={user.id}>
+          {data.map((user, id) => (
+            <div className="username-row" key={id}>
               <div className="username">{user.username}</div>
               <div className="usertype">{user.userType}</div>
+
               <button
                 className="delete-button"
                 onClick={() => handleDeleteAccount(user._id, user.username)}

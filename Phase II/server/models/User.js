@@ -30,6 +30,11 @@ const UserSchema = new mongoose.Schema({
         require: true,
         default: false,
     },
+    adminUser: {
+        type: Boolean,
+        require: true,
+        default: false,
+    },
     subscribersList: {
         type: Array,
         require: true,
