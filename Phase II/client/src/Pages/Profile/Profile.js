@@ -122,26 +122,26 @@ const Profile = () => {
               console.log(err);
             })
     }, [])
-    return(
+    return (
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
-            {/* NAVBAR CONTENT */}
-            <Navbar loggedIn={loggedIn} userData={userData}/>
-            <Leftbar loggedIn={loggedIn} userData={userData} logout={logout}/>
-
+            <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
+    
             <div className="main-content">
-                <Leftbar /* props */ />
+                <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
+    
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
-                        {loggedIn ? <ProfileTimeline userData={userData} /> : <div></div>}
-                        {postData.map((post, index) => {
-                            return <PostComponent post={post} key={index}/>
-                        })}
+                        {loggedIn && <ProfileTimeline userData={userData} />}
+                        {postData.map((post, index) => (
+                            <PostComponent post={post} key={index} />
+                        ))}
                     </div>
                 </div>
-                <Rightbar /* props */ />
+    
+                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData} />
             </div>
         </div>
-    )
+    );    
 };
 
 export default Profile;
