@@ -1,5 +1,10 @@
 @import '../../styles.scss';
 
+* {
+    margin: 0;
+    padding: 0;
+}
+
 .home{
     display: block;
 }
@@ -9,11 +14,6 @@
         background-color: themed('bg');
         display: flex;
         color: themed("textColor");
-        height: 100vh;
+        height: 100%;
     }
-}
-
-* {
-    margin: 0;
-    padding: 0;
 }
