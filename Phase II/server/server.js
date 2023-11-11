@@ -293,3 +293,15 @@ app.put('/update-post/:postId', async(req, res) => {
 });
 
 // Post Endpoints
+
+app.post("/delete-user", async (req, res) => {
+    const { userId } = req.body;
+    try {
+        const result = await User.deleteOne({ _id: userId });
+        console.log(result);
+        res.send({ status: "Ok", data: "Deleted" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ status: "Error", data: "Failed to delete user" });
+    }
+});
