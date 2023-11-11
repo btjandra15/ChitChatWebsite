@@ -8,6 +8,7 @@ const User = require('./models/User.js');
 const Post = require('./models/Post.js');
 const dotenv = require('dotenv');
 const app = express();
+const nodemailer = require('nodemailer');
 
 dotenv.config();
 app.use(express.json());
@@ -18,12 +19,23 @@ const checkForTabooWords = (content) => {
     const tabooWords = ['fuck', 'word2', 'word3'];
     const contentWithoutSpaces = content.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
     const foundTabooWord = tabooWords.some(word => contentWithoutSpaces.includes(word));
-    return foundTabooWord;}
+    return foundTabooWord;
+}
 
+const generateRandomPassword = (length = 20) => {
+    const charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    let password = "";
 
+    for(let i = 0; i < length; i++){
+        const randomIndex = Math.floor(Math.random() * charSet.length);
+        password += charSet.charAt(randomIndex);
+    }
+
+    return password;
+}
 
 app.listen(3001, () => {
-    console.log('Server running');
+    console.log(`Server running`);
 });
 
 // User Endpoints
@@ -67,36 +79,61 @@ app.get('/get-trendy-users', async(req, res) => {
 //Creates new user
 app.post('/register', (req, res) => {
     const { firstName, lastName, username, email, password, selectedUserType } = req.body;
+    const randomPassword = generateRandomPassword();
 
     User.findOne({ $or: [{ email: email }, { username: username }]})
         .then((existingUser) => {
             if(existingUser) return res.status(409).send({ message: "User with the following email & user already exists" });
 
-            bcrypt
-                .hash(password, 10)
-                .then((hashedPassword) => {
-                    const user = new User({
-                        firstName: firstName,
-                        lastName: lastName,
-                        username: username,
-                        email: email,
-                        password: hashedPassword,
-                        userType: selectedUserType,
-                    });
-
-                    user
-                        .save()
-                        .then((result) => {
-                            res.status(201).send({message: "User created Successfully", result});
-                        })
-                        .catch((error) => {
-                            res.status(500).send({message: "Error creating user", error});
-                        });
-            })
-            .catch((e) => {
-                res.status(500).send({message: "Password not hashed succesfully", e})
+            const user = new User({
+                firstName: firstName,
+                lastName: lastName,
+                username: username,
+                email: email,
+                password: randomPassword,
+                userType: selectedUserType,
+                balance: 5000
             });
+
+            user.save()
+                .then((result) => {
+                    const transporter = nodemailer.
+
+                    res.status(201).send({message: "User created Successfully", result});
+                })
+                .catch((error) => {
+                    res.status(500).send({message: "Error creating user", error});
+                });
         });
+
+    // User.findOne({ $or: [{ email: email }, { username: username }]})
+    //     .then((existingUser) => {
+    //         if(existingUser) return res.status(409).send({ message: "User with the following email & user already exists" });
+
+    //         bcrypt
+    //             .hash(password, 10)
+    //             .then((hashedPassword) => {
+    //                 const user = new User({
+    //                     firstName: firstName,
+    //                     lastName: lastName,
+    //                     username: username,
+    //                     email: email,
+    //                     password: hashedPassword,
+    //                     userType: selectedUserType,
+    //                 });
+
+    //                 user.save()
+    //                     .then((result) => {
+    //                         res.status(201).send({message: "User created Successfully", result});
+    //                     })
+    //                     .catch((error) => {
+    //                         res.status(500).send({message: "Error creating user", error});
+    //                     });
+    //         })
+    //         .catch((e) => {
+    //             res.status(500).send({message: "Password not hashed succesfully", e})
+    //         });
+    //     });
 });
 
 //Logs user into the website
@@ -139,6 +176,19 @@ app.post('/login', (req, res) => {
         });
 });
 
+//Deletes user
+app.post("/delete-user", async (req, res) => {
+    const { userId } = req.body;
+    try {
+        const result = await User.deleteOne({ _id: userId });
+        console.log(result);
+        res.send({ status: "Ok", data: "Deleted" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ status: "Error", data: "Failed to delete user" });
+    }
+});
+
 //Updates user's fields based on ID
 app.put('/update-user/:userId', async(req, res) => {
     const userId = req.params.userId;
@@ -158,6 +208,8 @@ app.put('/update-user/:userId', async(req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
+
+
 });
 
 // User Endpoints
@@ -293,15 +345,3 @@ app.put('/update-post/:postId', async(req, res) => {
 });
 
 // Post Endpoints
-
-app.post("/delete-user", async (req, res) => {
-    const { userId } = req.body;
-    try {
-        const result = await User.deleteOne({ _id: userId });
-        console.log(result);
-        res.send({ status: "Ok", data: "Deleted" });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ status: "Error", data: "Failed to delete user" });
-    }
-});

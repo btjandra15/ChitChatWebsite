@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './AccountOptions.scss'
 
 function AccountOptions() {
-    const [data, setData] = useState([])
+  const [data, setData] = useState([])
+  
   useEffect(() => {
     fetch("http://localhost:3001/get-all-users", {
         method: "GET",

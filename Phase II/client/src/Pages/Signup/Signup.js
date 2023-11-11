@@ -88,13 +88,13 @@ const Signup = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <input
+          {/* <input
             type="password"
             className="form-input"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
+          /> */}
 
           <label htmlFor='dropdown'>Select a User Type</label>
           <select id='dropdown' value={selectedUserType} onChange={handleSelectUserType}>
