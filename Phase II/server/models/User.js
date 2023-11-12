@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    passwordReset: {
+        type: Boolean,
+        default: false,
+    },
     userType: {
         type: String,
         require: true,
