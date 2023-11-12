@@ -7,12 +7,26 @@ const auth = require('./auth.js');
 const User = require('./models/User.js');
 const Post = require('./models/Post.js');
 const dotenv = require('dotenv');
+const path = require('path');
+const reactViews = require('express-react-views');
 const app = express();
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
+// Generate a random secure string (32 bytes)
+const JWT_SECRET = crypto.randomBytes(32).toString('hex');
+
 
 dotenv.config();
 app.use(express.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+
+// Set up the view engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jsx');
+app.engine('jsx', reactViews.createEngine());
+
 
 const updateCollection = async() => {
     try{
@@ -91,18 +105,25 @@ app.get('/api/user/profile/:userId', (req, res) => {
         });
 });
 
-
-//Fetch current user posts
-app.get('/api/posts/user/:userId', async (req, res) => {
+// Gets users who haven't set their passwords
+app.get('/users-not-reset-password', async (req, res) => {
     try {
-        const posts = await Post.find({ authorId: req.params.userId });
-        res.json(posts);
-    } catch (error) {
-        res.status(500).send('Server error');
+        const usersNotResetPassword = await User.find({ passwordReset: false });
+        res.status(200).json(usersNotResetPassword);
+    } catch (err) {
+        res.status(500).json({ message: `Error: ${err.message}` });
     }
 });
 
-
+// Gets users who have set their passwords
+app.get('/users-reset-password', async (req, res) => {
+    try {
+        const usersResetPassword = await User.find({ passwordReset: true });
+        res.status(200).json(usersResetPassword);
+    } catch (err) {
+        res.status(500).json({ message: `Error: ${err.message}` });
+    }
+});
 
 //Gets a specific user by ID
 app.get('/get-user', auth, (req, res) => {
@@ -159,6 +180,61 @@ app.post('/register', (req, res) => {
                 });
         });
 
+// Sends reset password link to a specific user who hasn't reset their password
+app.post('/send-reset-link-to-user/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find the specific user who hasn't reset their password
+        const user = await User.findOne({ _id: userId, passwordReset: false });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found or has already reset the password' });
+        }
+
+        // Generate a reset link for the user
+        const secret = JWT_SECRET + user.password;
+        const token = jwt.sign({ email: user.email, id: user._id }, secret, {
+            expiresIn: '5m',
+        });
+        const link = `http://localhost:3001/reset-password/${user._id}/${token}`;
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS
+            }
+          });
+          
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: user.email,
+            subject: 'Reset Your Password',
+            text: `Click the following link to reset your password: ${link}`
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+        console.log(`Reset link sent to ${user.email}: ${link}`);
+
+    //     res.status(200).json({ message: 'Reset link sent successfully' });
+    // } catch (err) {
+    //     res.status(500).json({ message: `Error: ${err.message}` });
+    // }
+        res.send({ status: "Ok", data: "Reset link sent successfully" });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ status: "Error", data: "Failed to send reset link" });
+        }
+});
+
     // User.findOne({ $or: [{ email: email }, { username: username }]})
     //     .then((existingUser) => {
     //         if(existingUser) return res.status(409).send({ message: "User with the following email & user already exists" });
@@ -188,6 +264,49 @@ app.post('/register', (req, res) => {
     //         });
     //     });
 });
+
+app.get("/reset-password/:id/:token", async (req, res) => {
+    const { id, token } = req.params;
+    console.log(req.params);
+    const user = await User.findOne({ _id: id });
+    const secret = JWT_SECRET + user.password;
+    try {
+        const verify = jwt.verify(token, secret);
+        res.render("resetPassword", { email: verify.email, status:"Not Verified" });
+    } catch (error) {
+        console.log(error);
+        res.send("Not Verified");
+    }
+})
+
+app.post("/reset-password/:id/:token", async (req, res) => {
+    const { id, token } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findOne({ _id: id });
+    const secret = JWT_SECRET + user.password;
+    try {
+        const verify = jwt.verify(token, secret);
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        await User.updateOne(
+            {
+                _id: id,
+            },
+            {
+                $set: {
+                    password: encryptedPassword,
+                    passwordReset: true,
+                },
+            }
+        );
+        res.json({ status: "Password Set" });
+
+        res.render("resetPassword", { email: verify.email, status:"Verified" });
+    } catch (error) {
+        console.log(error);
+        res.send("Not Verified");
+    }
+})
 
 //Logs user into the website
 app.post('/login', (req, res) => {
@@ -394,6 +513,16 @@ app.put('/update-post/:postId', async(req, res) => {
     }catch(err){
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+//Fetch current user posts
+app.get('/api/posts/user/:userId', async (req, res) => {
+    try {
+        const posts = await Post.find({ authorId: req.params.userId });
+        res.json(posts);
+    } catch (error) {
+        res.status(500).send('Server error');
     }
 });
 
