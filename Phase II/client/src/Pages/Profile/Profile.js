@@ -77,15 +77,22 @@ const Profile = () => {
                 console.log(err);
             });
 
-        //Checks the current logged in user
-        axios(loggedInUserConfig)
-            .then((res) => {
-                setLoggedIn(true);
-                setUserData(res.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+         // Checks the current logged in user
+         axios(loggedInUserConfig)
+         .then((res) => {
+             setLoggedIn(true);
+             setUserData(res.data);
+
+             // Fetch posts for the logged-in user
+             axios.get(`http://localhost:3001/api/posts/user/${res.data._id}`)
+                 .then(response => {
+                     setPostData(response.data);
+                 })
+                 .catch(error => console.error('Error fetching user posts', error));
+         })
+         .catch((error) => {
+             console.log(error);
+         });
 
         //Gets all post & checks to see if they meet the trendy requirements
         axios(postConfig)
@@ -115,33 +122,26 @@ const Profile = () => {
               console.log(err);
             })
     }, [])
-    return(
+    return (
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
-            {/* NAVBAR CONTENT */}
-            <Navbar loggedIn={loggedIn} userData={userData}/>
-
+            <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
+    
             <div className="main-content">
-                {/* LEFTBAR CONTENT */}
-                <Leftbar loggedIn={loggedIn} userData={userData} logout={logout}/>
-
-                {/* MIDDLE CONTENT */}
+                <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
+    
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
-                        {loggedIn ? <ProfileTimeline/> : <div></div>}
-
-                        {postData.map((post, index) => {
-                            return(
-                                <PostComponent post={post} key={index}/>
-                            )
-                        })}
+                        {loggedIn && <ProfileTimeline userData={userData} />}
+                        {postData.map((post, index) => (
+                            <PostComponent post={post} key={index} />
+                        ))}
                     </div>
                 </div>
-
-                {/* RIGHT CONTENT */}
-                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData}/>
+    
+                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData} />
             </div>
         </div>
-    )
+    );    
 };
 
 export default Profile;

@@ -62,8 +62,8 @@ const Rightbar = ({loggedIn, userData, postData, allUserData}) => {
 
                     {mostLikedPosts.map((post, index) => {
                         return(
-                            <div className="most-liked-post">
-                                <div className="post-info" key={index}>
+                            <div className="most-liked-post" key={index}>
+                                <div className="post-info">
                                     <p className='authorName'>{post.authorFirstName} {post.authorLastName}</p>
                                                 
                                     <span className='post-content'>{post.content}</span>

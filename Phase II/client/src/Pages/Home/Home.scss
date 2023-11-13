@@ -16,4 +16,12 @@
         color: themed("textColor");
         height: 100%;
     }
+    .middleBar {
+        height: 100vh;
+        overflow-y: auto;
+    }
+    .middleBar::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
 }

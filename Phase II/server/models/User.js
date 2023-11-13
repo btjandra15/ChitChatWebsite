@@ -21,11 +21,20 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    passwordReset: {
+        type: Boolean,
+        default: false,
+    },
     userType: {
         type: String,
         require: true,
     },
     trendyUser: {
+        type: Boolean,
+        require: true,
+        default: false,
+    },
+    adminUser: {
         type: Boolean,
         require: true,
         default: false,
@@ -59,6 +68,21 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         require: true,
         default: [],
+    },
+    profilePictureUrl: {
+        type: String,
+        required: false, 
+        default: '' 
+    },
+    bannerUrl: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    bio: {
+        type: String,
+        required: false,
+        default: ''
     }
 });
 
