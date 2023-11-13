@@ -431,7 +431,7 @@ app.post('/create-post', auth, async (req, res) => {
             authorFirstName: userFirstName,
             authorLastName: userLastName,
             authorUsername: username,
-            content: sanitizedContent, // Save the sanitized content
+            content: content, // Save the sanitized content
             wordCount: wordCount,
             dateAndTime: dateAndTime,
             keywords: keywords,

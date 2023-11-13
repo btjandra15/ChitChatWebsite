@@ -91,39 +91,81 @@ const CreatePost = () => {
         return mediaWordCount;
     };
 
+
     const submitPost = () => {
-        if(!warning){
-            const configuration = {
-                method: "POST",
-                url: `http://localhost:3001/create-post`,
-                data: {
-                    content: text,
-                    userFirstName: userData.firstName,
-                    userLastName: userData.lastName,
-                    username: userData.username,
-                    wordCount: totalWordCount,
-                    dateAndTime: currentDateTimeString,
-                    keywords: selectKeyWords,
-                },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+        // Define your list of taboo words
+        const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
     
-            axios(configuration)
-                .then((res) => {
-                    console.log(res);
-                    alert("Successfully made a post");
-                })
-                .catch((err) => {
-                    err = new Error();
+        // Function to replace taboo words with asterisks
+        const replaceTabooWords = (text, tabooWords) => {
+            let tabooCount = 0;
+            let processedText = text;
     
-                    console.log(err);
-                });
-        }else{
-            alert("Lower the amount of characters you have!");
+            tabooWords.forEach(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                if (processedText.match(regex)) {
+                    tabooCount++;
+                    if (tabooCount <= 2) {
+                        processedText = processedText.replace(regex, '****');
+                    }
+                }
+            });
+    
+            return { processedText, tabooCount };
+        };
+    
+        // Process the text to handle taboo words
+        const { processedText, tabooCount } = replaceTabooWords(text, tabooWords);
+    
+        // Check if there are more than two taboo words
+        if (tabooCount > 2) {
+            alert("Post contains too many taboo words!");
+            return;
         }
-    }
+    
+        // Check for word count limit
+        if (warning) {
+            alert("Lower the amount of characters you have!");
+            return;
+        }
+    
+        // Configuration for the POST request
+        const configuration = {
+            method: "POST",
+            url: `http://localhost:3001/create-post`,
+            data: {
+                content: processedText, // Sending the processed text
+                userFirstName: userData.firstName,
+                userLastName: userData.lastName,
+                username: userData.username,
+                wordCount: totalWordCount,
+                dateAndTime: currentDateTimeString,
+                keywords: selectKeyWords,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    
+        // Making the POST request to submit the post
+        axios(configuration)
+            .then((res) => {
+                console.log(res);
+                alert("Successfully made a post");
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 400 && err.response.data.tabooWords) {
+                    // Handle taboo words error
+                    const tabooWords = err.response.data.tabooWords;
+                    alert(`Post contains taboo words: ${tabooWords}`);
+                } else {
+                    // Handle other errors
+                    console.log(err);
+                    alert("Error creating post");
+                }
+            });
+    };
+    
 
     useEffect(() => {
         const configuration = {
