@@ -16,11 +16,22 @@ mongoose.connect(process.env.MONGODB_URI);
 
 const checkForTabooWords = (content) => {
     const tabooWords = ['fuck', 'word2', 'word3'];
-    const contentWithoutSpaces = content.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
-    const foundTabooWord = tabooWords.some(word => contentWithoutSpaces.includes(word));
-    return foundTabooWord;}
+    let contentWithoutSpaces = content.toLowerCase(); // Convert to lowercase
+    let foundTabooWord = false;
+    let sanitizedContent = contentWithoutSpaces; // Initialize sanitizedContent
 
+    tabooWords.forEach(word => {
+        const regex = new RegExp(word, 'gi'); // Create a case-insensitive regular expression
+        sanitizedContent = sanitizedContent.replace(regex, '*'); // Replace taboo word with asterisk
+        if (sanitizedContent !== contentWithoutSpaces) {
+            foundTabooWord = true;
+        }
+    });
 
+    const asteriskCount = (sanitizedContent.match(/\*/g) || []).length;
+
+    return { foundTabooWord, sanitizedContent, contentWithoutSpaces, asteriskCount };
+};
 
 app.listen(3001, () => {
     console.log('Server running');
@@ -194,15 +205,12 @@ app.post('/create-post', auth, async (req, res) => {
         const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
         const userId = req.user.userId;
 
-        const containsTabooWords = checkForTabooWords(content);
+        const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
 
-        if (containsTabooWords) {
-            // Log a message to the console
-            console.log('Taboo words detected in the post:', containsTabooWords);
-
+        if (foundTabooWord && asteriskCount > 2) {
             // Additional actions you wish to perform
             // For example, you can send an error response with the taboo words
-            return res.status(400).json({ message: "Post contains taboo words and is not allowed.", tabooWords: containsTabooWords });
+            return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
         }
 
         const newPost = new Post({
@@ -210,7 +218,7 @@ app.post('/create-post', auth, async (req, res) => {
             authorFirstName: userFirstName,
             authorLastName: userLastName,
             authorUsername: username,
-            content: content,
+            content: sanitizedContent, // Save the sanitized content
             wordCount: wordCount,
             dateAndTime: dateAndTime,
             keywords: keywords,
@@ -223,6 +231,8 @@ app.post('/create-post', auth, async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
+
+
 
 //Adds +1 to likes field in the post document in the database
 app.post('/like-post', async(req, res) => {

@@ -92,7 +92,7 @@ const CreatePost = () => {
     };
 
     const submitPost = () => {
-        if (!warning) {
+        if(!warning){
             const configuration = {
                 method: "POST",
                 url: `http://localhost:3001/create-post`,
@@ -116,21 +116,14 @@ const CreatePost = () => {
                     alert("Successfully made a post");
                 })
                 .catch((err) => {
-                    if (err.response && err.response.status === 400 && err.response.data.tabooWords) {
-                        // Handle taboo words error
-                        const tabooWords = err.response.data.tabooWords;
-                        alert(`Post contains taboo words: ${tabooWords}`);
-                    } else {
-                        // Handle other errors
-                        console.log(err);
-                        alert("Error creating post");
-                    }
+                    err = new Error();
+    
+                    console.log(err);
                 });
-        } else {
+        }else{
             alert("Lower the amount of characters you have!");
         }
     }
-    
 
     useEffect(() => {
         const configuration = {
