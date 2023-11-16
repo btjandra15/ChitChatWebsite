@@ -111,15 +111,15 @@ padding: 10px;
   border-radius: 50px !important;
   font-size: 16px !important;
   font-weight: 700 !important;
-  background: grey !important;
+  background: blue !important;
   color: #fff !important;
   cursor: pointer !important;
   transition: background 0.2s ease !important;
 }
 
 .post_bottom > button.active{
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 0.5;
+  // pointer-events: auto;
 }
 .post_bottom > button:hover{
   opacity: 0.5;

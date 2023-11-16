@@ -233,36 +233,7 @@ app.post('/send-reset-link-to-user/:userId', async (req, res) => {
             console.log(error);
             res.status(500).send({ status: "Error", data: "Failed to send reset link" });
         }
-});
-
-    // User.findOne({ $or: [{ email: email }, { username: username }]})
-    //     .then((existingUser) => {
-    //         if(existingUser) return res.status(409).send({ message: "User with the following email & user already exists" });
-
-    //         bcrypt
-    //             .hash(password, 10)
-    //             .then((hashedPassword) => {
-    //                 const user = new User({
-    //                     firstName: firstName,
-    //                     lastName: lastName,
-    //                     username: username,
-    //                     email: email,
-    //                     password: hashedPassword,
-    //                     userType: selectedUserType,
-    //                 });
-
-    //                 user.save()
-    //                     .then((result) => {
-    //                         res.status(201).send({message: "User created Successfully", result});
-    //                     })
-    //                     .catch((error) => {
-    //                         res.status(500).send({message: "Error creating user", error});
-    //                     });
-    //         })
-    //         .catch((e) => {
-    //             res.status(500).send({message: "Password not hashed succesfully", e})
-    //         });
-    //     });
+    });
 });
 
 app.get("/reset-password/:id/:token", async (req, res) => {
@@ -387,7 +358,7 @@ app.put('/update-user/:userId', async(req, res) => {
 // User Endpoints
 
 // Post Endpoints
-//Gets all posts]
+//Gets all posts
 app.get('/get-post', async(req, res) => {
     try {
         // Use the `find` method and `await` the result
@@ -444,8 +415,6 @@ app.post('/create-post', auth, async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
-
-
 
 //Adds +1 to likes field in the post document in the database
 app.post('/like-post', async(req, res) => {
