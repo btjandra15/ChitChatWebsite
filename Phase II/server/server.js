@@ -493,5 +493,4 @@ app.get('/api/posts/user/:userId', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 // Post Endpoints
