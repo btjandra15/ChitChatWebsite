@@ -5,9 +5,11 @@ import axios from 'axios';
 import { DarkModeContext } from "../../context/darkModeContext";
 import Navbar from "../../components/Navbar/Navbar.js"
 import Leftbar from "../../components/LeftBar/Leftbar";
-import ProfileTimeline from "./components/ProfileTimeline.js"; // New component for profile timeline
 import Rightbar from "../../components/RightBar/Rightbar.js";
 import PostComponent from "../../components/Post/PostComponent";
+
+// New component for profile timeline
+import ProfileTimeline from "./components/ProfileTimeline/ProfileTimeline.js";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");

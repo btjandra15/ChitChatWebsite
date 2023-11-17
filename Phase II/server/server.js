@@ -12,21 +12,18 @@ const reactViews = require('express-react-views');
 const app = express();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const userController = require( './controllers/userController');
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = crypto.randomBytes(32).toString('hex');
 
-
 dotenv.config();
-app.use(express.json());
-app.use(cors());
-app.use(express.urlencoded({ extended: false }));
+app.use(cors(), express.json(), express.urlencoded({ extended: false }));
 
 // Set up the view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactViews.createEngine());
-
 
 const updateCollection = async() => {
     try{
@@ -317,6 +314,9 @@ app.post('/login', (req, res) => {
                 e
             });
         });
+});
+
+app.post('/upload-profile-pic', userController.setProfilePic, async(req, res) => {
 });
 
 //Deletes user
