@@ -7,9 +7,35 @@ import Profile from './Pages/Profile/Profile';
 import Trending from './Pages/Trending/Trending';
 import Payment from './Pages/Payment/Payment';
 import Settings from './Pages/Settings/Settings';
-import Posting from './Pages/Postings/Posting';
+import Cookies from 'universal-cookie';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import JobPostings from './Pages/Postings/JobPostings';
+
+const cookies = new Cookies();
+const token = cookies.get("TOKEN");
 
 function App() {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const loggedInUserConfig = {
+      method: "GET",
+      url: `http://localhost:3001/get-user`,
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios(loggedInUserConfig)
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+  }, []);
+
   return (
       <div className="app">
           <Routes>
@@ -26,13 +52,13 @@ function App() {
             <Route path='/login' element={<Login/>}/> 
 
             {/*Profile Route*/}
-            <Route path='/profile/:id' element={<Profile/>}/> 
+            <Route path={`/profile/${userData ? userData.username : null}`} element={<Profile/>}/> 
 
             {/*Trending Route*/}
             <Route path='/trending' element={<Trending/>}/> 
 
             {/*Postings Route*/}
-            <Route path='/postings' element={<Posting/>}/> 
+            <Route path='/job-postings' element={<JobPostings/>}/> 
 
             {/*Payment Route*/}
             <Route path='/payment' element={<Payment/>}/> 

@@ -1,0 +1,27 @@
+@import '../../styles.scss';
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.home{
+    display: block;
+}
+
+.main-content{
+    @include themify($themes){
+        background-color: themed('bg');
+        display: flex;
+        color: themed("textColor");
+        height: 100%;
+    }
+    .middleBar {
+        height: 100vh;
+        overflow-y: auto;
+    }
+    .middleBar::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+}

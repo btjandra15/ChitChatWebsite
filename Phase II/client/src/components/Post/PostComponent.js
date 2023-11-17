@@ -7,6 +7,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import TestImage from '../../images/cityBackground.jpg';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -26,6 +27,9 @@ const PostComponent = ({post, index}) => {
 
             return updatedData;
           })
+        })
+        .catch((err) => {
+          console.error("User already viewed this post");
         })
     }
 
@@ -54,6 +58,29 @@ const PostComponent = ({post, index}) => {
           console.log(err);
         });
     }
+
+    const followPost = (postId, userId) => {
+      const followPostConfig = {
+        method: "POST",
+        url: `http://localhost:3001/follow-post`,
+        data: {
+          postId: postId,
+          userId: userId,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+      axios(followPostConfig)
+        .then(() => {
+          alert("You have successfully followed this post!");
+        })
+        .catch((err) => {
+          alert("You already followed this post!");
+          console.log(err);
+        })
+    } 
 
     const reportPost = (postId, userId) => {
       if (postData.some(post => post._id === postId && post.userReported.includes(userId))) {
@@ -85,6 +112,33 @@ const PostComponent = ({post, index}) => {
       console.log("Disliked!");
     }
 
+    const deletePost = async(postId) => {
+      try{
+        if(userData.adminUser){
+          const response = await fetch(`http://localhost:3001/delete-post/${postId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          });
+  
+          if (!response.ok) {
+            // Handle non-successful responses (e.g., show an error message)
+            const errorData = await response.json();
+            console.error('Error deleting post:', errorData.message);
+          } else {
+              // Handle successful response (e.g., update UI)
+              console.log('Post deleted successfully');
+          }
+        }else{
+          console.error("NO PERMISSION");
+        }
+      }catch(error){
+        console.error(error);
+      }
+    }
+
     useEffect(() => {
       const userConfig = {
         method: 'GET',
@@ -104,7 +158,7 @@ const PostComponent = ({post, index}) => {
     }, [])
 
     return(
-        <div className='post' onClick={() => openPost(post._id, userData._id)}>
+        <div className='post'>
           {/* <div className='Avatar_symbol'>
             <Avatar/>
           </div>  */}
@@ -114,12 +168,15 @@ const PostComponent = ({post, index}) => {
               <div className='text-name'>
                 <h3>{post.authorFirstName} {post.authorLastName}</h3>
                 <h3 className='username'>@{post.authorUsername}</h3>
-                <button>Follow</button>
+                <button onClick={() => followPost(post._id, userData._id)}>Follow</button>
                 <button onClick={() => reportPost(post._id, userData._id)} className='report-button'>Report</button>
+                
+                { userData.adminUser ? <button onClick={() => deletePost(post._id)}>Delete</button> : null }
               </div>
     
-              <div className='text-description'>
-                <p>{post.content}</p>
+              <div className='text-description' onClick={() => openPost(post._id, userData._id)}>
+                <p className='post-content'>{post.content}</p>
+                {/* <img src={TestImage} alt="" className='post-image'/> */}
               </div>
             </div>
 
@@ -140,7 +197,6 @@ const PostComponent = ({post, index}) => {
 
                   <AccessTimeIcon className='icon'/>
                   <span>{post.dateAndTime}</span>
-
                 </div>
               </div>
             </div>

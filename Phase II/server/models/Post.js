@@ -68,6 +68,11 @@ const PostSchema = new mongoose.Schema({
         type: Array,
         require: true,
         default: [],
+    },
+    userViewed: {
+        type: Array,
+        require: true,
+        default: [],
     }
 });
 

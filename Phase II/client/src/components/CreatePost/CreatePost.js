@@ -91,7 +91,6 @@ const CreatePost = () => {
         return mediaWordCount;
     };
 
-
     const submitPost = () => {
         // Define your list of taboo words
         const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
@@ -120,12 +119,31 @@ const CreatePost = () => {
         // Check if there are more than two taboo words
         if (tabooCount > 2) {
             alert("Post contains too many taboo words!");
+
+            const warningCount = userData.warningCount;
+
+            axios.put(`http://localhost:3001/update-user/${userData._id}`, { fieldToUpdate: 'warningCount', newValue: warningCount + 1 })
+                .then(() => {
+                    console.log("Successfuly updated user");
+                })
+                .catch((err) => {
+                    console.error(`Error updating User: ${err}`);
+                });
+
             return;
         }
     
         // Check for word count limit
         if (warning) {
             alert("Lower the amount of characters you have!");
+            return;
+        }
+
+        if(text === ""){
+            alert("Please enter a caption!");
+            return;
+        }else if(mediaFiles === null){
+            alert("Please enter an image!");
             return;
         }
     
@@ -166,7 +184,6 @@ const CreatePost = () => {
             });
     };
     
-
     useEffect(() => {
         const configuration = {
             method: "GET",
