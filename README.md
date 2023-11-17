@@ -20,9 +20,9 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 ## Each Message Features
 - [x] Carry the author. time, date, and up to 3 keywords chosen by the author
 - [x] Show the number of times others read it, number of likes/dislikes, and number of compliants
-- [ ] If there are 1 or 2 tabooed words (Taboo word list is managed by SU), the words are changed to corresponding number of asterisks
-  - [ ] If > 2 asterisks, the message is blocked automatically and the author is warned once automatically
-- [ ] Any messages with >10 reads, #likes-#dislikes > 3 will be promoted to "trendy post" shown in the "trending tab"
+- [x] If there are 1 or 2 tabooed words (Taboo word list is managed by SU), the words are changed to corresponding number of asterisks
+  - [x] If > 2 asterisks, the message is blocked automatically and the author is warned once automatically
+- [x] Any messages with >10 reads, #likes-#dislikes > 3 will be promoted to "trendy post" shown in the "trending tab"
 
 ## Required Features
 - [x] When a surfer visit the system, the top 3 most liked messages and the top 3 trendy-users will be featured in the top page.
