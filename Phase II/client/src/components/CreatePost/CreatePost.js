@@ -105,7 +105,7 @@ const CreatePost = () => {
                 if (processedText.match(regex)) {
                     tabooCount++;
                     if (tabooCount <= 2) {
-                        processedText = processedText.replace(regex, '****');
+                        processedText = processedText.replace(regex, '*');
                     }
                 }
             });
