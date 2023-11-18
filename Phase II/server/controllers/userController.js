@@ -6,12 +6,6 @@ const User = require('../models/User');
 const bucketName = 'chit-chat-website-images'
 const bucketRegion = 'us-east-1';
 
-const s3 = new aws.S3({
-    accessKeyId: "AKIA5IQUIWIGKRA5DD5L",
-    secretAccessKey: "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",
-    region: bucketRegion,
-});
-
 const upload = (bucketName) =>
   multer({
     storage: multerS3({
