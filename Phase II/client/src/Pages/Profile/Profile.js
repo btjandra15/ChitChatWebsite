@@ -124,6 +124,7 @@ const Profile = () => {
               console.log(err);
             })
     }, [])
+    
     return (
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
             <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />

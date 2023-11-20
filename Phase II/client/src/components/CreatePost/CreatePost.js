@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "./CreatePost.scss";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import CropperImage from '../CropperImage/CropperImage';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -25,6 +26,8 @@ const CreatePost = () => {
     const [ totalWordCount, setTotalWordCount ] = useState();
     const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
     const [ inputValue, setInputValue ] = useState('');
+    const [ image, setImage ] = useState(null);
+    const inputRef = useRef(null);
 
     const handleTextChange = (inputText) => {
         setText(inputText);
@@ -54,16 +57,17 @@ const CreatePost = () => {
         }
     }
 
-    const handleFileUpload = (event) => {
-        const files = event.target.files;
+    const onSelectFile = (e) => {
+        if(e.target.files && e.target.files.length > 0){
+            const reader = new FileReader()
 
-        // Filter only image and video files
-        const filteredFiles = Array.from(files).filter(file =>
-            file.type.includes('image/') || file.type.includes('video/')
-        );
+            reader.readAsDataURL(e.target.files[0]);
 
-        setMediaFiles(filteredFiles);
-        updateWordCount();
+            reader.addEventListener('load', () => {
+                console.log(reader.result);
+                setImage(reader.result);
+            })
+        }
     };
 
     const updateWordCount = () => {
@@ -91,7 +95,7 @@ const CreatePost = () => {
         return mediaWordCount;
     };
 
-    const submitPost = () => {
+    const submitPost = async() => {
         // Define your list of taboo words
         const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
     
@@ -142,46 +146,49 @@ const CreatePost = () => {
         if(text === ""){
             alert("Please enter a caption!");
             return;
-        }else if(mediaFiles === null){
-            alert("Please enter an image!");
+        }
+        
+        if(!image){
+            alert("Please select an image!");
             return;
         }
+
     
-        // Configuration for the POST request
-        const configuration = {
-            method: "POST",
-            url: `http://localhost:3001/create-post`,
-            data: {
-                content: processedText, // Sending the processed text
-                userFirstName: userData.firstName,
-                userLastName: userData.lastName,
-                username: userData.username,
-                wordCount: totalWordCount,
-                dateAndTime: currentDateTimeString,
-                keywords: selectKeyWords,
-            },
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
+        // // Configuration for the POST request
+        // const configuration = {
+        //     method: "POST",
+        //     url: `http://localhost:3001/create-post`,
+        //     data: {
+        //         content: processedText, // Sending the processed text
+        //         userFirstName: userData.firstName,
+        //         userLastName: userData.lastName,
+        //         username: userData.username,
+        //         wordCount: totalWordCount,
+        //         dateAndTime: currentDateTimeString,
+        //         keywords: selectKeyWords,
+        //     },
+        //     headers: {
+        //         Authorization: `Bearer ${token}`,
+        //     },
+        // };
     
-        // Making the POST request to submit the post
-        axios(configuration)
-            .then((res) => {
-                console.log(res);
-                alert("Successfully made a post");
-            })
-            .catch((err) => {
-                if (err.response && err.response.status === 400 && err.response.data.tabooWords) {
-                    // Handle taboo words error
-                    const tabooWords = err.response.data.tabooWords;
-                    alert(`Post contains taboo words: ${tabooWords}`);
-                } else {
-                    // Handle other errors
-                    console.log(err);
-                    alert("Error creating post");
-                }
-            });
+        // // Making the POST request to submit the post
+        // axios(configuration)
+        //     .then((res) => {
+        //         console.log(res);
+        //         alert("Successfully made a post");
+        //     })
+        //     .catch((err) => {
+        //         if (err.response && err.response.status === 400 && err.response.data.tabooWords) {
+        //             // Handle taboo words error
+        //             const tabooWords = err.response.data.tabooWords;
+        //             alert(`Post contains taboo words: ${tabooWords}`);
+        //         } else {
+        //             // Handle other errors
+        //             console.log(err);
+        //             alert("Error creating post");
+        //         }
+        //     });
     };
     
     useEffect(() => {
@@ -229,7 +236,7 @@ const CreatePost = () => {
                         <div className="post_bottom">
                             <div className="post_icons">
                                 <label className="media_upload">
-                                    <input type="file" className="image_input" onChange={handleFileUpload} accept="image/*, video/*" multiple />
+                                    <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={onSelectFile}/>
                                     {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
                                     <InsertPhotoOutlinedIcon className='icon'/>
                                 </label>

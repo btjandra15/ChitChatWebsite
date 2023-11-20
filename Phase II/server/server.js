@@ -140,7 +140,7 @@ app.get('/get-user', auth, (req, res) => {
 //Gets all trendy users
 app.get('/get-trendy-users', async(req, res) => {
     try{
-        const trendyUsers = await User.find({userType: 'Trendy User'});
+        const trendyUsers = await User.find({trendyUser: true});
 
         res.status(200).json(trendyUsers);
     }catch(err) {
@@ -317,6 +317,57 @@ app.post('/login', (req, res) => {
 app.post('/upload-profile-pic', userController.setProfilePic, async(req, res) => {
 });
 
+//Follows User
+app.post('/follow-user', auth, async(req, res) => {
+    const { userID, trendyUserID } = req.body;
+
+    try{
+        User.findById({ _id: userID})
+            .then(async(user) => {
+                if(userID === trendyUserID) {
+                    return res.status(400).json({ message: "User can't follow themselves" });
+                }else if(user.subscribersList.includes(trendyUserID)) {
+                    return res.status(400).json({message:'User followed the user already'});
+                }
+
+                user.subscribersList.push(trendyUserID);
+                await user.save();
+                res.json({ message: 'User followed the user successfully!'});
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request', error });
+    }
+});
+
+app.post('/tip-user', auth, async(req, res) => {
+    const { userID, trendyUserID, tipAmount } = req.body;
+
+    try{
+        User.findById({ _id: userID })
+            .then(async(user) => {
+                User.findById({ _id: trendyUserID })
+                    .then(async(trendyUser) => {
+                        user.balance -= tipAmount;
+                        trendyUser.tips += tipAmount;
+
+                        await user.save();
+                        await trendyUser.save();
+                        console.log('User tipped the user successfully!');
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while processing your request', err });
+    }
+});
+
 //Deletes user
 app.post("/delete-user", async (req, res) => {
     const { userId } = req.body;
@@ -349,8 +400,6 @@ app.put('/update-user/:userId', async(req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
-
-
 });
 
 // User Endpoints

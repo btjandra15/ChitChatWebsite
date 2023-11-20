@@ -2,13 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Cropper from 'react-easy-crop';
 import "./CropperImage.scss"
 import CloseIcon from '@mui/icons-material/Close';
-import { getCroppedImg } from '../../../../utils/cropImage';
-import { dataURLToFile } from '../../../../utils/dataURLToFile';
-import Cookies from 'universal-cookie';
-import axios from 'axios';
-
-const cookies = new Cookies();
-const token = cookies.get("TOKEN");
+import { getCroppedImg } from '../../utils/cropImage';
+import { dataURLToFile } from '../../utils/dataURLToFile';
 
 const CropperImage = ({userData, image}) => {
     const [ crop, setCrop ] = useState({ x: 0, y: 0 });

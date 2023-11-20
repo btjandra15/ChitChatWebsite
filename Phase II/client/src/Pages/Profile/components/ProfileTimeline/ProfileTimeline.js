@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';
 import './ProfileTimeline.scss';
-import DefaultProfilePic from '../../../../images/defaultProfileIcon.jpg';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import CropperImage from '../CropperImage/CropperImage';
-import Close from '@mui/icons-material/Close';
+import CropperImage from '../../../../components/CropperImage/CropperImage';
 
 const ProfileTimeline = ({ userData }) => {
     // Check if userData is available
