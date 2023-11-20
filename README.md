@@ -3,19 +3,19 @@
 Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 
 ## Specifications: 5 user Types
-- [ ] Super-user (SU)
-  - [ ] Can warn/add/delete any users and/or messages
+- [x] Super-user (SU)
+  - [x] Can warn/add/delete any users and/or messages
 - [ ] Corporate-user (CU)
   - [ ] Can post ads and job openings  
 - [ ] Trendy-user (TU)
   - [ ] All permissions of an ordinary user (OU)
-  - [ ] Subscribed by >10 users
-  - [ ] Received >$100 tips or #likes-#dislikes > 10
-  - [ ] Author of at least 2 trendy messages 
+  - [x] Subscribed by >10 users
+  - [x] Received >$100 tips or #likes-#dislikes > 10
+  - [x] Author of at least 2 trendy messages 
 - [ ] Oridnary-user (OU)
   - [ ] Besides having all the features of a surfer, OU can post/delete, comment, tip, like/dislike, complain, follow messages, and subscribe to other users 
-- [ ] Surfer
-  - [ ] Can only view/search the messages and report/complain to the super-user about the misinformation 
+- [x] Surfer
+  - [x] Can only view/search the messages and report/complain to the super-user about the misinformation 
 
 ## Each Message Features
 - [x] Carry the author. time, date, and up to 3 keywords chosen by the author
