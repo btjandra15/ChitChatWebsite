@@ -7,13 +7,13 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
   - [x] Can warn/add/delete any users and/or messages
 - [ ] Corporate-user (CU)
   - [ ] Can post ads and job openings  
-- [ ] Trendy-user (TU)
-  - [ ] All permissions of an ordinary user (OU)
+- [x] Trendy-user (TU)
+  - [x] All permissions of an ordinary user (OU)
   - [x] Subscribed by >10 users
   - [x] Received >$100 tips or #likes-#dislikes > 10
   - [x] Author of at least 2 trendy messages 
-- [ ] Oridnary-user (OU)
-  - [ ] Besides having all the features of a surfer, OU can post/delete, comment, tip, like/dislike, complain, follow messages, and subscribe to other users 
+- [x] Oridnary-user (OU)
+  - [x] Besides having all the features of a surfer, OU can post/delete, comment, tip, like/dislike, complain, follow messages, and subscribe to other users 
 - [x] Surfer
   - [x] Can only view/search the messages and report/complain to the super-user about the misinformation 
 
@@ -32,10 +32,10 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
   - [ ] If denied, a justification should be provided
 - [ ] When a TU/OU/CU logins, the system will suggest accounts for the user to follow based on this user's reading, liking, tipping, following history
 - [ ] A TU/OU/CU can construct their profiles which again are subjected to comments/reports by others (Same warning policy will apply if the profile contains misinformation)
-- [ ] TU/OU can post messages with <= 20 words (An image is equivalent to 10 words while a video is equivalent to 15 words) for free
-  - [ ] Any messages > 20 words will be billed by the system automatically with the amount (# - 20) * $0.1
-  - [ ] A CU's message is billed # * $1 without the free ones
-  - [ ] If the user does not have enough money in the account, a warning is issued, and when the user logging will be automatically directed to the payment page
+- [x] TU/OU can post messages with <= 20 words (An image is equivalent to 10 words while a video is equivalent to 15 words) for free
+  - [x] Any messages > 20 words will be billed by the system automatically with the amount (# - 20) * $0.1
+  - [x] A CU's message is billed # * $1 without the free ones
+  - [x] If the user does not have enough money in the account, a warning is issued, and when the user logging will be automatically directed to the payment page
 - [ ] Any user receiving a warning can dispute with the SU
   - [ ] If the dispute is won, the warning is removed
   - [ ] If the warning is initialized by another user, the user who reported/complained will be warned once
