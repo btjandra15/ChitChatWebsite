@@ -13,6 +13,7 @@ const app = express();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const userController = require( './controllers/userController');
+const Comment = require('./models/Comments.js');
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = crypto.randomBytes(32).toString('hex');
@@ -50,7 +51,7 @@ mongoose.connect(process.env.MONGODB_URI);
 
 //THIS FUNCTION IS TO UPDATE THE USER'S & POST'S DOUCEMENT WITH THE MOST RECENT USER SCHEMA
 //USE THIS COMMAND IF YOU NEED TO UPDATE THE USER AND/OR POST DOUCEMENTS 
-// updateCollection();
+//updateCollection();
 
 const checkForTabooWords = (content) => {
     const tabooWords = ['fuck', 'word2', 'word3'];
@@ -523,6 +524,30 @@ app.post('/like-post', async(req, res) => {
       }
 });
 
+app.post('/dislike-post', async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try {
+        const post = await Post.findOne({ _id: postId });
+    
+        if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if(post.userDisliked.includes(userId)) return res.status(400).json({message:'User already disliked the post'});
+    
+        post.userDisliked.push(userId);
+
+        post.dislikes++;
+        
+        await post.save();
+        res.json({ message: 'Post disliked successfully!', likes: post.likes });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+      }
+});
+
 app.post('/follow-post', auth, async(req, res) => {
     const { userId, postId } = req.body;
 
@@ -613,6 +638,37 @@ app.delete('/delete-post/:postId', auth, async(req, res) => {
     }
 });
 // Post Endpoints
+
+//COMMENTS ENDPOINTS
+app.get('/get-comments', async(req, res) => {
+    try{
+        const comments = await Comment.find({}).exec();
+
+        res.json(comments);
+    }catch(err){
+        console.error(err);
+    }
+});
+
+app.post('/create-comment', auth, async(req, res) => {
+    const { postId, content } = req.body;
+    const userId = req.user.userId;
+
+    try{
+        const newCommment = new Comment({
+            postID: postId,
+            authorID: userId,
+            content: content,
+        });
+
+        const result = await newCommment.save();
+
+        res.status(201).json({ message: "Comment created successfully", result });
+    }catch(e){
+        console.error(e);
+    }
+});
+//COMMENTS ENDPOINTS
 
 //Job Postings Endpoints
 //Job Postings Endpoints

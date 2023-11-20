@@ -9,12 +9,18 @@
   flex-direction: column;
 
   .main-content{
+    display: flex;
+    flex-direction: column;
+
     .transaction-section {
       margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
       input {
         padding: 5px;
-        margin-right: 10px;
       }
 
       button {
@@ -33,6 +39,15 @@
 
       .withdraw-funds-button {
         margin-top: 10px;
+      }
+    }
+
+    .outstanding-charges{
+      h3{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 10px;
       }
     }
   }

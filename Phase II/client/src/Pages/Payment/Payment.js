@@ -90,6 +90,7 @@ const Payment = () => {
                 <div className="payment-container">
                     <div className="main-content">
                       <h2>{userData ? userData.firstName : null}'s Account Balance: ${userData ? userData.balance : null}</h2>
+                      <h3>Charges Due: ${userData ? userData.chargesAmount : null}</h3>
 
                       <div className="transaction-section">
                         <input
@@ -97,8 +98,11 @@ const Payment = () => {
                           value={transactionAmount}
                           onChange={(e) => setTransactionAmount(parseInt(e.target.value) || 0)}
                         />
-                        <button onClick={handleAddFunds}>Add Funds</button>
-                        <button onClick={handleWithdrawFunds} className='withdraw-funds-button'>Withdraw Funds</button>
+
+                        <div className="funds">
+                          <button onClick={handleAddFunds}>Add Funds</button>
+                          <button onClick={handleWithdrawFunds} className='withdraw-funds-button'>Withdraw Funds</button>
+                        </div>
                       </div>
 
                       <div className="outstanding-charges">

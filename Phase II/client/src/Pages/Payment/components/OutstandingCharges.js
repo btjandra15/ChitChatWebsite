@@ -23,6 +23,7 @@ const OutstandingCharges = () => {
     return (
         <div>
             <h3>Outstanding Charges:</h3>
+            
             <ul>
                 {outstandingCharges.map((charge, index) => (
                     <li key={index}>

@@ -6,6 +6,7 @@ import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import CropperImage from '../CropperImage/CropperImage';
+import { updateUser } from '../../utils/updateUser';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -34,12 +35,6 @@ const CreatePost = () => {
 
         const wordCount = inputText.trim().split(/\s+/).length;
         setTotalWordCount(wordCount + calculateMediaWordCount());
-
-        if (totalWordCount > 20) {
-            setWarning(true);
-        } else {
-            setWarning(false);
-        }
     };
 
     const handleKeywordsChange = (e) => {
@@ -67,17 +62,6 @@ const CreatePost = () => {
                 console.log(reader.result);
                 setImage(reader.result);
             })
-        }
-    };
-
-    const updateWordCount = () => {
-        const wordCount = text.trim().split(/\s+/).length;
-        const totalWordCount = wordCount + calculateMediaWordCount();
-
-        if (totalWordCount > 20) {
-            setWarning(true);
-        } else {
-            setWarning(false);
         }
     };
 
@@ -148,12 +132,29 @@ const CreatePost = () => {
             return;
         }
         
-        if(!image){
-            alert("Please select an image!");
-            return;
+        // if(!image){
+        //     alert("Please select an image!");
+        //     return;
+        // }
+
+        let totalCost = 0;
+
+        if(totalWordCount > 20){
+            if(userData.balance <= 0){
+                updateUser(userData._id, 'warningCount', userData.warningCount + 1);
+                window.location.href = '/payment';
+            }
+            
+            if(userData.userType === 'Corporate User'){
+                totalCost = userData.chargesAmount + (totalWordCount * 1);
+            }else{
+                totalCost = userData.chargesAmount + ((totalWordCount - 20) * 0.1);
+            }
+
+            updateUser(userData._id, 'chargesAmount', totalCost)
         }
 
-    
+
         // // Configuration for the POST request
         // const configuration = {
         //     method: "POST",

@@ -89,6 +89,11 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         require: true,
         default: []
+    },
+    chargesAmount: {
+        type: Number,
+        require: true,
+        default: 0,
     }
 });
 

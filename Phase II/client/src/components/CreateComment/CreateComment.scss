@@ -1,0 +1,143 @@
+@import "../../styles.scss";
+
+.Post{
+  transition: background-color 0.3s;
+  background-color: white;
+  border:1px solid #e1e8ed;
+  // padding-top: 10px;
+  // padding-left: 10px; 
+  margin: 20px;
+  margin-left: 10px;
+  width: 91%;
+  border-radius: 15px;
+  padding: 20px 20px 10px 20px;
+  box-shadow: 0px 10px 15px rgba(0,0,0,0.1);
+
+  @include themify($themes){
+    background-color: themed('bgSoft');
+  }
+}
+
+.text_name{
+  display:flex;
+  align-items:center;
+  margin:0;
+}
+.text_name h3 {
+// margin-right: 5px;
+margin: 0;
+padding: 0; 
+font-weight: bold;
+}
+.text_name h3:last-child {
+color: #657786;
+ margin-left: 10px;
+}
+
+.text_description{
+padding-bottom: 10px;
+padding-right: 10px;
+}
+
+.text_description > form{
+  padding-top: 10px;
+}
+
+form .formgroup {
+  position: relative;
+  min-height: 50px;
+  padding-bottom: 5px;
+  overflow-y: auto;
+}
+
+.formgroup::-webkit-scrollbar{
+  width: 0px;
+}
+
+.formgroup > input {
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  padding-left: 10px;
+  font-size: 17px;
+  min-height: 50px;
+  width: 98%;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.image_input {
+border: none;
+padding: 10px;
+}
+
+.post_bottom{
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  margin-top: 5px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post_icons{
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post_icons > label {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+// .post_icons > label:hover {
+//   background-color: #e8f5fe;
+//   border-radius: 5px;
+//   color: var(--twitter-color);
+//   transition: color 100ms ease-out;
+// }
+
+.post_icons > label > input[type=file] {
+  display:none;
+  margin:10px;
+}
+
+.post_bottom > button{
+  padding: 9px 18px !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 50px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  background: blue !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+}
+
+.post_bottom > button.active{
+  opacity: 0.5;
+  // pointer-events: auto;
+}
+.post_bottom > button:hover{
+  opacity: 0.5;
+  background: #0d8bd9;
+}
+
+.post{
+transition: background-color 0.3s;
+background-color: white;
+border:1px solid #e1e8ed;
+padding: 10px;
+margin: 10px;
+}
+
+.post:hover{
+background-color:#f5f5f5
+}
+
+.icon:hover{
+  cursor: pointer;
+}

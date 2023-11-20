@@ -64,6 +64,11 @@ const PostSchema = new mongoose.Schema({
         require: true,
         default: [],
     },
+    userDisliked: {
+        type: Array,
+        require: true,
+        default: []
+    },
     userReported: {
         type: Array,
         require: true,
@@ -78,6 +83,11 @@ const PostSchema = new mongoose.Schema({
         type: String,
         require: true,
         default: ""
+    },
+    comments: {
+        type: Array,
+        require: true,
+        default: []
     }
 });
 
