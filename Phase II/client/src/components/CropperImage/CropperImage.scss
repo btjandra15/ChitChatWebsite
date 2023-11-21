@@ -1,0 +1,48 @@
+/* CropperImage.scss */
+
+.main-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent overlay background, adjust as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Adjust the z-index as needed */
+    flex-direction: column;
+
+    .close-icon{
+      font-size: 50px;
+      color: white;
+      position: relative;
+      margin-left: 1500px;
+      cursor: pointer;
+    }
+
+    .container-cropper {
+      position: relative;
+      width: 80%; /* Adjust the width as needed */
+      height: 80%; /* Adjust the height as needed */
+      background-color: #fff; /* Set the background color for the cropping container */
+      border-radius: 8px; /* Add rounded corners if desired */
+      overflow: hidden;
+
+      .cropper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .container-buttons{
+      .upload-button{
+        margin: 10px;
+        cursor: pointer;
+      }
+    }
+}
+  

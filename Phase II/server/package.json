@@ -10,17 +10,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1498.0",
+    "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-fileupload": "^1.4.2",
     "express-react-views": "^0.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^2.10.0",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "uuid": "^9.0.1"
   }
 }

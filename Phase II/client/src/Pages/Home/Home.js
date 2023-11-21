@@ -53,8 +53,9 @@ const Home = () => {
             url: 'http://localhost:3001/get-post',
         }
 
-        //Gets all Users & checks to see if they meet the trendy requirements
-        axios(allUserConfig)
+        //GETS ALL USERS AND CHECKS TO SEE IF THEY MEET THE TRENDY REQUIREMENTS
+        const getAllUsers = ( ) => {
+            axios(allUserConfig)
             .then((res) => {
                 setAllUserData(res.data);
 
@@ -64,7 +65,7 @@ const Home = () => {
                     const trendyMessagesCount = user.trendyMessages.length;
 
                     if(user.userType !== 'Trendy User'){
-                        if(subscribedUsersCount > 10 && trendyMessagesCount > 2 && (likeDislikeDifference > 10 || user.tips > 100))
+                        if(subscribedUsersCount > 10 && trendyMessagesCount >= 2 && (likeDislikeDifference > 10 || user.tips > 100))
                            updateUser(user._id, 'trendyUser', true);
                         else
                             updateUser(user._id, 'trendyUser', false);
@@ -76,44 +77,53 @@ const Home = () => {
             .catch((err) => {
                 console.log(err);
             });
+        }
 
-        //Checks the current logged in user
-        axios(loggedInUserConfig)
-            .then((res) => {
-                setLoggedIn(true);
-                setUserData(res.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        //CHECKS THE CURRENT LOGGED IN USER
+        const getLoggedInUser = () => {
+            axios(loggedInUserConfig)
+                .then((res) => {
+                    setLoggedIn(true);
+                    setUserData(res.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
 
-        //Gets all post & checks to see if they meet the trendy requirements
-        axios(postConfig)
-            .then((res) => {
-              setPostData(res.data);
+        // GETS ALL POSTS & CHECKS TO SEE IF THEY MEET THE TRENDY REQUIREMENTS
+        const getAllPosts = () => {
+            axios(postConfig)
+                .then((res) => {
+                setPostData(res.data);
 
-              res.data.map((post) => {
-                const difference = post.likes - post.dislikes;
-                const views = post.views;
+                res.data.map((post) => {
+                    const difference = post.likes - post.dislikes;
+                    const views = post.views;
 
-                if(difference > 3 && views > 10){
-                    if(post.trendyPost === false){
-                        axios.put(`http://localhost:3001/update-post/${post._id}`, { fieldToUpdate: 'trendyPost', newValue: true })
-                            .then((res) => {
-                                console.log("TrendyPost status updated sucessfully");
-                            })
-                            .catch((err) => {
-                                console.error(`Error updating Trendypost: ${err}`);
-                            })
+                    if(difference > 3 && views > 10){
+                        if(post.trendyPost === false){
+                            axios.put(`http://localhost:3001/update-post/${post._id}`, { fieldToUpdate: 'trendyPost', newValue: true })
+                                .then((res) => {
+                                    console.log("TrendyPost status updated sucessfully");
+                                })
+                                .catch((err) => {
+                                    console.error(`Error updating Trendypost: ${err}`);
+                                })
+                        }
                     }
-                }
 
-                return null;
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            })
+                    return null;
+                });
+                })
+                .catch((err) => {
+                console.log(err);
+                })
+        }
+
+        getAllUsers();
+        getLoggedInUser();
+        getAllPosts();
     }, [])
 
     return(
@@ -139,7 +149,7 @@ const Home = () => {
                 </div>
 
                 {/* RIGHT CONTENT */}
-                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData}/>
+                <Rightbar loggedIn={loggedIn} userData={userData}/>
             </div>
         </div>
     )

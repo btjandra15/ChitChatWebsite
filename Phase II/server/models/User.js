@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema({
     userType: {
         type: String,
         require: true,
+        default: 'Surfer',
     },
     trendyUser: {
         type: Boolean,
@@ -83,6 +84,16 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false,
         default: ''
+    },
+    followedMessages: {
+        type: Array,
+        require: true,
+        default: []
+    },
+    chargesAmount: {
+        type: Number,
+        require: true,
+        default: 0,
     }
 });
 

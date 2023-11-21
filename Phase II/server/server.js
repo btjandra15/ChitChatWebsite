@@ -12,21 +12,19 @@ const reactViews = require('express-react-views');
 const app = express();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const userController = require( './controllers/userController');
+const Comment = require('./models/Comments.js');
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = crypto.randomBytes(32).toString('hex');
 
-
 dotenv.config();
-app.use(express.json());
-app.use(cors());
-app.use(express.urlencoded({ extended: false }));
+app.use(cors(), express.json(), express.urlencoded({ extended: false }));
 
 // Set up the view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactViews.createEngine());
-
 
 const updateCollection = async() => {
     try{
@@ -51,9 +49,9 @@ const updateCollection = async() => {
 
 mongoose.connect(process.env.MONGODB_URI);
 
-//THIS FUNCTION IS TO UPDATE THE USER'S DOUCEMENT WITH THE MOST RECENT USER SCHEMA
-//USE THIS COMMAND IF YOU NEED TO UPDATE THE USER DOUCEMENTS 
-// updateCollection();
+//THIS FUNCTION IS TO UPDATE THE USER'S & POST'S DOUCEMENT WITH THE MOST RECENT USER SCHEMA
+//USE THIS COMMAND IF YOU NEED TO UPDATE THE USER AND/OR POST DOUCEMENTS 
+//updateCollection();
 
 const checkForTabooWords = (content) => {
     const tabooWords = ['fuck', 'word2', 'word3'];
@@ -143,7 +141,7 @@ app.get('/get-user', auth, (req, res) => {
 //Gets all trendy users
 app.get('/get-trendy-users', async(req, res) => {
     try{
-        const trendyUsers = await User.find({userType: 'Trendy User'});
+        const trendyUsers = await User.find({trendyUser: true});
 
         res.status(200).json(trendyUsers);
     }catch(err) {
@@ -154,31 +152,30 @@ app.get('/get-trendy-users', async(req, res) => {
 //Creates new user
 app.post('/register', (req, res) => {
     const { firstName, lastName, username, email, password, selectedUserType } = req.body;
-    const randomPassword = generateRandomPassword();
+    // const randomPassword = generateRandomPassword();
 
-    User.findOne({ $or: [{ email: email }, { username: username }]})
-        .then((existingUser) => {
-            if(existingUser) return res.status(409).send({ message: "User with the following email & user already exists" });
-
+    bcrypt.hash(password, 10)
+        .then((hashedPassword) => {
             const user = new User({
                 firstName: firstName,
                 lastName: lastName,
                 username: username,
                 email: email,
-                password: randomPassword,
-                userType: selectedUserType,
-                balance: 5000
+                password: hashedPassword
             });
 
             user.save()
                 .then((result) => {
-
                     res.status(201).send({message: "User created Successfully", result});
                 })
                 .catch((error) => {
                     res.status(500).send({message: "Error creating user", error});
                 });
-        });
+            })
+            .catch((e) => {
+                res.status(500).send({message: "Password not hashed succesfully", e})
+            });
+});
 
 // Sends reset password link to a specific user who hasn't reset their password
 app.post('/send-reset-link-to-user/:userId', async (req, res) => {
@@ -233,36 +230,6 @@ app.post('/send-reset-link-to-user/:userId', async (req, res) => {
             console.log(error);
             res.status(500).send({ status: "Error", data: "Failed to send reset link" });
         }
-});
-
-    // User.findOne({ $or: [{ email: email }, { username: username }]})
-    //     .then((existingUser) => {
-    //         if(existingUser) return res.status(409).send({ message: "User with the following email & user already exists" });
-
-    //         bcrypt
-    //             .hash(password, 10)
-    //             .then((hashedPassword) => {
-    //                 const user = new User({
-    //                     firstName: firstName,
-    //                     lastName: lastName,
-    //                     username: username,
-    //                     email: email,
-    //                     password: hashedPassword,
-    //                     userType: selectedUserType,
-    //                 });
-
-    //                 user.save()
-    //                     .then((result) => {
-    //                         res.status(201).send({message: "User created Successfully", result});
-    //                     })
-    //                     .catch((error) => {
-    //                         res.status(500).send({message: "Error creating user", error});
-    //                     });
-    //         })
-    //         .catch((e) => {
-    //             res.status(500).send({message: "Password not hashed succesfully", e})
-    //         });
-    //     });
 });
 
 app.get("/reset-password/:id/:token", async (req, res) => {
@@ -348,6 +315,60 @@ app.post('/login', (req, res) => {
         });
 });
 
+app.post('/upload-profile-pic', userController.setProfilePic, async(req, res) => {
+});
+
+//Follows User
+app.post('/follow-user', auth, async(req, res) => {
+    const { userID, trendyUserID } = req.body;
+
+    try{
+        User.findById({ _id: userID})
+            .then(async(user) => {
+                if(userID === trendyUserID) {
+                    return res.status(400).json({ message: "User can't follow themselves" });
+                }else if(user.subscribersList.includes(trendyUserID)) {
+                    return res.status(400).json({message:'User followed the user already'});
+                }
+
+                user.subscribersList.push(trendyUserID);
+                await user.save();
+                res.json({ message: 'User followed the user successfully!'});
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request', error });
+    }
+});
+
+app.post('/tip-user', auth, async(req, res) => {
+    const { userID, trendyUserID, tipAmount } = req.body;
+
+    try{
+        User.findById({ _id: userID })
+            .then(async(user) => {
+                User.findById({ _id: trendyUserID })
+                    .then(async(trendyUser) => {
+                        user.balance -= tipAmount;
+                        trendyUser.tips += tipAmount;
+
+                        await user.save();
+                        await trendyUser.save();
+                        console.log('User tipped the user successfully!');
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while processing your request', err });
+    }
+});
+
 //Deletes user
 app.post("/delete-user", async (req, res) => {
     const { userId } = req.body;
@@ -380,14 +401,12 @@ app.put('/update-user/:userId', async(req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
-
-
 });
 
 // User Endpoints
 
 // Post Endpoints
-//Gets all posts]
+//Gets all posts
 app.get('/get-post', async(req, res) => {
     try {
         // Use the `find` method and `await` the result
@@ -412,21 +431,28 @@ app.get('/get-top-liked-post', async(req, res) => {
     }
 })
 
-//
+//Fetch current user posts
+app.get('/api/posts/user/:userId', async (req, res) => {
+    try {
+        const posts = await Post.find({ authorId: req.params.userId });
+        res.json(posts);
+    } catch (error) {
+        res.status(500).send('Server error');
+    }
+});
+
+// Creates Post
 app.post('/create-post', auth, async (req, res) => {
     try {
         const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
         const userId = req.user.userId;
 
-        const containsTabooWords = checkForTabooWords(content);
+        const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
 
-        if (containsTabooWords) {
-            // Log a message to the console
-            console.log('Taboo words detected in the post:', containsTabooWords);
-
+        if (foundTabooWord && asteriskCount > 2) {
             // Additional actions you wish to perform
             // For example, you can send an error response with the taboo words
-            return res.status(400).json({ message: "Post contains taboo words and is not allowed.", tabooWords: containsTabooWords });
+            return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
         }
 
         const newPost = new Post({
@@ -434,7 +460,7 @@ app.post('/create-post', auth, async (req, res) => {
             authorFirstName: userFirstName,
             authorLastName: userLastName,
             authorUsername: username,
-            content: content,
+            content: content, // Save the sanitized content
             wordCount: wordCount,
             dateAndTime: dateAndTime,
             keywords: keywords,
@@ -446,6 +472,31 @@ app.post('/create-post', auth, async (req, res) => {
         console.error('Error in create-post route:', error);
         res.status(500).json({ message: "Error creating post", error });
     }
+});
+
+// Adds +1 to views like in the post doucment in the database
+app.post('/view-post', async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try {
+        const post = await Post.findOne({ _id: postId });
+    
+        if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if(post.userViewed.includes(userId)) return res.status(400).json({message:'User already viewed the post'});
+    
+        post.userViewed.push(userId);
+
+        post.views++;
+        
+        await post.save();
+        res.json({ message: 'Post viewed successfully!', views: post.views });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+      }
 });
 
 //Adds +1 to likes field in the post document in the database
@@ -473,6 +524,55 @@ app.post('/like-post', async(req, res) => {
       }
 });
 
+app.post('/dislike-post', async(req, res) => {
+    const { postId, userId } = req.body;
+
+    try {
+        const post = await Post.findOne({ _id: postId });
+    
+        if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if(post.userDisliked.includes(userId)) return res.status(400).json({message:'User already disliked the post'});
+    
+        post.userDisliked.push(userId);
+
+        post.dislikes++;
+        
+        await post.save();
+        res.json({ message: 'Post disliked successfully!', likes: post.likes });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request' });
+      }
+});
+
+app.post('/follow-post', auth, async(req, res) => {
+    const { userId, postId } = req.body;
+
+    try{
+        const post = await Post.findOne({ _id: postId });
+
+        if(!post) return res.status(404).json({ message: 'Post not found' });
+
+        User.findById({ _id: userId})
+            .then(async(user) => {
+                if(user.followedMessages.includes(postId)) return res.status(400).json({message:'User followed the post'});
+
+                user.followedMessages.push(postId);
+                await user.save();
+                res.json({ message: 'User followed the post successfully!'});
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing your request', error });
+    }
+});
+
 //Adds +1 to report field in the post document in the database
 app.post('/report-post', async(req, res) => {
     const { postId, userId } = req.body;
@@ -481,7 +581,7 @@ app.post('/report-post', async(req, res) => {
         const post = await Post.findOne({ _id: postId });
 
         if(!post) return res.status(404).json({ message: 'Post not found' });
-        if(post.userReported.includes(userId)) return res.status(400).json({message:'User reported liked the post'});
+        if(post.userReported.includes(userId)) return res.status(400).json({message:'User reported the post'});
 
         post.userReported.push(userId);
 
@@ -516,14 +616,59 @@ app.put('/update-post/:postId', async(req, res) => {
     }
 });
 
-//Fetch current user posts
-app.get('/api/posts/user/:userId', async (req, res) => {
-    try {
-        const posts = await Post.find({ authorId: req.params.userId });
-        res.json(posts);
-    } catch (error) {
-        res.status(500).send('Server error');
+//Deletes a post
+app.delete('/delete-post/:postId', auth, async(req, res) => {
+    try{
+        const postId = req.params.postId;
+
+        // Check if the post belongs to the authenticated user
+        const post = await Post.findOne({ _id: postId });
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found or unauthorized to delete" });
+        }
+
+        // Delete the post
+        await post.deleteOne({ _id: postId });
+
+        res.status(200).json({ message: "Post deleted successfully" });
+    }catch(error){
+        console.error('Error in delete-post route:', error);
+        res.status(500).json({ message: "Error deleting post", error });
+    }
+});
+// Post Endpoints
+
+//COMMENTS ENDPOINTS
+app.get('/get-comments', async(req, res) => {
+    try{
+        const comments = await Comment.find({}).exec();
+
+        res.json(comments);
+    }catch(err){
+        console.error(err);
     }
 });
 
-// Post Endpoints
+app.post('/create-comment', auth, async(req, res) => {
+    const { postId, content } = req.body;
+    const userId = req.user.userId;
+
+    try{
+        const newCommment = new Comment({
+            postID: postId,
+            authorID: userId,
+            content: content,
+        });
+
+        const result = await newCommment.save();
+
+        res.status(201).json({ message: "Comment created successfully", result });
+    }catch(e){
+        console.error(e);
+    }
+});
+//COMMENTS ENDPOINTS
+
+//Job Postings Endpoints
+//Job Postings Endpoints

@@ -2,10 +2,80 @@ import React, { useEffect, useState } from 'react'
 import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg';
 import './Rightbar.scss';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+import { Link } from 'react-router-dom';
 
-const Rightbar = ({loggedIn, userData, postData, allUserData}) => {
+const cookies = new Cookies();
+const token = cookies.get("TOKEN");
+
+const Rightbar = ({loggedIn, userData}) => {
     const [trendyUsers, setTrendyUsers] = useState([]);
     const [mostLikedPosts, setMostLikedPosts] = useState([]);
+    const [openTipBox, setOpenTipBox] = useState(false);
+    const [tipAmount, setTipAmount] = useState(0);
+ 
+    const followUser = (loggedInUserID, trendyUserID) => {
+        if(!loggedIn){
+            alert("You need to be logged in in order to follow this user");
+        }else{
+            const subscribeUserConfig = {
+                method: "POST",
+                url: `http://localhost:3001/follow-user`,
+                data: {
+                  userID: loggedInUserID,
+                  trendyUserID: trendyUserID,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+
+            axios(subscribeUserConfig)
+                .then((res) => {
+                    console.log("Successfully followed this user!");
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+        }
+    }
+
+    const tipUser = (userID, trendyUserID) => {
+        // console.log(tipAmount);
+        // console.log(trendyUserID);
+
+        if(tipAmount > 0){
+            setTipAmount(parseInt(tipAmount));
+            
+            const updateTipAmountConfig = {
+                method: "POST",
+                url: `http://localhost:3001/tip-user`,
+                data: {
+                    userID: userID,
+                    trendyUserID: trendyUserID,
+                    tipAmount: tipAmount
+                },
+                headers: {
+                    Authorization: `Bearer: ${token}`
+                }
+            }
+
+            axios(updateTipAmountConfig)
+                .then((res) => {
+                    console.log(res);
+                    alert("You have successfully tipped the user");
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+        }else{
+            alert("Tip an amount greater than 0");
+        }
+    }
+
+    const showPoup = () => {
+        setOpenTipBox(!openTipBox);
+    }
 
     useEffect(() => {
         const fetchTrendyUsers = async() => {
@@ -44,12 +114,30 @@ const Rightbar = ({loggedIn, userData, postData, allUserData}) => {
                                 <div className="user" key={index}>
                                     <div className="userInfo">
                                         <img src={DefaultProfilePicture} alt="" />
-                                        <span>{user.firstName} {user.lastName}</span>
+
+                                        <Link to={`/profile/${user.username}`}>
+                                            <span>{user.firstName} {user.lastName}</span>
+                                        </Link>
                                     </div>
 
                                     <div className="buttons">
-                                        <button>Follow</button>
+                                        <button onClick={() => followUser(userData._id, user._id)}>Follow</button>
                                         <button>Dimiss</button>
+                                        <button onClick={showPoup}>Tip</button>
+
+                                        {
+                                            openTipBox ?
+                                            <div className="popup">
+                                                <div className="popup-inner">
+                                                    <h3>Tip User</h3>
+                                                    <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
+                                                    <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
+                                                    <button className='close-button' onClick={showPoup}>Close</button>
+                                                </div>
+                                            </div>
+                                            :
+                                            null
+                                        }
                                     </div>
                                 </div>
                             )

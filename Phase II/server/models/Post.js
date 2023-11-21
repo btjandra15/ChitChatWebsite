@@ -64,10 +64,30 @@ const PostSchema = new mongoose.Schema({
         require: true,
         default: [],
     },
+    userDisliked: {
+        type: Array,
+        require: true,
+        default: []
+    },
     userReported: {
         type: Array,
         require: true,
         default: [],
+    },
+    userViewed: {
+        type: Array,
+        require: true,
+        default: [],
+    },
+    imageUrl: {
+        type: String,
+        require: true,
+        default: ""
+    },
+    comments: {
+        type: Array,
+        require: true,
+        default: []
     }
 });
 

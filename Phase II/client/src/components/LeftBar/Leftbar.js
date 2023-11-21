@@ -34,7 +34,7 @@ const Leftbar = ({userData, loggedIn, logout}) => {
           id: 4,
           icon: Person2Outlined,
           text: 'Profile',
-          link: "/profile/:id"
+          link: `/profile/${userData ? userData.username : null}`
         },
         {
           id: 5,
@@ -56,8 +56,8 @@ const Leftbar = ({userData, loggedIn, logout}) => {
                 <div className="menu">
                     <div className="user">
                         {loggedIn ?
-                            <Link className='link' to="/profile/:id">
-                                <img src={DefaultProfilePicture} alt="" />
+                            <Link className='link' to={`/profile/${userData.username}`}>
+                                <img src={userData.profilePictureUrl} alt="" />
                                 <span>{userData.firstName} {userData.lastName}</span>
                             </Link>
                             :
@@ -79,7 +79,7 @@ const Leftbar = ({userData, loggedIn, logout}) => {
                     {loggedIn ?
                         <div className="item2">
                             {userData.userType === 'Corporate User' ? 
-                                 <Link className='post-link' onClick={logout}>
+                                 <Link className='post-link' to="/job-postings">
                                     <WorkOutlineOutlinedIcon className='item-icon'/>
                                     <span>Post</span>
                                  </Link>
@@ -87,7 +87,7 @@ const Leftbar = ({userData, loggedIn, logout}) => {
                                 <div></div>
                             }
 
-                            <Link className='logout-link' onClick={logout}>
+                            <Link className='logout-link' onClick={logout} to="/">
                                 <Logout className='item-icon'/>
                                 <span>Logout</span>
                             </Link>

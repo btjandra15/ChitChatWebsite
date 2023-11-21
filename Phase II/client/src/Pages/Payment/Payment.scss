@@ -1,55 +1,58 @@
-// @import "../Home/navbar";
-// @import "../Home/leftbar";
-// @import "../Home/middlebar";
-
 .payment-container {
   width: 70%;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f9f9f9;
-}
-
-.transaction-section {
   margin-top: 20px;
-}
+  display: flex;
+  flex-direction: column;
 
-input {
-  padding: 5px;
-  margin-right: 10px;
-}
+  .main-content{
+    display: flex;
+    flex-direction: column;
 
-button {
-  padding: 8px 15px;
-  margin-right: 10px;
-  cursor: pointer;
-  background-color: #4285f4;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-}
+    .transaction-section {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-button:hover {
-  background-color: #357ae8;
-}
+      input {
+        padding: 5px;
+      }
 
-.outstanding-charges {
-  margin-top: 20px;
-}
+      button {
+        padding: 8px 15px;
+        margin-right: 10px;
+        cursor: pointer;
+        background-color: #4285f4;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      }
 
-.outstanding-charges ul {
-  list-style: none;
-  padding: 0;
-}
+      button:hover {
+        background-color: #357ae8;
+      }
 
-.outstanding-charges li {
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 4px;
-}
+      .withdraw-funds-button {
+        margin-top: 10px;
+      }
+    }
 
-.outstanding-charges li span {
-  margin-right: 10px;
+    .outstanding-charges{
+      h3{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 10px;
+      }
+    }
+  }
+
+  .ads-section{
+    margin-top: 30px;
+  }
 }

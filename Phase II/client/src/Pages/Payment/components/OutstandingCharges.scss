@@ -1,0 +1,29 @@
+.outstanding-charges {
+    margin-top: 20px;
+}
+  
+.outstanding-charges ul {
+    list-style: none;
+    padding: 0;
+}
+  
+.outstanding-charges li {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+}
+  
+.outstanding-charges li span {
+    margin-right: 10px;
+}
+
+button {
+    padding: 8px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: #4285f4;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}

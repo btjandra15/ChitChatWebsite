@@ -59,7 +59,7 @@ const Navbar = (props) => {
                 </Link>
 
                 {loggedIn ? 
-                    <Link className="user" to={`/profile/${userData._id}`}>
+                    <Link className="user" to={`/profile/${userData.username}`}>
                         <img src={DefaultProfilePicture} alt="" />
                         <span>{userData.username}</span>
                     </Link>
