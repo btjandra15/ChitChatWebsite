@@ -79,6 +79,11 @@ const PostSchema = new mongoose.Schema({
         require: true,
         default: [],
     },
+    imageName: {
+        type: String,
+        require: true,
+        default: ""
+    },
     imageUrl: {
         type: String,
         require: true,

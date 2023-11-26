@@ -9,38 +9,20 @@ const token = cookies.get("TOKEN");
 const CreateComment = ({post}) => {
     const [ warning, setWarning ] = useState(false);
     const [ text, setText ] = useState('');
-    const [ mediaFiles, setMediaFiles ] = useState([]);
     const [ userData, setUserData ] = useState();
     const [ totalWordCount, setTotalWordCount ] = useState();
-    const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
-    const [ inputValue, setInputValue ] = useState('');
-    const [ image, setImage ] = useState(null);
 
     const handleTextChange = (inputText) => {
         setText(inputText);
 
         const wordCount = inputText.trim().split(/\s+/).length;
-        setTotalWordCount(wordCount + calculateMediaWordCount());
+        setTotalWordCount(wordCount);
 
         if (totalWordCount > 20) {
             setWarning(true);
         } else {
             setWarning(false);
         }
-    };
-
-    const calculateMediaWordCount = () => {
-        let mediaWordCount = 0;
-
-        mediaFiles.forEach(file => {
-            if (file.type.includes('image/')) {
-                mediaWordCount += 10; // Image equivalent to 10 words
-            } else if (file.type.includes('video/')) {
-                mediaWordCount += 15; // Video equivalent to 15 words
-            }
-        });
-
-        return mediaWordCount;
     };
 
     const submitComment = async() => {

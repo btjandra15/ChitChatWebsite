@@ -12,9 +12,6 @@ import Rightbar from "../../components/RightBar/Rightbar";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-
-
-
 const Trending = () => {
   const [loggedIn, setLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);

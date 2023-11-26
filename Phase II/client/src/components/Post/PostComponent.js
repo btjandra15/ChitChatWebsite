@@ -231,7 +231,7 @@ const PostComponent = ({post, index}) => {
     
               <div className='text-description' onClick={() => openPost(post._id, userData._id)}>
                 <p className='post-content'>{post.content}</p>
-                {/* <img src={TestImage} alt="" className='post-image'/> */}
+                <img src={post ? post.imageUrl : TestImage} alt="" className='post-image'/>
               </div>
             </div>
 

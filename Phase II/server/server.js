@@ -9,22 +9,27 @@ const Post = require('./models/Post.js');
 const dotenv = require('dotenv');
 const path = require('path');
 const reactViews = require('express-react-views');
-const app = express();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const userController = require( './controllers/userController');
 const Comment = require('./models/Comments.js');
+const multer = require('multer');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const sharp = require('sharp');
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = crypto.randomBytes(32).toString('hex');
+const app = express();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-dotenv.config();
-app.use(cors(), express.json(), express.urlencoded({ extended: false }));
-
-// Set up the view engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jsx');
-app.engine('jsx', reactViews.createEngine());
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
+        secretAccessKey: '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',
+    },
+    region: 'us-east-1',
+});
 
 const updateCollection = async() => {
     try{
@@ -47,12 +52,6 @@ const updateCollection = async() => {
     }
 };
 
-mongoose.connect(process.env.MONGODB_URI);
-
-//THIS FUNCTION IS TO UPDATE THE USER'S & POST'S DOUCEMENT WITH THE MOST RECENT USER SCHEMA
-//USE THIS COMMAND IF YOU NEED TO UPDATE THE USER AND/OR POST DOUCEMENTS 
-//updateCollection();
-
 const checkForTabooWords = (content) => {
     const tabooWords = ['fuck', 'word2', 'word3'];
     const contentWithoutSpaces = content.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
@@ -71,6 +70,19 @@ const generateRandomPassword = (length = 20) => {
 
     return password;
 };
+
+const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
+
+dotenv.config();
+app.use(cors(), express.json(), express.urlencoded({ extended: false }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jsx');
+app.engine('jsx', reactViews.createEngine());
+mongoose.connect(process.env.MONGODB_URI);
+
+//THIS FUNCTION IS TO UPDATE THE USER'S & POST'S DOUCEMENT WITH THE MOST RECENT USER SCHEMA
+//USE THIS COMMAND IF YOU NEED TO UPDATE THE USER AND/OR POST DOUCEMENTS 
+//updateCollection();
 
 app.listen(3001, () => {
     console.log(`Server running`);
@@ -442,12 +454,34 @@ app.get('/api/posts/user/:userId', async (req, res) => {
 });
 
 // Creates Post
-app.post('/create-post', auth, async (req, res) => {
-    try {
-        const { userFirstName, userLastName, username, content, wordCount, dateAndTime, keywords } = req.body;
-        const userId = req.user.userId;
+app.post('/create-post', auth, upload.single('image'), async (req, res) => {
+    const buffer = await sharp(req.file.buffer)
+                            .resize({
+                                height: 500,
+                                width: 500,
+                                fit: 'contain'
+                            })
+                            .toBuffer();
 
+    const imageName = `${randomImageName()}-${req.file.originalname}`
+
+    const params = {
+        Bucket: 'chit-chat-website-images',
+        Key: imageName,
+        Body: buffer,
+        ContentType: req.file.mimetype,
+        ACL: 'public-read',
+    };
+
+    const imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    try {
+        const { userFirstName, userLastName, username, content, keywords, dateAndTime, wordCount } = req.body;
         const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
+        const userId = req.user.userId;
 
         if (foundTabooWord && asteriskCount > 2) {
             // Additional actions you wish to perform
@@ -464,6 +498,8 @@ app.post('/create-post', auth, async (req, res) => {
             wordCount: wordCount,
             dateAndTime: dateAndTime,
             keywords: keywords,
+            imageName: imageName,
+            imageUrl: imageUrl,
         });
 
         const result = await newPost.save();
