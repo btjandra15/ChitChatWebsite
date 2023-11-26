@@ -23,14 +23,6 @@ const app = express();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
-        secretAccessKey: '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',
-    },
-    region: 'us-east-1',
-});
-
 const updateCollection = async() => {
     try{
         const users = await User.find();
