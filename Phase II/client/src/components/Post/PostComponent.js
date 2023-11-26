@@ -10,6 +10,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import TestImage from '../../images/cityBackground.jpg';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import CreateComment from '../CreateComment/CreateComment';
+import ReportModal from './ReportModal';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -19,6 +20,75 @@ const PostComponent = ({post, index}) => {
     const [ postData, setPostData ] = useState([]);
     const [ commentData, setCommentData ] = useState([]);
     const [ openComments, setOpenComments ] = useState(false);
+    const [ isReportModalOpen, setReportModalOpen ] = useState(false);
+
+    const handleReportClick = () => {
+      setReportModalOpen(true);
+    };
+
+    const handleCloseReportModal = () => {
+      setReportModalOpen(false);
+    };
+
+    const handleReportSubmit = (reason) => {
+      console.log(`Report reason: ${reason}`);
+    
+      const initiatorId = userData._id;
+      const initiatorUsername = userData.username;
+      const receiverId = post.authorId;
+      const receiverUsername = post.authorUsername;
+      const postId = post._id;
+      const content = post.content;
+      
+      // Create post complaint
+      const createPostComplaint = async () => {
+        try {
+          await axios.post('http://localhost:3001/create-post-complaint', {
+            initiatorId,
+            initiatorUsername,
+            receiverId,
+            receiverUsername,
+            postId,
+            content,
+            reason,
+          });
+    
+          alert("You have successfully reported this post!");
+    
+          setPostData((prevData) => {
+            const updatedData = [...prevData];
+            const postIndex = updatedData.findIndex((p) => p._id === postId);
+    
+            if (postIndex !== -1) updatedData[postIndex].reports++;
+    
+            return updatedData;
+          });
+        } catch (error) {
+          alert("An error occurred while reporting this post!");
+          console.error(error);
+        }
+
+        try {
+          // Assuming postId and receiverId are available
+          await axios.post(`http://localhost:3001/add-warning-count-to-receiver/${receiverId}`, {
+            reason: reason,
+          });
+        } catch (error) {
+          console.error('Error updating user warning count:', error);
+        }
+      };
+
+      // Report the post and create a post complaint
+      axios
+      .post('http://localhost:3001/report-post', { postId, initiatorId })
+      .then(() => createPostComplaint())
+      .catch((err) => {
+        alert("You have already reported this post!");
+        console.log(err);
+      });
+
+      handleCloseReportModal();
+    };
     
     const openPost = (postId, userId) => {
       axios.post(`http://localhost:3001/view-post`, { postId, userId })
@@ -224,8 +294,13 @@ const PostComponent = ({post, index}) => {
                 <h3>{post.authorFirstName} {post.authorLastName}</h3>
                 <h3 className='username'>@{post.authorUsername}</h3>
                 <button onClick={() => followPost(post._id, userData._id)}>Follow</button>
-                <button onClick={() => reportPost(post._id, userData._id)} className='report-button'>Report</button>
-                
+                <button onClick={handleReportClick} className='report-button'>Report</button>
+                <ReportModal
+                  isOpen={isReportModalOpen}
+                  onClose={handleCloseReportModal}
+                  onSubmit={handleReportSubmit}
+                />
+
                 { userData.adminUser || post.authorId === userData._id ? <button onClick={() => deletePost(post._id)}>Delete</button> : null }
               </div>
     
@@ -273,7 +348,12 @@ const PostComponent = ({post, index}) => {
                         <h3>{post.authorFirstName} {post.authorLastName}</h3>
                         <h3 className='username'>@{post.authorUsername}</h3>
                         <button onClick={() => followPost(comment._id, userData._id)}>Follow</button>
-                        <button onClick={() => reportPost(comment._id, userData._id)} className='report-button'>Report</button>
+                        <button onClick={handleReportClick} className='report-button'>Report</button>
+                        <ReportModal
+                          isOpen={isReportModalOpen}
+                          onClose={handleCloseReportModal}
+                          onSubmit={handleReportSubmit}
+                        />
                         
                         { userData.adminUser ? <button onClick={() => deletePost(post._id)}>Delete</button> : null }
                       </div>

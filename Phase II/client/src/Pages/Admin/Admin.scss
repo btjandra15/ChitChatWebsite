@@ -9,7 +9,8 @@
 
 .main-content {
   color: var(--black);
-  height: 100vh;
+  height: fit-content;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,8 +24,8 @@
   grid-auto-rows: minmax(150px, auto);
   row-gap: 1em;
   column-gap: 1em;
-  height: 95%;
-  width: 85%;
+  height: 90%;
+  width: 90%;
   padding: 25px;
   box-sizing: border-box;
   border-radius: 32px;
@@ -51,7 +52,7 @@
 }
 
 .content-box:last-child {
-  height: 180px;
+  height: fit-content;
   grid-column-start: 1;
   grid-column-end: 4;
   margin-top: 5px;

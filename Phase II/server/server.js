@@ -16,6 +16,7 @@ const Comment = require('./models/Comments.js');
 const multer = require('multer');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const sharp = require('sharp');
+const PostComplaint = require('./models/PostComplaints.js')
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = crypto.randomBytes(32).toString('hex');
@@ -322,6 +323,138 @@ app.post('/login', (req, res) => {
 app.post('/upload-profile-pic', userController.setProfilePic, async(req, res) => {
 });
 
+//+1 warningCount to complaining user when complaint is denied
+app.post('/add-warning-count-to-initiator/:initiatorId', async (req, res) => {
+    const { initiatorId } = req.params;
+  
+    try {
+      // Find the user by ID and update the warning count
+      const user = await User.findByIdAndUpdate(initiatorId, { $inc: { warningCount: 1 } }, { new: true });
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Send an email to the user
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+      });
+      
+      var mailOptions = {
+        from: 'youremail@gmail.com',
+        to: user.email,
+        subject: 'Your complaint has been denied',
+        text: `Reason: ${req.body.reason}\nYou have been warned for false report`
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+  
+      res.json({ message: 'User warning count updated successfully' });
+    } catch (error) {
+      console.error('Error updating user warning count:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+//+1 warningCount to receiving user when complaint is made
+app.post('/add-warning-count-to-receiver/:receiverId', async (req, res) => {
+    const { receiverId } = req.params;
+  
+    try {
+      // Find the user by ID and update the warning count
+      const user = await User.findByIdAndUpdate(receiverId, { $inc: { warningCount: 1 } }, { new: true });
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const link = `http://localhost:3000/profile/${user.username}`;
+
+      // Send an email to the user
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+      });
+      
+      var mailOptions = {
+        from: 'youremail@gmail.com',
+        to: user.email,
+        subject: 'You received a warning',
+        text: `You received a complaint for reason: ${req.body.reason}\nClick on this link ${link} to dispute`
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+  
+      res.json({ message: 'User warning count updated successfully' });
+    } catch (error) {
+      console.error('Error updating user warning count:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+//-1 warningCount to receiving user when dispute is won
+app.post('/sub-warning-count/:receiverId', async (req, res) => {
+    const { receiverId } = req.params;
+  
+    try {
+      // Find the user by ID and update the warning count
+      const user = await User.findByIdAndUpdate(receiverId, { $inc: { warningCount: -1 } }, { new: true });
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Send an email to the user
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+      });
+      
+      var mailOptions = {
+        from: 'youremail@gmail.com',
+        to: user.email,
+        subject: 'You won the dispute',
+        text: `Your warning has been removed.`
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+  
+      res.json({ message: 'User warning count updated successfully' });
+    } catch (error) {
+      console.error('Error updating user warning count:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 //Follows User
 app.post('/follow-user', auth, async(req, res) => {
     const { userID, trendyUserID } = req.body;
@@ -603,15 +736,15 @@ app.post('/follow-post', auth, async(req, res) => {
 
 //Adds +1 to report field in the post document in the database
 app.post('/report-post', async(req, res) => {
-    const { postId, userId } = req.body;
+    const { postId, initiatorId } = req.body;
 
     try{
         const post = await Post.findOne({ _id: postId });
 
         if(!post) return res.status(404).json({ message: 'Post not found' });
-        if(post.userReported.includes(userId)) return res.status(400).json({message:'User reported the post'});
+        if(post.userReported.includes(initiatorId)) return res.status(400).json({message:'User reported the post'});
 
-        post.userReported.push(userId);
+        post.userReported.push(initiatorId);
 
         post.reports++;
 
@@ -665,7 +798,189 @@ app.delete('/delete-post/:postId', auth, async(req, res) => {
         res.status(500).json({ message: "Error deleting post", error });
     }
 });
+
+// Remove the user from the array userReported
+app.post('/remove-user-reported/:postId', async (req, res) => {
+    const { postId } = req.params;
+    const { initiatorId } = req.body;
+  
+    try {
+      // Find the post by ID and update the userReported field
+      const updatedPost = await Post.findByIdAndUpdate(postId, { $pull: { userReported: initiatorId } }, { new: true });
+  
+      if (!updatedPost) {
+        return res.status(404).json({ error: 'Post not found' });
+      }
+  
+      res.json({ message: 'Initiator ID removed from userReported successfully' });
+    } catch (error) {
+      console.error('Error removing initiator ID from userReported:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+});
 // Post Endpoints
+
+// Post Complaints Endpoints
+app.get('/get-post-complaints', async (req, res) => {
+    try {
+      const postComplaints = await PostComplaint.find();
+      res.json(postComplaints);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred while fetching post complaints' });
+    }
+  });
+
+app.post('/create-post-complaint', async (req, res) => {
+const { initiatorId, initiatorUsername, receiverId, receiverUsername, postId, content, reason } = req.body;
+
+try {
+    // Create a PostComplaint document
+    const postComplaint = new PostComplaint({
+    initiatorId,
+    initiatorUsername,
+    receiverId,
+    receiverUsername,
+    postId,
+    content,
+    reason,
+    });
+
+    await postComplaint.save();
+
+    res.json({ message: 'Post complaint created successfully!' });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while creating post complaint' });
+}
+});
+
+// Update a post complaint
+app.put('/update-post-complaint/:id', async (req, res) => {
+    const { id } = req.params;
+    const updateFields = req.body;
+  
+    try {
+      // Validate if the provided ID is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid post complaint ID' });
+      }
+  
+      // Find the post complaint by ID and update the specified fields
+      const updatedPostComplaint = await PostComplaint.findByIdAndUpdate(id, updateFields, {
+        new: true, // Return the updated document
+      });
+  
+      if (!updatedPostComplaint) {
+        return res.status(404).json({ error: 'Post complaint not found' });
+      }
+  
+      res.json(updatedPostComplaint);
+    } catch (error) {
+      console.error('Error updating post complaint:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  //Admin approves complaint (dispute gets denied if exists, receiver gets email)
+  app.post('/approve-complaint/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      // Find the post complaint by ID and update the status to 'approved'
+      const updatedComplaint = await PostComplaint.findByIdAndUpdate(id, { status: 'approved' }, { new: true });
+  
+      if (!updatedComplaint) {
+        return res.status(404).json({ error: 'Post complaint not found' });
+      }
+  
+      // Check if the complaint has a dispute before sending an email
+      if (updatedComplaint.dispute) {
+        // Fetch the receiver's email from the User schema
+        const receiverUser = await User.findOne({ _id: updatedComplaint.receiverId });
+
+        // Send an email to the user
+        if (receiverUser) {
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.GMAIL_USER,
+                    pass: process.env.GMAIL_PASS
+                }
+            });
+            
+            var mailOptions = {
+                from: 'youremail@gmail.com',
+                to: receiverUser.email,
+                subject: 'Your dispute has been denied',
+                text: `The reason for denial: ${req.body.disputeDenyReason}`
+            };
+            
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                console.log(error);
+                } else {
+                console.log('Email sent: ' + info.response);
+                }
+            });
+        } else {
+            console.error('Receiver user not found');
+        }
+      }
+  
+      res.json({ message: 'Complaint accepted successfully' });
+    } catch (error) {
+      console.error('Error accepting complaint:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+app.post('/deny-complaint/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+    // Find the post complaint by ID and update the status to 'denied'
+    const updatedComplaint = await PostComplaint.findByIdAndUpdate(id, { status: 'denied' }, { new: true });
+
+    if (!updatedComplaint) {
+        return res.status(404).json({ error: 'Post complaint not found' });
+    }
+    // if (updatedComplaint.dispute) {
+    //     // Fetch initiator and receiver users from the User schema
+    //     const initiatorUser = await User.findOne({ _id: updatedComplaint.initiatorId });
+    //     const receiverUser = await User.findOne({ _id: updatedComplaint.receiverId });
+
+    //     // Update warningCount and remove initiator from userReported array
+    //     if (initiatorUser) {
+    //         // Send an email to the receiver
+    //         sendEmailToReceiver(receiverUser.email, 'You won the dispute. Your warning has been removed.');
+    //     }
+
+    //     // Update warningCount and send email to the initiator
+    //     if (receiverUser) {
+    //         // Send an email to the initiator
+    //         sendEmailToInitiator(initiatorUser.email, `Your complaint has been denied. Reason: ${denyReason}`);
+    //     }
+    // }
+
+    res.json({ message: 'Complaint denied successfully' });
+    } catch (error) {
+    console.error('Error denying complaint:', error);
+    res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// // Function to send an email to the initiator
+// function sendEmailToInitiator(email, message) {
+    
+//   }
+  
+// // Function to send an email to the receiver
+// function sendEmailToReceiver(email, message) {
+
+//   }
+
+// Post Complaints Endpoints
 
 //COMMENTS ENDPOINTS
 app.get('/get-comments', async(req, res) => {
