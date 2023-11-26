@@ -7,6 +7,7 @@ import Navbar from "../../components/Navbar/Navbar.js"
 import Leftbar from "../../components/LeftBar/Leftbar";
 import Rightbar from "../../components/RightBar/Rightbar.js";
 import PostComponent from "../../components/Post/PostComponent";
+import ComplaintsView from "./components/ComplaintsView/ComplaintsView.js"
 
 // New component for profile timeline
 import ProfileTimeline from "./components/ProfileTimeline/ProfileTimeline.js";
@@ -20,6 +21,11 @@ const Profile = () => {
     const [allUserData, setAllUserData] = useState([]);
     const { darkMode } = useContext(DarkModeContext);
     const [ postData, setPostData ] = useState([]);
+    const [selectedPostId, setSelectedPostId] = useState(null);
+
+    const handleViewComplaints = (postId) => {
+        setSelectedPostId((prevId) => (prevId === postId ? null : postId));
+    };
 
     const logout = () => {
         cookies.remove("TOKEN", { path: "/" });
@@ -127,24 +133,35 @@ const Profile = () => {
     
     return (
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
-            <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
+          <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
     
-            <div className="main-content">
-                <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
+          <div className="main-content">
+            <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
     
-                <div style={{flex: 6}}>
-                    <div className='middleBar'>
-                        {loggedIn && <ProfileTimeline userData={userData} />}
-                        {postData.map((post, index) => (
-                            <PostComponent post={post} key={index} />
-                        ))}
+            <div style={{ flex: 6 }}>
+                <div className='middleBar'>
+                {loggedIn && <ProfileTimeline userData={userData} />}
+                {postData.map((post, index) => (
+                    <div key={index}>
+                    <PostComponent post={post} />
+                    {post.userReported && post.userReported.length > 0 && (
+                        <div>
+                        <p>This post received complaint(s)</p>
+                        <button onClick={() => handleViewComplaints(post._id)}>
+                            {selectedPostId === post._id ? 'Hide Complaints' : 'View Complaints'}
+                        </button>
+                        {selectedPostId === post._id && <ComplaintsView postId={selectedPostId} />}
+                        </div>
+                    )}
                     </div>
+                ))}
                 </div>
-    
-                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData} />
             </div>
+    
+            <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData} />
+          </div>
         </div>
-    );    
+      );
 };
 
 export default Profile;

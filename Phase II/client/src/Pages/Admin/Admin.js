@@ -2,7 +2,8 @@ import React from 'react';
 import "./Admin.scss";
 import TopBar from "../../components/AdminComponents/TopBar/TopBar.js"
 import AccountOptions from '../../components/AdminComponents/AccountOptions/AccountOptions';
-import PasswordResetRequests from '../../components/AdminComponents/PasswordResetRequests/PasswordResetRequests';
+import PasswordResetRequests from '../../components/AdminComponents/PasswordResetRequests/PasswordResetRequests.js';
+import Complaints from '../../components/AdminComponents/Complaints/Complaints';
 
 const Admin = () => {
 
@@ -20,7 +21,10 @@ const Admin = () => {
             <PasswordResetRequests/>
           </div>
           <div className="content-box">Transactions</div>
-          <div className="content-box">Disputes</div>
+          <div className="content-box">
+            Reports
+            <Complaints/>
+          </div>
         </div>
       </div>
     </div>
