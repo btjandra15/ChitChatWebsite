@@ -5,7 +5,6 @@ import Cookies from 'universal-cookie';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import CropperImage from '../CropperImage/CropperImage';
 import { updateUser } from '../../utils/updateUser';
 
 const cookies = new Cookies();
@@ -22,19 +21,19 @@ const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${sec
 const CreatePost = () => {
     const [ warning, setWarning ] = useState(false);
     const [ text, setText ] = useState('');
-    const [ mediaFiles, setMediaFiles ] = useState([]);
     const [ userData, setUserData ] = useState();
     const [ totalWordCount, setTotalWordCount ] = useState();
     const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
     const [ inputValue, setInputValue ] = useState('');
-    const [ image, setImage ] = useState(null);
+    const [ file, setFile ] = useState(null);
+
     const inputRef = useRef(null);
 
     const handleTextChange = (inputText) => {
         setText(inputText);
 
         const wordCount = inputText.trim().split(/\s+/).length;
-        setTotalWordCount(wordCount + calculateMediaWordCount());
+        setTotalWordCount(wordCount);
     };
 
     const handleKeywordsChange = (e) => {
@@ -52,32 +51,11 @@ const CreatePost = () => {
         }
     }
 
-    const onSelectFile = (e) => {
-        if(e.target.files && e.target.files.length > 0){
-            const reader = new FileReader()
+    const selectFile = (e) => {
+        const file = e.target.files[0];
 
-            reader.readAsDataURL(e.target.files[0]);
-
-            reader.addEventListener('load', () => {
-                console.log(reader.result);
-                setImage(reader.result);
-            })
-        }
-    };
-
-    const calculateMediaWordCount = () => {
-        let mediaWordCount = 0;
-
-        mediaFiles.forEach(file => {
-            if (file.type.includes('image/')) {
-                mediaWordCount += 10; // Image equivalent to 10 words
-            } else if (file.type.includes('video/')) {
-                mediaWordCount += 15; // Video equivalent to 15 words
-            }
-        });
-
-        return mediaWordCount;
-    };
+        setFile(file);
+    }
 
     const submitPost = async() => {
         // Define your list of taboo words
@@ -121,21 +99,17 @@ const CreatePost = () => {
             return;
         }
     
-        // Check for word count limit
-        if (warning) {
-            alert("Lower the amount of characters you have!");
-            return;
-        }
-
         if(text === ""){
             alert("Please enter a caption!");
             return;
         }
         
-        // if(!image){
-        //     alert("Please select an image!");
-        //     return;
-        // }
+        if(!file){
+            alert("Please select an image!");
+            return;
+        }else{
+            setTotalWordCount(totalWordCount + 10);
+        }
 
         let totalCost = 0;
 
@@ -154,42 +128,26 @@ const CreatePost = () => {
             updateUser(userData._id, 'chargesAmount', totalCost)
         }
 
+        const formData = new FormData();
 
-        // // Configuration for the POST request
-        // const configuration = {
-        //     method: "POST",
-        //     url: `http://localhost:3001/create-post`,
-        //     data: {
-        //         content: processedText, // Sending the processed text
-        //         userFirstName: userData.firstName,
-        //         userLastName: userData.lastName,
-        //         username: userData.username,
-        //         wordCount: totalWordCount,
-        //         dateAndTime: currentDateTimeString,
-        //         keywords: selectKeyWords,
-        //     },
-        //     headers: {
-        //         Authorization: `Bearer ${token}`,
-        //     },
-        // };
-    
-        // // Making the POST request to submit the post
-        // axios(configuration)
-        //     .then((res) => {
-        //         console.log(res);
-        //         alert("Successfully made a post");
-        //     })
-        //     .catch((err) => {
-        //         if (err.response && err.response.status === 400 && err.response.data.tabooWords) {
-        //             // Handle taboo words error
-        //             const tabooWords = err.response.data.tabooWords;
-        //             alert(`Post contains taboo words: ${tabooWords}`);
-        //         } else {
-        //             // Handle other errors
-        //             console.log(err);
-        //             alert("Error creating post");
-        //         }
-        //     });
+        formData.append('userFirstName', userData.firstName);
+        formData.append('userLastName', userData.lastName);
+        formData.append('username', userData.username);
+        formData.append("content", processedText);
+        formData.append("image", file);
+        formData.append("keywords", selectKeyWords);
+        formData.append('dateAndTime', currentDateTimeString);
+        formData.append("wordCount", totalWordCount);
+
+        await axios.post('http://localhost:3001/create-post', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(() => {
+            alert("Successfully made a post");
+        });
     };
     
     useEffect(() => {
@@ -237,7 +195,7 @@ const CreatePost = () => {
                         <div className="post_bottom">
                             <div className="post_icons">
                                 <label className="media_upload">
-                                    <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={onSelectFile}/>
+                                    <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
                                     {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
                                     <InsertPhotoOutlinedIcon className='icon'/>
                                 </label>
@@ -261,6 +219,13 @@ const CreatePost = () => {
                                         )
                                     })}
                                 </ul>
+
+                                {
+                                    file ?
+                                    <p>Uploaded image successfully</p>
+                                    :
+                                    null
+                                }
                             </div>
                             
                             <button className='post_button' onClick={submitPost}>Post</button>
