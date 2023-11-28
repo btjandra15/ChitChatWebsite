@@ -139,12 +139,13 @@ const Home = () => {
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
                         {loggedIn ? <CreatePost/> : <div></div>}
-
-                        {postData.map((post, index) => {
-                            return(
-                                <PostComponent post={post} key={index}/>
-                            )
-                        })}
+                            {postData && postData.length > 0 && (
+                                postData
+                                    .filter(post => !post.jobPost)
+                                    .map((post, index) => (
+                                    <PostComponent post={post} key={index} />
+                                    ))
+                            )}
                     </div>
                 </div>
 

@@ -59,6 +59,11 @@ const PostSchema = new mongoose.Schema({
         require: true,
         default: false,
     },
+    jobPost: {
+        type: Boolean,
+        require: true,
+        default: false,
+    },
     userLiked: {
         type: Array,
         require: true,

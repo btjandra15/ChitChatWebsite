@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import './JobPostings.scss';
 import Navbar from '../../components/Navbar/Navbar';
 import Leftbar from '../../components/LeftBar/Leftbar';
-import CreatePost from '../../components/CreatePost/CreatePost';
+import CreateJobPost from '../../components/CreateJobPost/CreateJobPost'
 import PostComponent from '../../components/Post/PostComponent';
 import Rightbar from '../../components/RightBar/Rightbar';
 import Cookies from 'universal-cookie';
@@ -33,6 +33,16 @@ const JobPostings = () => {
               console.error(`Error updating User: ${err}`);
           });
   }
+
+//   const updatePost = (postId, fieldToUpdateParam, newValueParam) => {
+//     axios.put(`http://localhost:3001/update-post/${postId}`, { fieldToUpdate: fieldToUpdateParam, newValue: newValueParam })
+//         .then(() => {
+//             console.log("Successfuly updated post");
+//         })
+//         .catch((err) => {
+//             console.error(`Error updating Post: ${err}`);
+//         });
+// }
 
   useEffect(() => {
       const loggedInUserConfig = {
@@ -128,13 +138,14 @@ const JobPostings = () => {
           {/* MIDDLE CONTENT */}
           <div style={{flex: 6}}>
               <div className='middleBar'>
-                  {loggedIn ? <CreatePost/> : <div></div>}
-
-                  {postData.map((post, index) => {
-                      return(
-                          <PostComponent post={post} key={index}/>
-                      )
-                  })}
+                  {loggedIn ? <CreateJobPost/> : <div></div>}
+                  {postData && postData.length > 0 && (
+                    postData
+                        .filter(post => post.jobPost === true)
+                        .map((post, index) => (
+                        <PostComponent post={post} key={index} />
+                        ))
+                    )}
               </div>
           </div>
 
