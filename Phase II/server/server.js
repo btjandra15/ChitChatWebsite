@@ -579,38 +579,96 @@ app.get('/api/posts/user/:userId', async (req, res) => {
 });
 
 // Creates Post
+// app.post('/create-post', auth, upload.single('image'), async (req, res) => {
+//     const buffer = await sharp(req.file.buffer)
+//                             .resize({
+//                                 height: 500,
+//                                 width: 500,
+//                                 fit: 'contain'
+//                             })
+//                             .toBuffer();
+
+//     const imageName = `${randomImageName()}-${req.file.originalname}`
+
+//     const params = {
+//         Bucket: 'chit-chat-website-images',
+//         Key: imageName,
+//         Body: buffer,
+//         ContentType: req.file.mimetype,
+//         ACL: 'public-read',
+//     };
+
+//     const imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
+//     const command = new PutObjectCommand(params);
+
+//     await s3.send(command);
+
+//     try {
+//         const { userFirstName, userLastName, username, content, keywords, dateAndTime, wordCount } = req.body;
+//         const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
+//         const userId = req.user.userId;
+
+//         if (foundTabooWord && asteriskCount > 2) {
+//             // Additional actions you wish to perform
+//             // For example, you can send an error response with the taboo words
+//             return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
+//         }
+
+//         const newPost = new Post({
+//             authorId: userId,
+//             authorFirstName: userFirstName,
+//             authorLastName: userLastName,
+//             authorUsername: username,
+//             content: content, // Save the sanitized content
+//             wordCount: wordCount,
+//             dateAndTime: dateAndTime,
+//             keywords: keywords,
+//             imageName: imageName,
+//             imageUrl: imageUrl,
+//         });
+
+//         const result = await newPost.save();
+//         res.status(201).json({ message: "Post created successfully", result });
+//     } catch (error) {
+//         console.error('Error in create-post route:', error);
+//         res.status(500).json({ message: "Error creating post", error });
+//     }
+// });
+
 app.post('/create-post', auth, upload.single('image'), async (req, res) => {
-    const buffer = await sharp(req.file.buffer)
-                            .resize({
-                                height: 500,
-                                width: 500,
-                                fit: 'contain'
-                            })
-                            .toBuffer();
-
-    const imageName = `${randomImageName()}-${req.file.originalname}`
-
-    const params = {
-        Bucket: 'chit-chat-website-images',
-        Key: imageName,
-        Body: buffer,
-        ContentType: req.file.mimetype,
-        ACL: 'public-read',
-    };
-
-    const imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
-    const command = new PutObjectCommand(params);
-
-    await s3.send(command);
-
     try {
+        let imageUrl = null;
+        let imageName = null;
+
+        if (req.file) {
+            const buffer = await sharp(req.file.buffer)
+                .resize({
+                    height: 500,
+                    width: 500,
+                    fit: 'contain'
+                })
+                .toBuffer();
+
+            imageName = `${randomImageName()}-${req.file.originalname}`;
+
+            const params = {
+                Bucket: 'chit-chat-website-images',
+                Key: imageName,
+                Body: buffer,
+                ContentType: req.file.mimetype,
+                ACL: 'public-read',
+            };
+
+            await s3.send(new PutObjectCommand(params));
+
+            imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
+        }
+
         const { userFirstName, userLastName, username, content, keywords, dateAndTime, wordCount } = req.body;
         const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
         const userId = req.user.userId;
 
         if (foundTabooWord && asteriskCount > 2) {
-            // Additional actions you wish to perform
-            // For example, you can send an error response with the taboo words
             return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
         }
 
@@ -619,7 +677,7 @@ app.post('/create-post', auth, upload.single('image'), async (req, res) => {
             authorFirstName: userFirstName,
             authorLastName: userLastName,
             authorUsername: username,
-            content: content, // Save the sanitized content
+            content: content,
             wordCount: wordCount,
             dateAndTime: dateAndTime,
             keywords: keywords,
@@ -634,6 +692,7 @@ app.post('/create-post', auth, upload.single('image'), async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
+
 
 // Adds +1 to views like in the post doucment in the database
 app.post('/view-post', async(req, res) => {

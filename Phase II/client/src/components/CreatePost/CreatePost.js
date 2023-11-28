@@ -104,10 +104,13 @@ const CreatePost = () => {
             return;
         }
         
-        if(!file){
-            alert("Please select an image!");
-            return;
-        }else{
+        // if(!file){
+        //     alert("Please select an image!");
+        //     return;
+        // }else{
+        //     setTotalWordCount(totalWordCount + 10);
+        // }
+        if (file){
             setTotalWordCount(totalWordCount + 10);
         }
 
@@ -134,7 +137,9 @@ const CreatePost = () => {
         formData.append('userLastName', userData.lastName);
         formData.append('username', userData.username);
         formData.append("content", processedText);
-        formData.append("image", file);
+        if (file) {
+            formData.append("image", file);
+        }
         formData.append("keywords", selectKeyWords);
         formData.append('dateAndTime', currentDateTimeString);
         formData.append("wordCount", totalWordCount);
@@ -194,11 +199,13 @@ const CreatePost = () => {
 
                         <div className="post_bottom">
                             <div className="post_icons">
-                                <label className="media_upload">
-                                    <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
-                                    {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
-                                    <InsertPhotoOutlinedIcon className='icon'/>
-                                </label>
+                                { file && (
+                                    <label className="media_upload">
+                                        <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
+                                        {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
+                                        <InsertPhotoOutlinedIcon className='icon'/>
+                                    </label>
+                                )}
                                 
                                 <label className="gif">
                                     <GifBoxOutlinedIcon className='icon'/>
