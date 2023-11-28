@@ -199,13 +199,11 @@ const CreatePost = () => {
 
                         <div className="post_bottom">
                             <div className="post_icons">
-                                { file && (
-                                    <label className="media_upload">
-                                        <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
-                                        {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
-                                        <InsertPhotoOutlinedIcon className='icon'/>
-                                    </label>
-                                )}
+                                <label className="media_upload">
+                                    <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
+                                    {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
+                                    <InsertPhotoOutlinedIcon className='icon'/>
+                                </label>
                                 
                                 <label className="gif">
                                     <GifBoxOutlinedIcon className='icon'/>
