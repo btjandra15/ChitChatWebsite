@@ -28,7 +28,7 @@ const Leftbar = ({userData, loggedIn, logout}) => {
             id: 3,
             icon: WorkOutlineOutlinedIcon,
             text: 'Postings',
-            link: '/postings'
+            link: '/job-postings'
         },
         {
           id: 4,
