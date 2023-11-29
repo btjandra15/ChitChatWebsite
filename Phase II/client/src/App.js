@@ -58,7 +58,7 @@ function App() {
             <Route path='/trending' element={<Trending/>}/> 
 
             {/*Postings Route*/}
-            <Route path='/postings' element={<JobPostings/>}/> 
+            <Route path='/job-postings' element={<JobPostings/>}/> 
 
             {/*Payment Route*/}
             <Route path='/payment' element={<Payment/>}/> 
