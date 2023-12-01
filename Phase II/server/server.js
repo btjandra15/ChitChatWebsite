@@ -454,7 +454,6 @@ app.post('/sub-warning-count/:receiverId', async (req, res) => {
     }
 });
 
-
 //Follows User
 app.post('/follow-user', auth, async(req, res) => {
     const { userID, trendyUserID } = req.body;
@@ -464,11 +463,11 @@ app.post('/follow-user', auth, async(req, res) => {
             .then(async(user) => {
                 if(userID === trendyUserID) {
                     return res.status(400).json({ message: "User can't follow themselves" });
-                }else if(user.subscribersList.includes(trendyUserID)) {
+                }else if(user.followingList.includes(trendyUserID)) {
                     return res.status(400).json({message:'User followed the user already'});
                 }
 
-                user.subscribersList.push(trendyUserID);
+                user.followingList.push(trendyUserID);
                 await user.save();
                 res.json({ message: 'User followed the user successfully!'});
             })
@@ -1073,7 +1072,6 @@ app.post('/create-comment', auth, async(req, res) => {
 //COMMENTS ENDPOINTS
 
 //Job Postings Endpoints
-
 app.post('/create-job-post', auth, upload.single('image'), async (req, res) => {
     try {
         let imageUrl = null;

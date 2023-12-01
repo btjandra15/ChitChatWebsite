@@ -13,6 +13,8 @@ const Rightbar = ({loggedIn, userData}) => {
     const [mostLikedPosts, setMostLikedPosts] = useState([]);
     const [openTipBox, setOpenTipBox] = useState(false);
     const [tipAmount, setTipAmount] = useState(0);
+    const [allUsers, setAllUsers] = useState([]);
+    const [suggestedUsers, setSuggestedUsers] = useState([]);
  
     const followUser = (loggedInUserID, trendyUserID) => {
         if(!loggedIn){
@@ -78,30 +80,28 @@ const Rightbar = ({loggedIn, userData}) => {
     }
 
     useEffect(() => {
-        const fetchTrendyUsers = async() => {
-            try{
-                const res = await axios.get('http://localhost:3001/get-trendy-users');
-
-                setTrendyUsers(res.data);
-            }catch(err){
-                console.error(`Error: ${err}`);
-            };
+        const fetchData = async () => {
+            try {
+                const allUserResponse = await axios.get('http://localhost:3001/get-all-users');
+                setAllUsers(allUserResponse.data);
+    
+                const trendyUsersResponse = await axios.get('http://localhost:3001/get-trendy-users');
+                setTrendyUsers(trendyUsersResponse.data);
+    
+                const topThreePostsResponse = await axios.get('http://localhost:3001/get-top-liked-post');
+                setMostLikedPosts(topThreePostsResponse.data);
+    
+                const shuffleUsers = allUserResponse.data.sort(() => Math.random() - 0.5);
+                const suggested = shuffleUsers.slice(0, 3);
+                setSuggestedUsers(suggested);
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
         };
-
-        const fetchTopThreePosts = async() => {
-            try{
-                const res = await axios.get('http://localhost:3001/get-top-liked-post');
-
-                setMostLikedPosts(res.data);
-            }catch(err){
-                console.error(`Error: ${err}`);
-            };
-        }
-
-        fetchTrendyUsers();
-        fetchTopThreePosts();
+    
+        fetchData();
     }, []);
-
+    
     return (
         <div className='rightbar'>
             <div className="container">
@@ -109,39 +109,80 @@ const Rightbar = ({loggedIn, userData}) => {
                     <span>{loggedIn ? 'Suggestions for You' : 'Trendy Users'}</span>
 
                     <div className="trendy-users">
-                        {trendyUsers.map((user, index) => {
-                            return(
-                                <div className="user" key={index}>
-                                    <div className="userInfo">
-                                        <img src={DefaultProfilePicture} alt="" />
-
-                                        <Link to={`/profile/${user.username}`}>
-                                            <span>{user.firstName} {user.lastName}</span>
-                                        </Link>
-                                    </div>
-
-                                    <div className="buttons">
-                                        <button onClick={() => followUser(userData._id, user._id)}>Follow</button>
-                                        <button>Dimiss</button>
-                                        <button onClick={showPoup}>Tip</button>
-
-                                        {
-                                            openTipBox ?
-                                            <div className="popup">
-                                                <div className="popup-inner">
-                                                    <h3>Tip User</h3>
-                                                    <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
-                                                    <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
-                                                    <button className='close-button' onClick={showPoup}>Close</button>
-                                                </div>
+                        {
+                            loggedIn ? 
+                            <div>
+                                {suggestedUsers
+                                    .filter((user) => user._id !== userData._id)
+                                    .slice(0, 3)
+                                    .map((user, index) => {
+                                    return(
+                                        <div className="user" key={index}>
+                                            <div className="userInfo">
+                                                <img src={DefaultProfilePicture} alt="" />
+                                                <span>{user.firstName} {user.lastName}</span>
                                             </div>
-                                            :
-                                            null
-                                        }
-                                    </div>
-                                </div>
-                            )
-                        })}
+
+                                            <div className="buttons">
+                                                <button onClick={() => followUser(userData._id, user._id)}>Follow</button>
+                                                <button>Dimiss</button>
+                                                <button onClick={showPoup}>Tip</button>
+
+                                                {
+                                                    openTipBox ?
+                                                    <div className="popup">
+                                                        <div className="popup-inner">
+                                                            <h3>Tip User</h3>
+                                                            <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
+                                                            <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
+                                                            <button className='close-button' onClick={showPoup}>Close</button>
+                                                        </div>
+                                                    </div>
+                                                    :
+                                                    null
+                                                }
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            :
+                            <div>
+                                {trendyUsers.map((user, index) => {
+                                    return(
+                                        <div className="user" key={index}>
+                                            <div className="userInfo">
+                                                <img src={DefaultProfilePicture} alt="" />
+
+                                                <Link to={`/profile/${user.username}`}>
+                                                    <span>{user.firstName} {user.lastName}</span>
+                                                </Link>
+                                            </div>
+
+                                            <div className="buttons">
+                                                <button onClick={() => followUser(userData._id, user._id)}>Follow</button>
+                                                <button>Dimiss</button>
+                                                <button onClick={showPoup}>Tip</button>
+
+                                                {
+                                                    openTipBox ?
+                                                    <div className="popup">
+                                                        <div className="popup-inner">
+                                                            <h3>Tip User</h3>
+                                                            <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
+                                                            <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
+                                                            <button className='close-button' onClick={showPoup}>Close</button>
+                                                        </div>
+                                                    </div>
+                                                    :
+                                                    null
+                                                }
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        }
                     </div>
                 </div>
 

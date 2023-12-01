@@ -94,6 +94,11 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         require: true,
         default: 0,
+    },
+    tippedUsers: {
+        type: Array,
+        require: true,
+        default: []
     }
 });
 

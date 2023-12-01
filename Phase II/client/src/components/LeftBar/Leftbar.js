@@ -57,7 +57,7 @@ const Leftbar = ({userData, loggedIn, logout}) => {
                     <div className="user">
                         {loggedIn ?
                             <Link className='link' to={`/profile/${userData.username}`}>
-                                <img src={userData ? userData.profilePictureUrl : DefaultProfilePicture} alt="" />
+                                <img src={userData.profilePictureUrl === "" ? userData.profilePictureUrl : DefaultProfilePicture} alt="" />
                                 <span>{userData.firstName} {userData.lastName}</span>
                             </Link>
                             :

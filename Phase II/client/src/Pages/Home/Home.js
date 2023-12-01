@@ -54,7 +54,7 @@ const Home = () => {
         }
 
         //GETS ALL USERS AND CHECKS TO SEE IF THEY MEET THE TRENDY REQUIREMENTS
-        const getAllUsers = ( ) => {
+        const getAllUsers = () => {
             axios(allUserConfig)
             .then((res) => {
                 setAllUserData(res.data);

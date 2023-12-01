@@ -6,6 +6,7 @@ import { DarkModeContext } from '../../context/darkModeContext';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import OutstandingCharges from './components/OutstandingCharges';
+import { updateUser } from '../../utils/updateUser';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -29,6 +30,7 @@ const Payment = () => {
 
   const handleAddFunds = () => {
     if (transactionAmount > 0) {
+      updateUser(userData._id, 'balance', userData.balance + transactionAmount)
       setTransactionAmount(0);
     }else{
       alert("Please put an amount greater than 0!");

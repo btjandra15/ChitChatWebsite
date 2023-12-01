@@ -200,7 +200,7 @@ const CreatePost = () => {
                         <div className="post_bottom">
                             <div className="post_icons">
                                 <label className="media_upload">
-                                    <input type="file" accept='image/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
+                                    <input type="file" accept='image/*, video/' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
                                     {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
                                     <InsertPhotoOutlinedIcon className='icon'/>
                                 </label>

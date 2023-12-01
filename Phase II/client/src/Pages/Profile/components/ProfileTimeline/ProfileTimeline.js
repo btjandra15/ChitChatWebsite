@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import './ProfileTimeline.scss';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import CropperImage from '../../../../components/CropperImage/CropperImage';
 
 const ProfileTimeline = ({ userData }) => {
     // Check if userData is available
@@ -13,31 +12,14 @@ const ProfileTimeline = ({ userData }) => {
     const { profilePictureUrl, bannerUrl, bio, username } = userData;
     const inputRef = useRef(null);
     const triggerFileSelectPopup = () => inputRef.current.click();
-    const [ image, setImage ] = useState(null);
+
 
     const onSelectFile = (e) => {
-        if(e.target.files && e.target.files.length > 0){
-            const reader = new FileReader()
-
-            reader.readAsDataURL(e.target.files[0]);
-
-            reader.addEventListener('load', () => {
-                console.log(reader.result);
-                setImage(reader.result);
-            })
-        }
     }
 
     return (
         <div className="profile-timeline">
             {bannerUrl && <img src={bannerUrl} alt="Banner" className="profile-banner" />}
-
-            {
-                image ? 
-                <CropperImage image={image} userData={userData}/>
-                : 
-                null
-            }
 
             <div className="profile-info">
                 {profilePictureUrl && <img src={profilePictureUrl} alt={username} className="profile-picture-icon" />}
