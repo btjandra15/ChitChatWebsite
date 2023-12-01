@@ -306,10 +306,26 @@ const PostComponent = ({post, index}) => {
     
               <div className='text-description' onClick={() => openPost(post._id, userData._id)}>
                 <p className='post-content'>{post.content}</p>
+                {post.jobPost === true && (
+                  <a href={post.jobLink} target="_blank" rel="noopener noreferrer">
+                    {post.jobLink}
+                  </a>
+                )}
                 {/* <img src={post ? post.imageUrl : TestImage} alt="" className='post-image'/> */}
                 {post.imageUrl && (
                   <div className='post-image'>
                     <img src={post ? post.imageUrl : TestImage} alt="" className='post-image'/>
+                  </div>
+                )}
+                {/* Display keywords if they exist */}
+                {post.keywords && post.keywords[0] != "" && (
+                  <div className="keywords">
+                    {post.keywords.map((keyword, index) => (
+                      <span key={index}>
+                        {index > 0 && ' '} {/* Add comma and space for each keyword except the first one */}
+                        #{keyword.trim()}
+                      </span>
+                    ))}
                   </div>
                 )}
               </div>

@@ -19,7 +19,7 @@ const sharp = require('sharp');
 const PostComplaint = require('./models/PostComplaints.js')
 
 // Generate a random secure string (32 bytes)
-const JWT_SECRET = crypto.randomBytes(32).toString('hex');
+const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -166,7 +166,8 @@ app.post('/register', (req, res) => {
                 lastName: lastName,
                 username: username,
                 email: email,
-                password: hashedPassword
+                password: hashedPassword,
+                userType: selectedUserType
             });
 
             user.save()
@@ -664,7 +665,8 @@ app.post('/create-post', auth, upload.single('image'), async (req, res) => {
             imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
         }
 
-        const { userFirstName, userLastName, username, content, keywords, dateAndTime, wordCount } = req.body;
+        const { userFirstName, userLastName, username, content, dateAndTime, wordCount } = req.body;
+        const keywords = req.body.keywords.split(',');
         const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
         const userId = req.user.userId;
 
@@ -1004,40 +1006,12 @@ app.post('/deny-complaint/:id', async (req, res) => {
     if (!updatedComplaint) {
         return res.status(404).json({ error: 'Post complaint not found' });
     }
-    // if (updatedComplaint.dispute) {
-    //     // Fetch initiator and receiver users from the User schema
-    //     const initiatorUser = await User.findOne({ _id: updatedComplaint.initiatorId });
-    //     const receiverUser = await User.findOne({ _id: updatedComplaint.receiverId });
-
-    //     // Update warningCount and remove initiator from userReported array
-    //     if (initiatorUser) {
-    //         // Send an email to the receiver
-    //         sendEmailToReceiver(receiverUser.email, 'You won the dispute. Your warning has been removed.');
-    //     }
-
-    //     // Update warningCount and send email to the initiator
-    //     if (receiverUser) {
-    //         // Send an email to the initiator
-    //         sendEmailToInitiator(initiatorUser.email, `Your complaint has been denied. Reason: ${denyReason}`);
-    //     }
-    // }
-
     res.json({ message: 'Complaint denied successfully' });
     } catch (error) {
     console.error('Error denying complaint:', error);
     res.status(500).json({ error: 'Internal server error' });
     }
 });
-
-// // Function to send an email to the initiator
-// function sendEmailToInitiator(email, message) {
-    
-//   }
-  
-// // Function to send an email to the receiver
-// function sendEmailToReceiver(email, message) {
-
-//   }
 
 // Post Complaints Endpoints
 
@@ -1103,7 +1077,8 @@ app.post('/create-job-post', auth, upload.single('image'), async (req, res) => {
             imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
         }
 
-        const { userFirstName, userLastName, username, content, keywords, dateAndTime, wordCount } = req.body;
+        const { userFirstName, userLastName, username, content, dateAndTime, wordCount, jobLink } = req.body;
+        const keywords = req.body.keywords.split(',');
         const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
         const userId = req.user.userId;
 
@@ -1119,6 +1094,7 @@ app.post('/create-job-post', auth, upload.single('image'), async (req, res) => {
             content: content,
             wordCount: wordCount,
             jobPost: true, //Set to true
+            jobLink: jobLink,
             dateAndTime: dateAndTime,
             keywords: keywords,
             imageName: imageName,
