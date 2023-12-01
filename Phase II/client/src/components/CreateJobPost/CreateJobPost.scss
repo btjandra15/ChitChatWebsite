@@ -66,6 +66,31 @@ form .formgroup {
   word-break: break-all;
 }
 
+// Add or modify these styles in your existing CSS
+
+.formgroup-job {
+    position: relative;
+    min-height: 25px; // Adjust the height to your preference
+    padding-bottom: 5px;
+    overflow-y: auto;
+  }
+  
+  .formgroup-job::-webkit-scrollbar {
+    width: 0px;
+  }
+  
+  .formgroup-job > input {
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    padding-left: 10px;
+    font-size: 17px;
+    min-height: 25px;
+    width: 98%;
+    word-wrap: break-word;
+    word-break: break-all;
+  }  
+
 .image_input {
 border: none;
 padding: 10px;

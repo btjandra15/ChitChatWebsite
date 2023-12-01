@@ -21,6 +21,7 @@ const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${sec
 const CreatePost = () => {
     const [ warning, setWarning ] = useState(false);
     const [ text, setText ] = useState('');
+    const [ jobText, setJobText] = useState('');
     const [ userData, setUserData ] = useState();
     const [ totalWordCount, setTotalWordCount ] = useState();
     const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
@@ -34,6 +35,10 @@ const CreatePost = () => {
 
         const wordCount = inputText.trim().split(/\s+/).length;
         setTotalWordCount(wordCount);
+    };
+
+    const handleJobTextChange = (inputText) => {
+        setJobText(inputText);
     };
 
     const handleKeywordsChange = (e) => {
@@ -58,6 +63,23 @@ const CreatePost = () => {
     }
 
     const submitPost = async() => {
+
+        if (userData.userType !== 'Corporate User') {
+            alert("You are not a Corporate User! You received a warning!");
+
+            const warningCount = userData.warningCount;
+
+            axios.put(`http://localhost:3001/update-user/${userData._id}`, { fieldToUpdate: 'warningCount', newValue: warningCount + 1 })
+                .then(() => {
+                    console.log("Successfully updated user");
+                })
+                .catch((err) => {
+                    console.error(`Error updating User: ${err}`);
+                });
+
+            return;
+        }
+
         // Define your list of taboo words
         const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
     
@@ -140,7 +162,8 @@ const CreatePost = () => {
         if (file) {
             formData.append("image", file);
         }
-        formData.append("keywords", selectKeyWords);
+        formData.append("jobLink", jobText);
+        formData.append("keywords", selectKeyWords.join(','));
         formData.append('dateAndTime', currentDateTimeString);
         formData.append("wordCount", totalWordCount);
 
@@ -191,6 +214,15 @@ const CreatePost = () => {
                                     value={text}
                                     onChange={(e) => handleTextChange(e.target.value)}
                                     placeholder="Spill the Tea ☕ What's the latest buzz in your world of chitchat?"
+                                    cols="138"
+                                    rows={5}
+                                />
+                            </div>
+                            <div className="formgroup-job" style={{ display: 'block' }}>
+                                <input
+                                    value={jobText}
+                                    onChange={(e) => handleJobTextChange(e.target.value)}
+                                    placeholder="Job Link"
                                     cols="138"
                                     rows={5}
                                 />

@@ -5,8 +5,8 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 ## Specifications: 5 user Types
 - [x] Super-user (SU)
   - [x] Can warn/add/delete any users and/or messages
-- [ ] Corporate-user (CU)
-  - [ ] Can post ads and job openings  
+- [x] Corporate-user (CU)
+  - [x] Can post ads and job openings  
 - [x] Trendy-user (TU)
   - [x] All permissions of an ordinary user (OU)
   - [x] Subscribed by >10 users
@@ -27,9 +27,9 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 ## Required Features
 - [x] When a surfer visits the system, the top 3 most liked messages and the top 3 trendy users will be featured on the top page.
   - [x] Sufer is given the choice of applying to be an ordinary or corporate user with their chosen id
-- [ ] The super-user processes user applications with accept or deny
-  - [ ] If accepted, a temporary password is sent to the user and the user must change it when they first log in and an amount of money should be deposited to the system
-  - [ ] If denied, a justification should be provided
+- [x] The super-user processes user applications with accept or deny
+  - [x] If accepted, a temporary password is sent to the user and the user must change it when they first log in and an amount of money should be deposited to the system
+  - [x] If denied, a justification should be provided
 - [ ] When a TU/OU/CU logins, the system will suggest accounts for the user to follow based on this user's reading, liking, tipping, following history
 - [ ] A TU/OU/CU can construct their profiles which again are subjected to comments/reports by others (Same warning policy will apply if the profile contains misinformation)
 - [x] TU/OU can post messages with <= 20 words (An image is equivalent to 10 words while a video is equivalent to 15 words) for free

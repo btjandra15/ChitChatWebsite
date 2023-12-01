@@ -3,7 +3,6 @@ import "./Signup.scss"
 import ChitChatHome from "../../images/ChitChatLogo.jpg";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
 const Signup = () => {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
@@ -18,7 +17,6 @@ const Signup = () => {
 
   const addNewUser = (e) => {
     e.preventDefault();
-
     console.log(selectedUserType);
 
     const configuration = {
@@ -48,13 +46,11 @@ const Signup = () => {
       <div className="logo-section">
         <img src={ChitChatHome} alt="ChitChat Logo" className="logo"/>
       </div>
-
       <div className="form-section">
         <div className="form-header">
           <h1>Join ChitChat</h1>
           <p className="form-subheading">Create an account to get started.</p>
         </div>
-
         <form onSubmit={addNewUser} className="signup-form">
           <input
             type="text"
@@ -63,7 +59,6 @@ const Signup = () => {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
-
           <input
             type="text"
             className="form-input"
@@ -71,7 +66,6 @@ const Signup = () => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
-
           <input
             type="text"
             className="form-input"
@@ -95,7 +89,7 @@ const Signup = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
+          
           <label htmlFor='dropdown'>Select a User Type</label>
           <select id='dropdown' value={selectedUserType} onChange={handleSelectUserType}>
             <option value="">Select...</option>
@@ -114,5 +108,4 @@ const Signup = () => {
     </div>
   );
 };
-
 export default Signup

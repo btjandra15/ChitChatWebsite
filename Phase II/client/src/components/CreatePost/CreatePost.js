@@ -140,7 +140,7 @@ const CreatePost = () => {
         if (file) {
             formData.append("image", file);
         }
-        formData.append("keywords", selectKeyWords);
+        formData.append("keywords", selectKeyWords.join(','));
         formData.append('dateAndTime', currentDateTimeString);
         formData.append("wordCount", totalWordCount);
 

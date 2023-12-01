@@ -48,6 +48,7 @@ const PostSchema = new mongoose.Schema({
     keywords: {
         type: Array,
         require: true,
+        default: [],
     },
     wordCount: {
         type: Number,
@@ -63,6 +64,11 @@ const PostSchema = new mongoose.Schema({
         type: Boolean,
         require: true,
         default: false,
+    },
+    jobLink: {
+        type: String,
+        require: false,
+        default: "",
     },
     userLiked: {
         type: Array,
