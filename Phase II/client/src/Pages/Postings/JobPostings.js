@@ -12,12 +12,41 @@ import { DarkModeContext } from '../../context/darkModeContext';
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-const JobPostings = () => {
+const JobPostings = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [allUserData, setAllUserData] = useState([]);
-  const [ postData, setPostData ] = useState([]);
+  const [postData, setPostData] = useState([]);
   const { darkMode } = useContext(DarkModeContext);
+  const [sortOption, setSortOption] = useState('asc');
+
+  const filterAndSortPosts = () => {
+    let filtered = [...postData];
+  
+    // Apply filtering based on homeFilteredPosts
+    if (homeFilteredPosts.length > 0) {
+      filtered = homeFilteredPosts;
+    }
+
+    // Apply sorting based on sortOption
+    if (sortOption === 'asc') {
+      filtered.sort((a, b) => a.likes - b.likes);
+    } else if (sortOption === 'desc') {
+      filtered.sort((a, b) => b.likes - a.likes);
+    }
+
+    if (sortOption === 'imageTrue') {
+        filtered = filtered.filter(post => post.imageUrl !== null);
+    } else if (sortOption === 'imageFalse') {
+        filtered = filtered.filter(post => post.imageUrl === null);
+    }
+
+    return filtered;
+  }; 
+
+  const handleSort = (option) => {
+      setSortOption(option);
+  };
 
   const logout = () => {
       cookies.remove("TOKEN", { path: "/" });
@@ -34,15 +63,15 @@ const JobPostings = () => {
           });
   }
 
-//   const updatePost = (postId, fieldToUpdateParam, newValueParam) => {
-//     axios.put(`http://localhost:3001/update-post/${postId}`, { fieldToUpdate: fieldToUpdateParam, newValue: newValueParam })
-//         .then(() => {
-//             console.log("Successfuly updated post");
-//         })
-//         .catch((err) => {
-//             console.error(`Error updating Post: ${err}`);
-//         });
-// }
+  const updatePost = (postId, fieldToUpdateParam, newValueParam) => {
+    axios.put(`http://localhost:3001/update-post/${postId}`, { fieldToUpdate: fieldToUpdateParam, newValue: newValueParam })
+        .then(() => {
+            console.log("Successfuly updated post");
+        })
+        .catch((err) => {
+            console.error(`Error updating Post: ${err}`);
+        });
+  }
 
   useEffect(() => {
       const loggedInUserConfig = {
@@ -129,7 +158,12 @@ const JobPostings = () => {
   return (
     <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
       {/* NAVBAR CONTENT */}
-      <Navbar loggedIn={loggedIn} userData={userData}/>
+      <Navbar 
+        loggedIn={loggedIn} 
+        userData={userData}
+        onSearch={onSearch}
+        onSort={handleSort}
+      />
 
       <div className="main-content">
           {/* LEFTBAR CONTENT */}
@@ -139,13 +173,18 @@ const JobPostings = () => {
           <div style={{flex: 6}}>
               <div className='middleBar'>
                   {loggedIn ? <CreateJobPost/> : <div></div>}
-                  {postData && postData.length > 0 && (
+                  {/* {postData && postData.length > 0 && (
                     postData
                         .filter(post => post.jobPost === true)
                         .map((post, index) => (
                         <PostComponent post={post} key={index} />
                         ))
-                    )}
+                    )} */}
+                    {filterAndSortPosts()
+                        .filter(post => post.jobPost === true)
+                        .map((post, index) => (
+                            <PostComponent post={post} key={index} />
+                    ))}
               </div>
           </div>
 

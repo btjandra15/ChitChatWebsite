@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ChitChatLogo2 from "../../images/ChitChatLogo2.png";
 import ChitChatLogo2darkmode from "../../images/ChitChatLogo2-darkmode.png"
@@ -6,18 +6,51 @@ import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import DarkModeOutlined from '@mui/icons-material/DarkModeOutlined';
 import WbSunnyOutlined from '@mui/icons-material/WbSunnyOutlined';
 import GridViewOutlined from '@mui/icons-material/GridViewOutlined';
-import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import Person2Outlined from '@mui/icons-material/Person2Outlined';
 import EmailOutlined from '@mui/icons-material/EmailOutlined';
 import NotificationsOutlined from '@mui/icons-material/NotificationsOutlined';
 import { DarkModeContext } from '../../context/darkModeContext';
-import './Navbar.scss'
-import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg'
+import './Navbar.scss';
+import DefaultProfilePicture from '../../images/defaultProfileIcon.jpg';
+import SearchBar from './SearchBar/SearchBar';
 
 const Navbar = (props) => {
     const { darkMode, toggle } = useContext(DarkModeContext);
     const loggedIn = props.loggedIn;
     const userData = props.userData;
+
+    const handleSearch = async (type, value) => {
+        if (!props.onSearch) {
+            console.error("onSearch is not defined in props");
+        } else {
+
+        if (!value) {
+          // Reset the posts to show all posts
+          props.onSearch(null);
+          return;
+        }
+      
+        if (type === 'author') {
+          // For author filtering
+          console.log("Selected Author:", value);
+          props.onSearch(type, value);
+        } else if (type === 'keyword') {
+          console.log("Selected Keyword:", value);
+          props.onSearch(type, value);
+        } else {
+          // Handle other types if needed
+          props.onSearch(null);
+        }
+    }
+    };
+
+    const handleSort = (option) => {
+        if (props.onSort) {
+          props.onSort(option);
+        } else {
+          console.error("onSort is not defined in props");
+        }
+    };
 
     return (
         <div className='navbar'>
@@ -39,10 +72,7 @@ const Navbar = (props) => {
                     <GridViewOutlined/>
                 </Link>
 
-                <div className="search">
-                    <SearchOutlined/>
-                    <input type="text" placeholder='Search...' className="search-input"/>
-                </div>
+                <SearchBar onSelect={handleSearch} onSort={handleSort}/>
             </div> 
 
             <div className="right">

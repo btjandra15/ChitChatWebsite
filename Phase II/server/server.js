@@ -1134,3 +1134,55 @@ app.post('/upload-profile-pic', userController.setProfilePic);
 // Endpoint for uploading banner image
 app.post('/upload-banner-pic', userController.setBannerImage);
 
+//Search Endpoints
+
+// Endpoint for searching posts by authors
+app.get('/search/authors', async (req, res) => {
+    try {
+      const { q } = req.query;
+      const authors = await User.find({ username: { $regex: new RegExp(q, 'i') } });
+      res.json(authors);
+    } catch (error) {
+      console.error('Error searching authors:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+// Posts by a specific author
+app.get('/get-posts-by-author/:authorId', async (req, res) => {
+    try {
+      const { authorId } = req.params;
+      const posts = await Post.find({ authorId: authorId });
+      res.json(posts);
+    } catch (error) {
+      console.error('Error fetching posts by author:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+// Endpoint for searching posts by keywords
+app.get('/search/keywords', async (req, res) => {
+    try {
+      const { q } = req.query;
+      const posts = await Post.find({ keywords: { $in: [new RegExp(q, 'i')] } });
+      const uniqueKeywords = [...new Set(posts.flatMap(post => post.keywords))];
+      res.json(uniqueKeywords);
+    } catch (error) {
+      console.error('Error searching keywords:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+// Posts containing specific keyword
+app.get('/get-posts-by-keyword/:keyword', async (req, res) => {
+try {
+    const { keyword } = req.params;
+    const posts = await Post.find({ keywords: { $in: [new RegExp(keyword, 'i')] } });
+    res.json(posts);
+} catch (error) {
+    console.error('Error fetching posts by keyword:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
+});  
+
+//Search Endpoints

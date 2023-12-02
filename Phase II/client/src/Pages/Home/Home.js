@@ -12,12 +12,41 @@ import Rightbar from "../../components/RightBar/Rightbar";
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-const Home = () => {
+const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);
     const [allUserData, setAllUserData] = useState([]);
     const { darkMode } = useContext(DarkModeContext);
-    const [ postData, setPostData ] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [sortOption, setSortOption] = useState(null);
+
+    const filterAndSortPosts = () => {
+        let filtered = [...posts];
+      
+        // Apply filtering based on homeFilteredPosts
+        if (homeFilteredPosts.length > 0) {
+          filtered = homeFilteredPosts;
+        }
+
+        // Apply sorting based on sortOption
+        if (sortOption === 'asc') {
+          filtered.sort((a, b) => a.likes - b.likes);
+        } else if (sortOption === 'desc') {
+          filtered.sort((a, b) => b.likes - a.likes);
+        }
+
+        if (sortOption === 'imageTrue') {
+            filtered = filtered.filter(post => post.imageUrl !== null);
+        } else if (sortOption === 'imageFalse') {
+            filtered = filtered.filter(post => post.imageUrl === null);
+        }
+    
+        return filtered;
+    };
+
+    const handleSort = (option) => {
+        setSortOption(option);
+    };
 
     const logout = () => {
         cookies.remove("TOKEN", { path: "/" });
@@ -95,7 +124,7 @@ const Home = () => {
         const getAllPosts = () => {
             axios(postConfig)
                 .then((res) => {
-                setPostData(res.data);
+                setPosts(res.data);
 
                 res.data.map((post) => {
                     const difference = post.likes - post.dislikes;
@@ -129,7 +158,12 @@ const Home = () => {
     return(
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
             {/* NAVBAR CONTENT */}
-            <Navbar loggedIn={loggedIn} userData={userData}/>
+            <Navbar
+                loggedIn={loggedIn}
+                userData={userData}
+                onSearch={onSearch}
+                onSort={handleSort}
+            />
 
             <div className="main-content">
                 {/* LEFTBAR CONTENT */}
@@ -139,13 +173,11 @@ const Home = () => {
                 <div style={{flex: 6}}>
                     <div className='middleBar'>
                         {loggedIn ? <CreatePost/> : <div></div>}
-                            {postData && postData.length > 0 && (
-                                postData
-                                    .filter(post => !post.jobPost)
-                                    .map((post, index) => (
+                            {filterAndSortPosts()
+                                .filter(post => !post.jobPost)
+                                .map((post, index) => (
                                     <PostComponent post={post} key={index} />
-                                    ))
-                            )}
+                            ))}
                     </div>
                 </div>
 

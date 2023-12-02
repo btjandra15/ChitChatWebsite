@@ -17,6 +17,31 @@ const token = cookies.get("TOKEN");
 
 function App() {
   const [userData, setUserData] = useState(null);
+  const [postData, setPostData] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState(postData);
+
+  const handleSearch = async (type, query) => {
+    try {
+      let endpoint;
+
+      if (type === 'author') {
+        endpoint = `http://localhost:3001/get-posts-by-author/${query}`;
+      } else if (type === 'keyword') {
+        endpoint = `http://localhost:3001/get-posts-by-keyword/${query}`;
+      } else {
+        // Handle other types if needed
+        return;
+      }
+
+      const response = await fetch(endpoint);
+      const data = await response.json();
+
+      // Update the filtered posts in the state
+      setFilteredPosts(data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
 
   useEffect(() => {
     const loggedInUserConfig = {
@@ -27,6 +52,11 @@ function App() {
       },
     };
 
+    const postConfig = {
+      method: 'GET',
+      url: 'http://localhost:3001/get-post',
+    };    
+
     axios(loggedInUserConfig)
       .then((res) => {
         setUserData(res.data);
@@ -34,13 +64,26 @@ function App() {
       .catch((err) => {
         console.error(err);
       })
+
+    const getAllPosts = () => {
+      axios(postConfig)
+        .then((res) => {
+          setPostData(res.data);
+          console.log("Fetched Posts:", res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    getAllPosts();
   }, []);
 
   return (
       <div className="app">
           <Routes>
             {/*Home Surfer User Route*/}
-            <Route path='/' element={<Home/>}/>
+            <Route path='/' element={<Home onSearch={handleSearch} filteredPosts={filteredPosts}/>}/>
 
             {/*Admin Route*/}
             <Route path='/admin' element={<Admin/>}/>
@@ -52,13 +95,13 @@ function App() {
             <Route path='/login' element={<Login/>}/> 
 
             {/*Profile Route*/}
-            <Route path={`/profile/${userData ? userData.username : null}`} element={<Profile/>}/> 
+            <Route path={`/profile/${userData ? userData.username : null}`} element={<Profile/>}/>
 
             {/*Trending Route*/}
             <Route path='/trending' element={<Trending/>}/> 
 
             {/*Postings Route*/}
-            <Route path='/job-postings' element={<JobPostings/>}/> 
+            <Route path='/job-postings' element={<JobPostings onSearch={handleSearch} filteredPosts={filteredPosts}/>}/> 
 
             {/*Payment Route*/}
             <Route path='/payment' element={<Payment/>}/> 
