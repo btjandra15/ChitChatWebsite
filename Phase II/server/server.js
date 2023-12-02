@@ -1106,5 +1106,4 @@ app.post('/create-job-post', auth, upload.single('image'), async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
-
 //Job Postings Endpoints

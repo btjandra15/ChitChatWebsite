@@ -58,7 +58,7 @@ const UserSchema = new mongoose.Schema({
     balance: {
         type: Number,
         require: true,
-        default: 0,
+        default: 1000,
     },
     tips: {
         type: Number,
