@@ -113,7 +113,8 @@ const Rightbar = ({loggedIn, userData}) => {
                             loggedIn ? 
                             <div>
                                 {suggestedUsers
-                                    .filter((user) => user._id !== userData._id)
+                                    .filter((user) => user && userData && user._id !== userData._id) //TEMP LINE TO WORK ON THE WEBSITE WITHOUT ERROR
+                                    // .filter((user) => user._id !== userData._id)
                                     .slice(0, 3)
                                     .map((user, index) => {
                                     return(

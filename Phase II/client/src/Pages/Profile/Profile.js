@@ -33,14 +33,18 @@ const Profile = () => {
     }
 
     const updateUser = (userId, fieldToUpdateParam, newValueParam) => {
-        axios.put(`http://localhost:3001/update-user/${userId}`, { fieldToUpdate: fieldToUpdateParam, newValue: newValueParam })
-            .then(() => {
-                console.log("Successfuly updated user");
-            })
-            .catch((err) => {
-                console.error(`Error updating User: ${err}`);
-            });
-    }
+        // Return the axios promise directly
+        return axios.put(`http://localhost:3001/update-user/${userId}`, {
+            fieldToUpdate: fieldToUpdateParam,
+            newValue: newValueParam
+        })
+        .then(() => {
+            console.log("Successfully updated user");
+        })
+        .catch((err) => {
+            console.error(`Error updating User: ${err}`);
+        });
+    };    
 
     useEffect(() => {
         const loggedInUserConfig = {
@@ -134,57 +138,34 @@ const Profile = () => {
     return (
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
           <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
-    
           <div className="main-content">
             <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
-    
             <div style={{ flex: 6 }}>
-                <div className='middleBar'>
-                {loggedIn && <ProfileTimeline userData={userData} />}
+              <div className='middleBar'>
+              {loggedIn && <ProfileTimeline userData={userData} updateUser={updateUser} setUserData={setUserData} />}
                 {postData.map((post, index) => (
-                    <div key={index}>
+                  <div key={index}>
                     <PostComponent post={post} />
                     {post.userReported && post.userReported.length > 0 && (
-                        <div>
+                      <div>
                         <p>This post received complaint(s)</p>
                         <button onClick={() => handleViewComplaints(post._id)}>
-                            {selectedPostId === post._id ? 'Hide Complaints' : 'View Complaints'}
+                          {selectedPostId === post._id ? 'Hide Complaints' : 'View Complaints'}
                         </button>
                         {selectedPostId === post._id && <ComplaintsView postId={selectedPostId} />}
-                        </div>
+                      </div>
                     )}
-                    </div>
+                  </div>
                 ))}
-                </div>
+              </div>
             </div>
-    
+      
             <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData} />
           </div>
         </div>
-      );
+      );      
 };
 
 export default Profile;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from 'react'
-
-// const Profile = () => {
-//   return (
-//     <div>Profile</div>
-//   )
-// }
-
-// export default Profile

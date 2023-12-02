@@ -18,6 +18,8 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const sharp = require('sharp');
 const PostComplaint = require('./models/PostComplaints.js')
 
+//add s3 authenticatio here to make posts with images.
+
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
@@ -329,8 +331,6 @@ app.post('/login', (req, res) => {
         });
 });
 
-app.post('/upload-profile-pic', userController.setProfilePic, async(req, res) => {
-});
 
 //+1 warningCount to complaining user when complaint is denied
 app.post('/add-warning-count-to-initiator/:initiatorId', async (req, res) => {
@@ -643,6 +643,16 @@ app.get('/api/posts/user/:userId', async (req, res) => {
 //     }
 // });
 
+
+// const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+// const s3 = new S3Client({
+//   region: process.env.AWS_REGION,
+//   credentials: {
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//   },
+// });
+
 app.post('/create-post', auth, upload.single('image'), async (req, res) => {
     try {
         let imageUrl = null;
@@ -701,6 +711,7 @@ app.post('/create-post', auth, upload.single('image'), async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
+
 
 
 // Adds +1 to views like in the post doucment in the database
@@ -1114,4 +1125,12 @@ app.post('/create-job-post', auth, upload.single('image'), async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
+
 //Job Postings Endpoints
+
+// Endpoint for uploading profile picture
+app.post('/upload-profile-pic', userController.setProfilePic);
+
+// Endpoint for uploading banner image
+app.post('/upload-banner-pic', userController.setBannerImage);
+
