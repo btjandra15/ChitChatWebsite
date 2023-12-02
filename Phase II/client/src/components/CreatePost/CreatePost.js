@@ -160,6 +160,7 @@ const CreatePost = () => {
         })
         .then(() => {
             alert("Successfully made a post");
+            window.location.reload(false);
         });
     };
     

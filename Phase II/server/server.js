@@ -64,6 +64,14 @@ const generateRandomPassword = (length = 20) => {
     return password;
 };
 
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
+        secretAccessKey: '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',
+    },
+    region: 'us-east-1',
+});
+
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
 dotenv.config();
