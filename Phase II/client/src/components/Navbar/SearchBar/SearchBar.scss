@@ -1,0 +1,104 @@
+.search {
+  position: relative;
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 325px;
+
+    input {
+      padding: 5px;
+      border: 1px solid #ccc;
+      width: 100%; /* Make the input take full width */
+    }
+
+    &.dark-mode {
+      input {
+          color: white; /* Set the text color to white in dark mode */
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      background-color: white;
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      top: 100%; /* Position the dropdown beneath the input */
+      left: 0; /* Align the left side of the dropdown with the left side of the input */
+
+      li {
+        padding: 10px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #f2f2f2;
+        }
+
+        .suggestion-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: black;
+        }
+        
+        .suggestion-type {
+          margin-left: 10px;
+          color: gray;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  .sort-dropdown {
+    position: relative;
+    // margin-left: 10px; /* Adjust the margin as needed */
+
+    .sort-options {
+      display: flex;
+      flex-direction: column;
+      list-style-type: none;
+      padding: 0;
+      position: absolute;
+      z-index: 1;
+      background-color: white;
+      border: 1px solid #ccc;
+      max-height: 100px;
+      overflow-y: auto;
+      top: 100%; /* Position the dropdown beneath the TuneOutlinedIcon */
+      left: 0;
+
+      label {
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        color: black;
+        white-space: nowrap;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #f2f2f2;
+        }
+
+        // text {
+        //   font-size: 10px;
+        // }
+
+        input[type="radio"] {
+          width: 10px;
+          height: 10px;
+          margin-right: 5px;
+          cursor: pointer
+        }
+      }
+    }
+  }
+}
