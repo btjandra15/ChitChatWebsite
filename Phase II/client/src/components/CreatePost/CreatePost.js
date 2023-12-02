@@ -13,10 +13,16 @@ const currentDate = new Date();
 const year = currentDate.getFullYear();
 const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Adding 1 to the month to make it 1-based
 const day = currentDate.getDate().toString().padStart(2, '0');
-const hours = currentDate.getHours().toString().padStart(2, '0');
+let hours = currentDate.getHours();
+const ampm = hours >= 12 ? 'PM' : 'AM';
+
+hours = hours % 12;
+hours = hours || 12;
+
 const minutes = currentDate.getMinutes().toString().padStart(2, '0');
 const seconds = currentDate.getSeconds().toString().padStart(2, '0');
-const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+const currentDateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
 
 const CreatePost = () => {
     const [ warning, setWarning ] = useState(false);
@@ -137,9 +143,11 @@ const CreatePost = () => {
         formData.append('userLastName', userData.lastName);
         formData.append('username', userData.username);
         formData.append("content", processedText);
+
         if (file) {
             formData.append("image", file);
         }
+        
         formData.append("keywords", selectKeyWords.join(','));
         formData.append('dateAndTime', currentDateTimeString);
         formData.append("wordCount", totalWordCount);

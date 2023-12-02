@@ -1120,9 +1120,9 @@ app.post('/create-job-post', auth, upload.single('image'), async (req, res) => {
 
 //Job Postings Endpoints
 
-
 // Endpoint for uploading profile picture
 app.post('/upload-profile-pic', userController.setProfilePic);
 
 // Endpoint for uploading banner image
 app.post('/upload-banner-pic', userController.setBannerImage);
+

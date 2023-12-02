@@ -53,6 +53,11 @@
           height: 70vh;
           object-fit: fill;
         }
+
+        .keywords{
+          opacity: 0.5;
+          cursor: pointer;
+        }
       }
 
     }
@@ -97,4 +102,8 @@
   .footer-content:hover{
     opacity: 1;
   }
+}
+
+.keywords:hover{
+  color: lightblue;
 }
