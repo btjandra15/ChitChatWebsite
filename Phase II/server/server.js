@@ -237,51 +237,14 @@ app.post('/send-reset-link-to-user/:userId', async (req, res) => {
 
         console.log(`Reset link sent to ${user.email}: ${link}`);
 
+    //     res.status(200).json({ message: 'Reset link sent successfully' });
+    // } catch (err) {
+    //     res.status(500).json({ message: `Error: ${err.message}` });
+    // }
         res.send({ status: "Ok", data: "Reset link sent successfully" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ status: "Error", data: "Failed to send reset link" });
-        }
-});
-
-app.post('/deny-reset-request/:userId', async (req, res) => {
-    try {
-        const userId = req.params.userId;
-
-        // Find the specific user who hasn't reset their password
-        const user = await User.findOne({ _id: userId, passwordReset: false });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found or has already reset the password' });
-        }
-
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS
-            }
-          });
-          
-          var mailOptions = {
-            from: 'youremail@gmail.com',
-            to: user.email,
-            subject: 'Your Password Reset Request has been Denied',
-            text: `Reason for Denial: ${req.body.denyReason}`
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
-
-        res.send({ status: "Ok", data: "Email sent successfully" });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send({ status: "Error", data: "Failed to send email" });
         }
 });
 
@@ -420,6 +383,7 @@ app.post('/add-warning-count-to-receiver/:receiverId', async (req, res) => {
       // Find the user by ID and update the warning count
       const user = await User.findByIdAndUpdate(receiverId, { $inc: { warningCount: 1 } }, { new: true });
 
+
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -460,7 +424,9 @@ app.post('/add-warning-count-to-receiver/:receiverId', async (req, res) => {
 //-1 warningCount to receiving user when dispute is won
 app.post('/sub-warning-count/:receiverId', async (req, res) => {
     const { receiverId } = req.params;
-  
+
+    
+
     try {
       // Find the user by ID and update the warning count
       const user = await User.findByIdAndUpdate(receiverId, { $inc: { warningCount: -1 } }, { new: true });
@@ -497,6 +463,60 @@ app.post('/sub-warning-count/:receiverId', async (req, res) => {
     } catch (error) {
       console.error('Error updating user warning count:', error);
       res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// reward likes to the receiver when the initiator is a surfer
+app.post('/reward-likes-to-receiver/:initiatorId/:receiverId', async (req, res) => {
+    const { initiatorId, receiverId } = req.params;
+
+    try {
+        // Find the initiator user by ID to check if they are a surfer
+        const initiatorUser = await User.findById(initiatorId);
+
+        if (!initiatorUser) {
+            return res.status(404).json({ error: 'Initiator user not found' });
+        }
+
+        // Check if the initiator user is a surfer
+        if (initiatorUser.userType === 'Surfer') {
+            // Find the post reported by the initiator
+            const reportedPost = await Post.findOne({ _id: req.body.postId, authorId: receiverId });
+
+            if (!reportedPost) {
+                return res.status(404).json({ error: 'Reported post not found' });
+            }
+
+            // Update the post likes
+            reportedPost.likes += 3;
+            await reportedPost.save();
+
+            res.json({ message: 'Likes rewarded successfully' });
+        } else {
+            res.status(403).json({ error: 'Initiator is not a surfer user' });
+        }
+    } catch (error) {
+        console.error('Error rewarding likes to receiver:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Demote user to ordinary
+app.post('/demote-to-ordinary/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID and update their userType to 'Ordinary'
+        const updatedUser = await User.findByIdAndUpdate(userId, { userType: 'Ordinary', warningCount: 0 }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'User demoted to Ordinary successfully' });
+    } catch (error) {
+        console.error('Error demoting user to Ordinary:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -725,7 +745,7 @@ app.post('/create-post', auth, upload.single('image'), async (req, res) => {
         const userId = req.user.userId;
 
         if (foundTabooWord && asteriskCount > 2) {
-            return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
+            return res.status(400).json({ message: "Post contains too many taboo words and is not allowed.", sanitizedContent });
         }
 
         const newPost = new Post({
@@ -1011,7 +1031,7 @@ app.put('/update-post-complaint/:id', async (req, res) => {
       }
   
       // Check if the complaint has a dispute before sending an email
-      if (updatedComplaint.dispute !== 'N/A') {
+      if (updatedComplaint.dispute) {
         // Fetch the receiver's email from the User schema
         const receiverUser = await User.findOne({ _id: updatedComplaint.receiverId });
 
