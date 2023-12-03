@@ -23,7 +23,12 @@ const PostComponent = ({post, index}) => {
     const [ isReportModalOpen, setReportModalOpen ] = useState(false);
 
     const handleReportClick = () => {
+      if (userData._id === post.authorId) {
+        setReportModalOpen(false);
+        window.alert('You can\'t report your own post!');
+      } else {
       setReportModalOpen(true);
+      }
     };
 
     const handleCloseReportModal = () => {

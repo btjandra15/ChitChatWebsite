@@ -237,14 +237,51 @@ app.post('/send-reset-link-to-user/:userId', async (req, res) => {
 
         console.log(`Reset link sent to ${user.email}: ${link}`);
 
-    //     res.status(200).json({ message: 'Reset link sent successfully' });
-    // } catch (err) {
-    //     res.status(500).json({ message: `Error: ${err.message}` });
-    // }
         res.send({ status: "Ok", data: "Reset link sent successfully" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ status: "Error", data: "Failed to send reset link" });
+        }
+});
+
+app.post('/deny-reset-request/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find the specific user who hasn't reset their password
+        const user = await User.findOne({ _id: userId, passwordReset: false });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found or has already reset the password' });
+        }
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS
+            }
+          });
+          
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: user.email,
+            subject: 'Your Password Reset Request has been Denied',
+            text: `Reason for Denial: ${req.body.denyReason}`
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+        res.send({ status: "Ok", data: "Email sent successfully" });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ status: "Error", data: "Failed to send email" });
         }
 });
 
@@ -974,7 +1011,7 @@ app.put('/update-post-complaint/:id', async (req, res) => {
       }
   
       // Check if the complaint has a dispute before sending an email
-      if (updatedComplaint.dispute) {
+      if (updatedComplaint.dispute !== 'N/A') {
         // Fetch the receiver's email from the User schema
         const receiverUser = await User.findOne({ _id: updatedComplaint.receiverId });
 
