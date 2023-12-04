@@ -24,31 +24,31 @@ const Navbar = (props) => {
             console.error("onSearch is not defined in props");
         } else {
 
-        if (!value) {
-          // Reset the posts to show all posts
-          props.onSearch(null);
-          return;
+            if (!value) {
+                // Reset the posts to show all posts
+                props.onSearch(null);
+                return;
+            }
+
+            if (type === 'author') {
+                // For author filtering
+                console.log("Selected Author:", value);
+                props.onSearch(type, value);
+            } else if (type === 'keyword') {
+                console.log("Selected Keyword:", value);
+                props.onSearch(type, value);
+            } else {
+                // Handle other types if needed
+                props.onSearch(null);
+            }
         }
-      
-        if (type === 'author') {
-          // For author filtering
-          console.log("Selected Author:", value);
-          props.onSearch(type, value);
-        } else if (type === 'keyword') {
-          console.log("Selected Keyword:", value);
-          props.onSearch(type, value);
-        } else {
-          // Handle other types if needed
-          props.onSearch(null);
-        }
-    }
     };
 
     const handleSort = (option) => {
         if (props.onSort) {
-          props.onSort(option);
+            props.onSort(option);
         } else {
-          console.error("onSort is not defined in props");
+            console.error("onSort is not defined in props");
         }
     };
 
@@ -61,36 +61,36 @@ const Navbar = (props) => {
                 </Link>
 
                 <Link className='left-icons'>
-                    <HomeOutlined/>
+                    <HomeOutlined />
                 </Link>
 
                 <Link className='left-icons'>
-                    {darkMode ? <DarkModeOutlined onClick={toggle}/> : <WbSunnyOutlined onClick={toggle}/>}
+                    {darkMode ? <DarkModeOutlined onClick={toggle} /> : <WbSunnyOutlined onClick={toggle} />}
                 </Link>
 
                 <Link className='left-icons'>
-                    <GridViewOutlined/>
+                    <GridViewOutlined />
                 </Link>
 
-                <SearchBar onSelect={handleSearch} onSort={handleSort}/>
-            </div> 
+                <SearchBar onSelect={handleSearch} onSort={handleSort} />
+            </div>
 
             <div className="right">
                 <Link className='right-icons'>
-                    <Person2Outlined/>
+                    <Person2Outlined />
                 </Link>
 
                 <Link className='right-icons'>
-                    <EmailOutlined/>
+                    <EmailOutlined />
                 </Link>
 
                 <Link className='right-icons'>
-                    <NotificationsOutlined/>
+                    <NotificationsOutlined />
                 </Link>
 
-                {loggedIn ? 
+                {loggedIn ?
                     <Link className="user" to={`/profile/${userData.username}`}>
-                        <img src={DefaultProfilePicture} alt="" />
+                        <img src={userData.profilePictureUrl || DefaultProfilePicture} alt={`${userData.firstName}'s profile`} />
                         <span>{userData.username}</span>
                     </Link>
                     :
