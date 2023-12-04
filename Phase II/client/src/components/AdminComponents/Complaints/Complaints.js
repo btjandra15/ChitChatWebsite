@@ -31,25 +31,52 @@ const Complaints = () => {
       setDenyModalOpen(false);
     };  
 
-  const handleDisputeDenySubmit = async (complaint, disputeDenyReason) => {
-    try {
-      // Update the dispute denial reason in the PostComplaint schema
-      await axios.post(`http://localhost:3001/approve-complaint/${complaint._id}`, {
-        disputeDenyReason,
-      });
-      // Get user Id of recieeving user
-      const user = await axios.get(`http://localhost:3001/get-user/${complaint.receiverId}`);
+    const handleDisputeDenySubmit = async (complaint, disputeDenyReason) => {
+      try {
+          // Update the dispute denial reason in the PostComplaint schema
+          await axios.post(`http://localhost:3001/approve-complaint/${complaint._id}`, {
+              disputeDenyReason,
+          });
+  
+          // Get user details
+          const user = await axios.get(`http://localhost:3001/get-user/${complaint.receiverId}`);
+  
+          // Check if the user is an ordinary user or corporate user with 3 warnings
+          if (user.data.warningCount === 3 && ['Corporate User', 'Ordinary User'].includes(user.data.userType)) {
 
-      // if reciever is a TU and has 3 warnings, demote to OU
-      if (user.data.userType === 'Trendy' && user.data.warningCount === 3) {
-        await axios.post(`http://localhost:3001/demote-to-ordinary/${complaint.receiverId}`);
+            const fineAmountPerWarning = 50; // fine amount per warning
+
+            const totalFineAmount = fineAmountPerWarning * user.data.warningCount; //total fine amount
+
+            // Prompt the user with options to pay the fine or be removed from the system
+            const userDecision = window.confirm(`You have 3 outstanding warnings. Choose an option:\n1. Pay ${totalFineAmount} to remove complaints\n2. Be removed from the system`);
+  
+              if (userDecision) {
+                  // User chooses to pay the fine
+                  const paymentResponse = await axios.post(`http://localhost:3001/handle-warnings/${complaint.receiverId}`, {
+                      userDecision: 'pay-fine',
+                  });
+                  console.log(paymentResponse.data.message);
+              } else {
+                  // User chooses to be removed from the system
+                  const removalResponse = await axios.post(`http://localhost:3001/handle-warnings/${complaint.receiverId}`, {
+                      userDecision: 'remove-from-system',
+                  });
+                  console.log(removalResponse.data.message);
+              }
+          } else {
+              //Check if user is a Trendy User has 3 warnings, if so demote to OU 
+              if (user.data.userType === 'Trendy' && user.data.warningCount === 3) {
+                  await axios.post(`http://localhost:3001/demote-to-ordinary/${complaint.receiverId}`);
+              }
+          }
+  
+      } catch (error) {
+          console.error('Error denying dispute:', error);
       }
-
-    } catch (error) {
-      console.error('Error denying dispute:', error);
-    }
-    handleCloseApproveModal();
+      handleCloseApproveModal();
   };
+  
 
   const handleComplaintDenySubmit = async (complaint, complaintDenyReason) => {
     try {

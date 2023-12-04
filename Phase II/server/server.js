@@ -520,6 +520,64 @@ app.post('/demote-to-ordinary/:userId', async (req, res) => {
     }
 });
 
+// Handle CU/OU with 3 outstanding warnings
+app.post('/handle-warnings/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if the user has 3 warnings and is CU/OU
+        if (user.warningCount === 3 && ['Corporate User', 'Ordinary User'].includes(user.userType)) {
+            // User has 3 outstanding warnings and is CU/OU
+            const userDecision = req.body.userDecision;
+
+            if (userDecision === 'pay-fine') {
+                // User chooses to pay the fine
+                const fineAmountPerWarning = 50; // Adjust the fine amount per warning as needed
+
+                // Calculate total fine amount
+                const totalFineAmount = fineAmountPerWarning * user.warningCount;
+
+                // Deduct the fine amount from the user's balance
+                user.balance -= totalFineAmount;
+
+                // Reset the user's warning count to zero
+                user.warningCount = 0;
+
+                // Save the updated user data
+                await user.save();
+
+                // Display success message
+                return res.json({ success: true, message: `Fine paid successfully. User's balance is now ${user.balance}.` });
+
+            } else if (userDecision === 'remove-from-system') {
+                // User chooses to be removed from the system
+                // Perform actions to delete or mark the user as inactive
+                // Delete user account using the /delete-user route
+                await axios.post('http://localhost:3001/delete-user', { userId });
+
+                // Display success message
+                return res.json({ success: true, message: 'User removed from the system.' });
+            } else {
+                // Invalid user decision
+                return res.json({ success: false, message: 'Invalid user decision.' });
+            }
+        } else {
+            // User does not meet the criteria for this action
+            return res.json({ success: false, message: 'No action needed for the user' });
+        }
+    } catch (error) {
+        console.error('Error handling warnings:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 //Follows User
 app.post('/follow-user', auth, async(req, res) => {
     const { userID, trendyUserID } = req.body;
