@@ -23,8 +23,14 @@ const Complaints = () => {
     };
   
     const handleDenyClick = (complaint) => {
-      setSelectedComplaint(complaint);
-      setDenyModalOpen(true);
+      if (complaint.initiatorUsername === "Surfer") {
+        setDenyModalOpen(false)
+        handleComplaintDenySubmit(complaint, "N/A");
+        window.alert('Complaint has been denied')
+      } else {
+        setSelectedComplaint(complaint);
+        setDenyModalOpen(true);
+      }
     };
   
     const handleCloseApproveModal = () => {
@@ -39,6 +45,14 @@ const Complaints = () => {
 
   const handleDisputeDenySubmit = async (complaint, disputeDenyReason) => {
     try {
+      // Get user Id of recieving user
+      const user = await axios.get(`http://localhost:3001/get-user/${complaint.receiverId}`);
+
+      // if reciever is a TU and has 3 warnings, demote to OU
+      if (user.data.userType === 'Trendy User' && user.data.warningCount === 3) {
+        await axios.post(`http://localhost:3001/demote-to-ordinary/${complaint.receiverId}`);
+      }
+
       // Update the dispute denial reason in the PostComplaint schema
       await axios.post(`http://localhost:3001/approve-complaint/${complaint._id}`, {
         disputeDenyReason,
@@ -51,6 +65,26 @@ const Complaints = () => {
 
   const handleComplaintDenySubmit = async (complaint, complaintDenyReason) => {
     try {
+      let user;
+  
+      // Get user Id of complaining user if initiator is not 'Surfer'
+      if (complaint.initiatorUsername !== 'Surfer') {
+        const userResponse = await axios.get(`http://localhost:3001/get-user/${complaint.initiatorId}`);
+        user = userResponse.data;
+        
+        // if initiator is a TU and has 3 warnings, demote to OU
+        if (user.data.userType === 'Trendy User' && user.data.warningCount === 3) {
+          await axios.post(`http://localhost:3001/demote-to-ordinary/${complaint.initiatorId}`);
+        }
+      }
+  
+      // if initiator is a Surfer, reward receiver 3 likes
+      if (complaint.initiatorUsername === 'Surfer') {
+          await axios.post(`http://localhost:3001/reward-likes-to-receiver/${complaint.receiverId}`, {
+            postId: complaint.postId,
+          });
+      }
+  
       // Update the dispute denial reason in the PostComplaint schema
       await axios.post(`http://localhost:3001/deny-complaint/${complaint._id}`, {
         complaintDenyReason,
@@ -62,7 +96,9 @@ const Complaints = () => {
       });
   
       // API call to subtract -1 warningCount from the receiving user when dispute is won
-      const subWarningCountToReceiver = axios.post(`http://localhost:3001/sub-warning-count/${complaint.receiverId}`);
+      const subWarningCountToReceiver = axios.post(`http://localhost:3001/sub-warning-count/${complaint.receiverId}`, {
+        dispute: complaint.dispute,
+      });
   
       // API call to remove the initiatorId from the userReported field in Post schema
       const removeInitiatorIdFromUserReported = axios.post(`http://localhost:3001/remove-user-reported/${complaint.postId}`, {
@@ -75,7 +111,7 @@ const Complaints = () => {
       console.error('Error denying complaint:', error);
     }
     handleCloseDenyModal();
-  };
+  };  
   
 
   useEffect(() => {
