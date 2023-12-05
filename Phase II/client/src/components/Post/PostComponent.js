@@ -12,6 +12,9 @@ import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import CreateComment from '../CreateComment/CreateComment';
 import ReportModal from './ReportModal';
 
+// For generating random id for Surfer
+const { v4: uuidv4 } = require('uuid');
+
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
@@ -22,8 +25,24 @@ const PostComponent = ({post, index}) => {
     const [ openComments, setOpenComments ] = useState(false);
     const [ isReportModalOpen, setReportModalOpen ] = useState(false);
 
+    const generateRandomId = (userData) => {
+      let newId;
+      
+      // Generate a new id until it is not in userData
+      do {
+        newId = uuidv4();
+      } while (userData.some((user) => user._id === newId));
+    
+      return newId;
+    };
+
     const handleReportClick = () => {
+      if (userData._id === post.authorId) {
+        setReportModalOpen(false);
+        window.alert('You can\'t report your own post!');
+      } else {
       setReportModalOpen(true);
+      }
     };
 
     const handleCloseReportModal = () => {
@@ -33,8 +52,10 @@ const PostComponent = ({post, index}) => {
     const handleReportSubmit = (reason) => {
       console.log(`Report reason: ${reason}`);
     
-      const initiatorId = userData._id;
-      const initiatorUsername = userData.username;
+      // Check if userData._id is null, generate a random id if necessary
+      const initiatorId = userData._id || generateRandomId(userData);
+      // Check if userData.username is null, initialize initiatorUsername to "Surfer"
+      const initiatorUsername = userData.username || "Surfer";
       const receiverId = post.authorId;
       const receiverUsername = post.authorUsername;
       const postId = post._id;

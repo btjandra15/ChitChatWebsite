@@ -157,6 +157,21 @@ app.get('/get-user', auth, (req, res) => {
         })
 })
 
+// Get user by accepting a parameter (userId)
+app.get('/get-user/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    User.findById(userId)
+        .then(user => {
+            if (!user) return res.status(404).json({ message: "User not found." });
+
+            res.status(200).json(user);
+        })
+        .catch(error => {
+            res.status(500).json({ message: `Error ${error.message}` });
+        });
+});
+
 //Gets all trendy users
 app.get('/get-trendy-users', async(req, res) => {
     try{
@@ -241,14 +256,51 @@ app.post('/send-reset-link-to-user/:userId', async (req, res) => {
 
         console.log(`Reset link sent to ${user.email}: ${link}`);
 
-    //     res.status(200).json({ message: 'Reset link sent successfully' });
-    // } catch (err) {
-    //     res.status(500).json({ message: `Error: ${err.message}` });
-    // }
         res.send({ status: "Ok", data: "Reset link sent successfully" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ status: "Error", data: "Failed to send reset link" });
+        }
+});
+
+app.post('/deny-reset-request/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find the specific user who hasn't reset their password
+        const user = await User.findOne({ _id: userId, passwordReset: false });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found or has already reset the password' });
+        }
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS
+            }
+          });
+          
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: user.email,
+            subject: 'Your Password Reset Request has been Denied',
+            text: `Reason for Denial: ${req.body.denyReason}`
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+        res.send({ status: "Ok", data: "Email sent successfully" });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ status: "Error", data: "Failed to send email" });
         }
 });
 
@@ -344,10 +396,8 @@ app.post('/add-warning-count-to-initiator/:initiatorId', async (req, res) => {
       // Find the user by ID and update the warning count
       const user = await User.findByIdAndUpdate(initiatorId, { $inc: { warningCount: 1 } }, { new: true });
 
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
+      if (user) {
+        // return res.status(404).json({ error: 'User not found' });
       // Send an email to the user
       var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -373,6 +423,9 @@ app.post('/add-warning-count-to-initiator/:initiatorId', async (req, res) => {
       });
   
       res.json({ message: 'User warning count updated successfully' });
+    } else {
+        console.log('User is a Surfer');
+    }
     } catch (error) {
       console.error('Error updating user warning count:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -435,7 +488,8 @@ app.post('/sub-warning-count/:receiverId', async (req, res) => {
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-  
+
+      if (req.body.dispute !== 'N/A') {
       // Send an email to the user
       var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -459,6 +513,7 @@ app.post('/sub-warning-count/:receiverId', async (req, res) => {
           console.log('Email sent: ' + info.response);
         }
       });
+    }
   
       res.json({ message: 'User warning count updated successfully' });
     } catch (error) {
@@ -466,6 +521,106 @@ app.post('/sub-warning-count/:receiverId', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.post('/reward-likes-to-receiver/:receiverId', async (req, res) => {
+    const { receiverId } = req.params;
+
+    try {
+        // Find the post reported by the initiator
+        const reportedPost = await Post.findOne({ _id: req.body.postId, authorId: receiverId });
+
+        if (!reportedPost) {
+            return res.status(404).json({ error: 'Reported post not found' });
+        }
+
+        // Update the post likes
+        reportedPost.likes += 3;
+        await reportedPost.save();
+
+        res.json({ message: 'Likes rewarded successfully' });
+
+    } catch (error) {
+        console.error('Error rewarding likes to receiver:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Demote user to ordinary
+app.post('/demote-to-ordinary/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID and update their userType to 'Ordinary'
+        const updatedUser = await User.findByIdAndUpdate(userId, { userType: 'Ordinary User', warningCount: 0 }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'User demoted to Ordinary successfully' });
+    } catch (error) {
+        console.error('Error demoting user to Ordinary:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Handle CU/OU with 3 outstanding warnings WORK IN PROGRESS
+// app.post('/handle-warnings/:userId', async (req, res) => {
+//     const { userId } = req.params;
+
+//     try {
+//         // Find the user by ID
+//         const user = await User.findById(userId);
+
+//         if (!user) {
+//             return res.status(404).json({ error: 'User not found' });
+//         }
+
+//         // Check if the user has 3 warnings and is CU/OU
+//         if (user.warningCount === 3 && ['Corporate User', 'Ordinary User'].includes(user.userType)) {
+//             // User has 3 outstanding warnings and is CU/OU
+//             const userDecision = req.body.userDecision;
+
+//             if (userDecision === 'pay-fine') {
+//                 // User chooses to pay the fine
+//                 const fineAmountPerWarning = 50; // Adjust the fine amount per warning as needed
+
+//                 // Calculate total fine amount
+//                 const totalFineAmount = fineAmountPerWarning * user.warningCount;
+
+//                 // Deduct the fine amount from the user's balance
+//                 user.balance -= totalFineAmount;
+
+//                 // Reset the user's warning count to zero
+//                 user.warningCount = 0;
+
+//                 // Save the updated user data
+//                 await user.save();
+
+//                 // Display success message
+//                 return res.json({ success: true, message: `Fine paid successfully. User's balance is now ${user.balance}.` });
+
+//             } else if (userDecision === 'remove-from-system') {
+//                 // User chooses to be removed from the system
+//                 // Perform actions to delete or mark the user as inactive
+//                 // Delete user account using the /delete-user route
+//                 await axios.post('http://localhost:3001/delete-user', { userId });
+
+//                 // Display success message
+//                 return res.json({ success: true, message: 'User removed from the system.' });
+//             } else {
+//                 // Invalid user decision
+//                 return res.json({ success: false, message: 'Invalid user decision.' });
+//             }
+//         } else {
+//             // User does not meet the criteria for this action
+//             return res.json({ success: false, message: 'No action needed for the user' });
+//         }
+//     } catch (error) {
+//         console.error('Error handling warnings:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 //Follows User
 app.post('/follow-user', auth, async(req, res) => {
@@ -946,7 +1101,7 @@ app.put('/update-post-complaint/:id', async (req, res) => {
       }
   
       // Check if the complaint has a dispute before sending an email
-      if (updatedComplaint.dispute) {
+      if (updatedComplaint.dispute !== 'N/A') {
         // Fetch the receiver's email from the User schema
         const receiverUser = await User.findOne({ _id: updatedComplaint.receiverId });
 
