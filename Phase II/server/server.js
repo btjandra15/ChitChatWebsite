@@ -16,9 +16,19 @@ const Comment = require('./models/Comments.js');
 const multer = require('multer');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const sharp = require('sharp');
-const PostComplaint = require('./models/PostComplaints.js')
+const PostComplaint = require('./models/PostComplaints.js');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const util = require('util');
 
 //add s3 authenticatio here to make posts with images.
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
+        secretAccessKey: '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',
+    },
+    region: 'us-east-1',
+});
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -66,15 +76,9 @@ const generateRandomPassword = (length = 20) => {
     return password;
 };
 
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
-        secretAccessKey: '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',
-    },
-    region: 'us-east-1',
-});
-
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
+
+const readFileAsync = util.promisify(fs.readFile);
 
 dotenv.config();
 app.use(cors(), express.json(), express.urlencoded({ extended: false }));
@@ -547,7 +551,6 @@ app.put('/update-user/:userId', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 // User Endpoints
 
 // Post Endpoints
@@ -586,80 +589,28 @@ app.get('/api/posts/user/:userId', async (req, res) => {
     }
 });
 
-// Creates Post
-// app.post('/create-post', auth, upload.single('image'), async (req, res) => {
-//     const buffer = await sharp(req.file.buffer)
-//                             .resize({
-//                                 height: 500,
-//                                 width: 500,
-//                                 fit: 'contain'
-//                             })
-//                             .toBuffer();
-
-//     const imageName = `${randomImageName()}-${req.file.originalname}`
-
-//     const params = {
-//         Bucket: 'chit-chat-website-images',
-//         Key: imageName,
-//         Body: buffer,
-//         ContentType: req.file.mimetype,
-//         ACL: 'public-read',
-//     };
-
-//     const imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
-//     const command = new PutObjectCommand(params);
-
-//     await s3.send(command);
-
-//     try {
-//         const { userFirstName, userLastName, username, content, keywords, dateAndTime, wordCount } = req.body;
-//         const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
-//         const userId = req.user.userId;
-
-//         if (foundTabooWord && asteriskCount > 2) {
-//             // Additional actions you wish to perform
-//             // For example, you can send an error response with the taboo words
-//             return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
-//         }
-
-//         const newPost = new Post({
-//             authorId: userId,
-//             authorFirstName: userFirstName,
-//             authorLastName: userLastName,
-//             authorUsername: username,
-//             content: content, // Save the sanitized content
-//             wordCount: wordCount,
-//             dateAndTime: dateAndTime,
-//             keywords: keywords,
-//             imageName: imageName,
-//             imageUrl: imageUrl,
-//         });
-
-//         const result = await newPost.save();
-//         res.status(201).json({ message: "Post created successfully", result });
-//     } catch (error) {
-//         console.error('Error in create-post route:', error);
-//         res.status(500).json({ message: "Error creating post", error });
-//     }
-// });
-
-
-// const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-// const s3 = new S3Client({
-//   region: process.env.AWS_REGION,
-//   credentials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//   },
-// });
-
-app.post('/create-post', auth, upload.single('image'), async (req, res) => {
+//Creates Post
+app.post('/create-post', auth, upload.single('media'), async (req, res) => {
     try {
         let imageUrl = null;
         let imageName = null;
+        let videoUrl = null;
+        let videoName = null;
 
         if (req.file) {
-            const buffer = await sharp(req.file.buffer)
+            const { userFirstName, userLastName, username, content, dateAndTime, wordCount } = req.body;
+            const keywords = req.body.keywords.split(',');
+            const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
+            const userId = req.user.userId;
+
+            if (foundTabooWord && asteriskCount > 2) {
+                return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
+            }
+
+            if(req.file.mimetype.includes('image')){
+                console.log("Image file")
+
+                const buffer = await sharp(req.file.buffer)
                 .resize({
                     height: 500,
                     width: 500,
@@ -667,45 +618,66 @@ app.post('/create-post', auth, upload.single('image'), async (req, res) => {
                 })
                 .toBuffer();
 
-            imageName = `${randomImageName()}-${req.file.originalname}`;
+                imageName = `${randomImageName()}-${req.file.originalname}`;
 
-            const params = {
-                Bucket: 'chit-chat-website-images',
-                Key: imageName,
-                Body: buffer,
-                ContentType: req.file.mimetype,
-                ACL: 'public-read',
-            };
+                const folder = 'images';
 
-            await s3.send(new PutObjectCommand(params));
+                const params = {
+                    Bucket: 'chit-chat-website-images',
+                    Key: `${folder}/${imageName}`,
+                    Body: buffer,
+                    ContentType: req.file.mimetype,
+                    ACL: 'public-read',
+                };
 
-            imageUrl = `https://${params.Bucket}.s3.amazonaws.com/${imageName}`;
+                await s3.send(new PutObjectCommand(params));
+
+                imageUrl = `https://${params.Bucket}.s3.amazonaws.com/images/${imageName}`;
+            }else if(req.file.mimetype.includes('video')){
+                console.log("Video file");
+
+                videoName = `${uuidv4()}-${req.file.originalname}`;
+                const videoPath = `/videos/${videoName}`;
+
+                await fs.promises.writeFile(videoPath, req.file.buffer);
+
+                const folder = 'videos';
+
+                const videoParams = {
+                    Bucket: 'chit-chat-website-images',
+                    Key: `${folder}/${videoName}`,
+                    Body: await readFileAsync(videoPath),
+                    ContentType: req.file.mimetype,
+                    ACL: 'public-read',
+                };
+
+                await s3.send(new PutObjectCommand(videoParams));
+
+                videoUrl = `https://${videoParams.Bucket}.s3.amazonaws.com/videos/${videoName}`;
+
+                await fs.promises.unlink(videoPath);
+            }
+
+            const newPost = new Post({
+                authorId: userId,
+                authorFirstName: userFirstName,
+                authorLastName: userLastName,
+                authorUsername: username,
+                content: content,
+                wordCount: wordCount,
+                dateAndTime: dateAndTime,
+                keywords: keywords,
+                imageName: imageName,
+                imageUrl: imageUrl,
+                videoUrl,
+            });
+    
+            const result = await newPost.save();
+            res.status(201).json({ message: "Post created successfully", result });
+        }else {
+            // Handle case when no file is uploaded
+            res.status(400).json({ message: "No file uploaded" });
         }
-
-        const { userFirstName, userLastName, username, content, dateAndTime, wordCount } = req.body;
-        const keywords = req.body.keywords.split(',');
-        const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
-        const userId = req.user.userId;
-
-        if (foundTabooWord && asteriskCount > 2) {
-            return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
-        }
-
-        const newPost = new Post({
-            authorId: userId,
-            authorFirstName: userFirstName,
-            authorLastName: userLastName,
-            authorUsername: username,
-            content: content,
-            wordCount: wordCount,
-            dateAndTime: dateAndTime,
-            keywords: keywords,
-            imageName: imageName,
-            imageUrl: imageUrl,
-        });
-
-        const result = await newPost.save();
-        res.status(201).json({ message: "Post created successfully", result });
     } catch (error) {
         console.error('Error in create-post route:', error);
         res.status(500).json({ message: "Error creating post", error });

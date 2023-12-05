@@ -104,6 +104,11 @@ const PostSchema = new mongoose.Schema({
         type: Array,
         require: true,
         default: []
+    },
+    videoUrl: {
+        type: String,
+        require: true,
+        defualt: ""
     }
 });
 

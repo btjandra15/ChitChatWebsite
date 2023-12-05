@@ -32,6 +32,7 @@ const CreatePost = () => {
     const [ selectKeyWords, setSelectedKeyWords ] = useState([]);
     const [ inputValue, setInputValue ] = useState('');
     const [ file, setFile ] = useState(null);
+    const [ videoFile, setVideoFile ] = useState(null);
 
     const inputRef = useRef(null);
 
@@ -60,7 +61,13 @@ const CreatePost = () => {
     const selectFile = (e) => {
         const file = e.target.files[0];
 
-        setFile(file);
+        if(file.type.includes('image')){
+            setFile(file);
+            setVideoFile(null);
+        }else if(file.type.includes('video')){
+            setVideoFile(file);
+            setFile(null);
+        }
     }
 
     const submitPost = async() => {
@@ -110,14 +117,10 @@ const CreatePost = () => {
             return;
         }
         
-        // if(!file){
-        //     alert("Please select an image!");
-        //     return;
-        // }else{
-        //     setTotalWordCount(totalWordCount + 10);
-        // }
         if (file){
             setTotalWordCount(totalWordCount + 10);
+        }else if(videoFile){
+            setTotalWordCount(totalWordCount + 15);
         }
 
         let totalCost = 0;
@@ -145,7 +148,9 @@ const CreatePost = () => {
         formData.append("content", processedText);
 
         if (file) {
-            formData.append("image", file);
+            formData.append("media", file);
+        }else if(videoFile){
+            formData.append('media', videoFile);
         }
         
         formData.append("keywords", selectKeyWords.join(','));
@@ -209,7 +214,7 @@ const CreatePost = () => {
                         <div className="post_bottom">
                             <div className="post_icons">
                                 <label className="media_upload">
-                                    <input type="file" accept='image/*, video/' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
+                                    <input type="file" accept='image/*, video/*' ref={inputRef} style={{display: 'none'}} onChange={selectFile}/>
                                     {warning && <p style={{ color: 'red' }}>Warning: Exceeded word limit!</p>}
                                     <InsertPhotoOutlinedIcon className='icon'/>
                                 </label>
@@ -235,7 +240,7 @@ const CreatePost = () => {
                                 </ul>
 
                                 {
-                                    file ?
+                                    file || videoFile ?
                                     <p>Uploaded image successfully</p>
                                     :
                                     null

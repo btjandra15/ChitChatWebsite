@@ -312,15 +312,30 @@ const PostComponent = ({post, index}) => {
                   </a>
                 )}
                 
-                {/* <img src={post ? post.imageUrl : TestImage} alt="" className='post-image'/> */}
                 {post.imageUrl && (
                   <div className='post-image'>
-                    <img src={post ? post.imageUrl : TestImage} alt="" className='post-image'/>
+                    {
+                      post.imageUrl != null ?
+                      <img src={post ? post.imageUrl : TestImage} alt="" className='post-image'/>
+                      :
+                      <div></div>
+                    }
                   </div>
                 )}
 
+                {
+                  post.videoUrl != null ? (
+                    <video controls width="800" height="500" className='video-player'>
+                      <source src={post.videoUrl} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                      ) : (
+                        <div></div>
+                      )
+                    }
+
                 {/* Display keywords if they exist */}
-                {post.keywords && post.keywords[0] != "" && (
+                {post.keywords && post.keywords[0] !== "" && (
                   <div className="keywords">
                     {post.keywords.map((keyword, index) => (
                       <span key={index}>
