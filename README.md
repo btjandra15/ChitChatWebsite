@@ -42,7 +42,7 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
   - [ ] If the warning is by a surfer, the complained user is rewarded with 3 likes from the SU
   - [ ] Any CU/OU with 3 outstanding warnings will be given the choice of paying out the fine to remove the complaints or be removed from the system
   - [ ] Any TU with 3 outstanding warnings will be demoted to OU without any warnings
-- [ ]  All users can search for messages based on author, keywords, with/without images and/or videos, # of likes/dislikes
+- [x]  All users can search for messages based on author, keywords, with/without images and/or videos, # of likes/dislikes
 - [ ]  CU is allowed to post ads and job applications that others can click and apply
   - [ ]  CU will pay the system (SU) by $0.1 for each click and application
 - [ ]  Any TU/OU who posts ads or job opportunities will be fined $10 and one warning
