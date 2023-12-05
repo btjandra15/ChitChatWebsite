@@ -78,15 +78,6 @@ const Leftbar = ({userData, loggedIn, logout}) => {
 
                     {loggedIn ?
                         <div className="item2">
-                            {userData.userType === 'Corporate User' ? 
-                                 <Link className='post-link' to="/job-postings">
-                                    <WorkOutlineOutlinedIcon className='item-icon'/>
-                                    <span>Post</span>
-                                 </Link>
-                                : 
-                                <div></div>
-                            }
-
                             <Link className='logout-link' onClick={logout} to="/">
                                 <Logout className='item-icon'/>
                                 <span>Logout</span>
