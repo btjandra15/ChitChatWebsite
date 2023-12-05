@@ -22,6 +22,13 @@ const fs = require('fs');
 const util = require('util');
 
 //add s3 authenticatio here to make posts with images.
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
+        secretAccessKey: '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',
+    },
+    region: 'us-east-1',
+});
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -760,9 +767,9 @@ app.post('/create-post', auth, upload.single('media'), async (req, res) => {
 
                 const buffer = await sharp(req.file.buffer)
                 .resize({
-                    height: 500,
-                    width: 500,
-                    fit: 'contain'
+                    height: 1920,
+                    width: 1080,
+                    fit: 'inside'
                 })
                 .toBuffer();
 
@@ -831,8 +838,6 @@ app.post('/create-post', auth, upload.single('media'), async (req, res) => {
         res.status(500).json({ message: "Error creating post", error });
     }
 });
-
-
 
 // Adds +1 to views like in the post doucment in the database
 app.post('/view-post', async(req, res) => {
