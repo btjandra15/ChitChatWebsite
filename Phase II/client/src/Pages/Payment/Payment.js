@@ -77,6 +77,14 @@ const Payment = () => {
         });
    }, [])
 
+   const formatCurrency = (value) => {
+    // Check if value is a number and not null
+    if (value !== null && !isNaN(value)) {
+      return Number(value).toFixed(2);
+    }
+    return "0.00";
+  };
+
   return (
     <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
       {/* NAVBAR CONTENT */}
@@ -91,8 +99,17 @@ const Payment = () => {
               <div className='middleBar'>
                 <div className="payment-container">
                     <div className="main-content">
-                      <h2>{userData ? userData.firstName : null}'s Account Balance: ${userData ? userData.balance : null}</h2>
-                      <h3>Charges Due: ${userData ? userData.chargesAmount : null}</h3>
+                            <h2>
+                          {userData
+                            ? `${
+                                userData.firstName
+                              }'s Account Balance: $${formatCurrency(userData.balance)}`
+                            : null}
+                        </h2>
+                        <h3>
+                          Charges Due: $
+                          {userData ? formatCurrency(userData.chargesAmount) : null}
+                        </h3>
 
                       <div className="transaction-section">
                         <input

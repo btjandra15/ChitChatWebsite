@@ -1311,3 +1311,24 @@ try {
 });  
 
 //Search Endpoints
+// Endpoint to update user's balance
+app.put('/update-user-balance/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { amount } = req.body; // The amount to deduct
+  
+    try {
+      // Find the user and update their balance
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Deduct the amount (assuming amount is negative for deduction)
+      user.balance += amount;
+      await user.save();
+  
+      res.json({ message: 'Balance updated successfully', balance: user.balance });
+    } catch (error) {
+      res.status(500).json({ message: 'Error updating balance', error: error.message });
+    }
+  });
