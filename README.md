@@ -31,7 +31,7 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
   - [x] If accepted, a temporary password is sent to the user and the user must change it when they first log in and an amount of money should be deposited to the system
   - [x] If denied, a justification should be provided
 - [ ] When a TU/OU/CU logins, the system will suggest accounts for the user to follow based on this user's reading, liking, tipping, following history
-- [ ] A TU/OU/CU can construct their profiles which again are subjected to comments/reports by others (Same warning policy will apply if the profile contains misinformation)
+- [x] A TU/OU/CU can construct their profiles which again are subjected to comments/reports by others (Same warning policy will apply if the profile contains misinformation)
 - [x] TU/OU can post messages with <= 20 words (An image is equivalent to 10 words while a video is equivalent to 15 words) for free
   - [x] Any messages > 20 words will be billed by the system automatically with the amount (# - 20) * $0.1
   - [x] A CU's message is billed # * $1 without the free ones
