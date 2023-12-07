@@ -130,6 +130,21 @@ const Rightbar = ({loggedIn, userData}) => {
                                     <p className='authorName'>{post.authorFirstName} {post.authorLastName}</p>
                                                 
                                     <span className='post-content'>{post.content}</span>
+
+                                    {post.imageUrl ? 
+                                        <img src={post.imageUrl} alt="" className='post-image'/>
+                                        :
+                                        null
+                                    }
+
+                                    {post.videoUrl ? 
+                                        <video controls width="800" height="500" className="video-player">
+                                            <source src={post.videoUrl} type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        :
+                                        null
+                                    }
                                                 
                                     <span className='post-footer'>
                                         <p className="data">Views: {post.views}</p>
