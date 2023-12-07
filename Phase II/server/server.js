@@ -744,26 +744,25 @@ app.get('/api/posts/user/:userId', async (req, res) => {
     }
 });
 
-//Creates Post
+// Creates Post
 app.post('/create-post', auth, upload.single('media'), async (req, res) => {
     try {
         let imageUrl = null;
         let imageName = null;
         let videoUrl = null;
         let videoName = null;
+        const { userFirstName, userLastName, username, content, dateAndTime, wordCount } = req.body;
+        const keywords = req.body.keywords.split(',');
+        const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
+        const userId = req.user.userId;
+
+        if (foundTabooWord && asteriskCount > 2) {
+            return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
+        }
 
         if (req.file) {
-            const { userFirstName, userLastName, username, content, dateAndTime, wordCount } = req.body;
-            const keywords = req.body.keywords.split(',');
-            const { foundTabooWord, sanitizedContent, asteriskCount } = checkForTabooWords(content);
-            const userId = req.user.userId;
-
-            if (foundTabooWord && asteriskCount > 2) {
-                return res.status(400).json({ message: "Post contains too many asterisks and is not allowed.", sanitizedContent });
-            }
-
             if(req.file.mimetype.includes('image')){
-                console.log("Image file")
+                console.log("Image file");
 
                 const buffer = await sharp(req.file.buffer)
                 .resize({
@@ -774,7 +773,6 @@ app.post('/create-post', auth, upload.single('media'), async (req, res) => {
                 .toBuffer();
 
                 imageName = `${randomImageName()}-${req.file.originalname}`;
-
                 const folder = 'images';
 
                 const params = {
@@ -786,16 +784,14 @@ app.post('/create-post', auth, upload.single('media'), async (req, res) => {
                 };
 
                 await s3.send(new PutObjectCommand(params));
-
                 imageUrl = `https://${params.Bucket}.s3.amazonaws.com/images/${imageName}`;
-            }else if(req.file.mimetype.includes('video')){
+            } else if(req.file.mimetype.includes('video')){
                 console.log("Video file");
 
                 videoName = `${uuidv4()}-${req.file.originalname}`;
                 const videoPath = `/videos/${videoName}`;
 
                 await fs.promises.writeFile(videoPath, req.file.buffer);
-
                 const folder = 'videos';
 
                 const videoParams = {
@@ -807,37 +803,33 @@ app.post('/create-post', auth, upload.single('media'), async (req, res) => {
                 };
 
                 await s3.send(new PutObjectCommand(videoParams));
-
                 videoUrl = `https://${videoParams.Bucket}.s3.amazonaws.com/videos/${videoName}`;
-
                 await fs.promises.unlink(videoPath);
             }
-
-            const newPost = new Post({
-                authorId: userId,
-                authorFirstName: userFirstName,
-                authorLastName: userLastName,
-                authorUsername: username,
-                content: content,
-                wordCount: wordCount,
-                dateAndTime: dateAndTime,
-                keywords: keywords,
-                imageName: imageName,
-                imageUrl: imageUrl,
-                videoUrl,
-            });
-    
-            const result = await newPost.save();
-            res.status(201).json({ message: "Post created successfully", result });
-        }else {
-            // Handle case when no file is uploaded
-            res.status(400).json({ message: "No file uploaded" });
         }
+
+        const newPost = new Post({
+            authorId: userId,
+            authorFirstName: userFirstName,
+            authorLastName: userLastName,
+            authorUsername: username,
+            content: content,
+            wordCount: wordCount,
+            dateAndTime: dateAndTime,
+            keywords: keywords,
+            imageName: imageName,
+            imageUrl: imageUrl,
+            videoUrl: videoUrl,
+        });
+
+        const result = await newPost.save();
+        res.status(201).json({ message: "Post created successfully", result });
     } catch (error) {
         console.error('Error in create-post route:', error);
         res.status(500).json({ message: "Error creating post", error });
     }
 });
+
 
 // Adds +1 to views like in the post doucment in the database
 app.post('/view-post', async(req, res) => {
