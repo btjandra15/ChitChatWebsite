@@ -48,3 +48,4 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 - [x]  Any TU/OU who posts ads or job opportunities will be fined $10 and one warning
 - [x] Custom Features
   - [x] User can turn on or off dark mode and saves the choice even when the user reloads the page
+  - [x] Most liked posts on the right bar will show a preview if they have an image or video 
