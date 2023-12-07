@@ -667,10 +667,11 @@ app.post('/tip-user', auth, async(req, res) => {
     try{
         User.findById({ _id: tipInitiatorID })
             .then(async(tipInitiator) => {
+                const tipAmountnumber=parseFloat(tipAmount);
                 User.findById({ _id: currentTippedUserID })
                     .then(async(currentTippedUserID) => {
-                        tipInitiator.balance -= tipAmount;
-                        currentTippedUserID.tips += tipAmount;
+                        tipInitiator.balance -= tipAmountnumber;
+                        currentTippedUserID.tips += tipAmountnumber;
                         
                         await tipInitiator.save();
                         await currentTippedUserID.save().then((res) => console.log(res));
