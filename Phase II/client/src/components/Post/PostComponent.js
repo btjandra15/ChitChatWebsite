@@ -68,8 +68,12 @@ const PostComponent = ({ post, index }) => {
     event.preventDefault(); // Stop the default anchor link behavior
 
     try {
+      const authorResponse = await axios.get(
+        `http://localhost:3001/get-user/${post.authorId}`
+      );
+      const authorId = authorResponse.data._id;
       // deduct the balance
-      await deductBalance(userId, 0.1); // Deduct $0.1
+      await deductBalance(authorId, 0.1); // Deduct $0.1
       // If successful, open the job link in a new tab
       window.open(post.jobLink, "_blank");
     } catch (error) {
