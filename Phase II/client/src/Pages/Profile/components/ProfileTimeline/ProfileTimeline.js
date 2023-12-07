@@ -6,6 +6,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { DarkModeContext } from '../../../../context/darkModeContext';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 import ReportProfileModal from '../ReportProfileModal/ReportProfileModal';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import TipProfileModal from '../TipProfileModal/TipProfileModal';
 
 const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, isOwnProfile }) => {
   const [editBio, setEditBio] = useState(false);
@@ -15,6 +17,7 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
   const bannerImageRef = useRef(null);
   const { darkMode } = useContext(DarkModeContext); // Use the darkMode value from context
   const [isReportProfileModalOpen, setReportProfileModalOpen] = useState(false);
+  const [isTiptProfileModalOpen, setTipProfileModalOpen] = useState(false);
 
   // For generating random id for Surfer
   const { v4: uuidv4 } = require("uuid");
@@ -42,8 +45,6 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
       throw error;
     }
   };
-
-
 
   // Function to handle image selection
   const onSelectFile = async (e, isProfilePicture) => {
@@ -107,6 +108,14 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
     setReportProfileModalOpen(false);
   };
 
+  const handleProfileTipClick = () => {
+    setTipProfileModalOpen(true);
+};
+
+  const handleCloseTipProfileModal = () => {
+    setTipProfileModalOpen(false);
+  };
+
   const handleReportProfileSubmit = (reason) => {
     console.log(`Report reason: ${reason}`);
     console.log(reportInitiator);
@@ -155,6 +164,10 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
     handleCloseReportProfileModal();
   };  
 
+  const handleTipProfileSubmit = (tipAmount) => {
+
+  }
+
   return (
     <div className={`profile-timeline ${darkMode ? 'dark' : ''}`}>
       {/* Banner Image */}
@@ -164,6 +177,7 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
         ) : (
           <div className={`profile-banner-placeholder ${darkMode ? 'dark' : ''}`}>No Banner Image</div>
         )}
+
         <input
           type="file"
           accept='image/*'
@@ -171,13 +185,14 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
           style={{ display: 'none' }}
           onChange={(e) => onSelectFile(e, false)}
         />
+
         {isOwnProfile && (
-        <button
-          className={`change-banner-btn ${darkMode ? 'dark' : ''}`}
-          onClick={() => bannerImageRef.current.click()}
-        >
-          Change Banner
-        </button>
+          <button
+            className={`change-banner-btn ${darkMode ? 'dark' : ''}`}
+            onClick={() => bannerImageRef.current.click()}
+          >
+            Change Banner
+          </button>
         )}
 
         {/* Report Button */}
@@ -187,10 +202,27 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
             <text>Report</text>
           </button>
         )}
+
+        {/* Tip Button */}
+        {!isOwnProfile && (
+          <button className={`tip-btn ${darkMode ? 'dark' : ''}`} onClick={() => handleProfileTipClick()}>
+            <AttachMoneyIcon fontSize="small" />
+            <text>Tip</text>
+          </button>
+        )}
+
         <ReportProfileModal
           isOpen={isReportProfileModalOpen}
           onClose={handleCloseReportProfileModal}
           onSubmit={handleReportProfileSubmit}
+        />
+
+        <TipProfileModal
+          isOpen={isTiptProfileModalOpen}
+          onClose={handleCloseTipProfileModal}
+          onSubmit={handleTipProfileSubmit}
+          userData={userData}
+          reportInitiator={reportInitiator}
         />
 
         {/* Profile Picture */}
@@ -204,6 +236,7 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
           ) : (
             <div className="profile-picture-placeholder">No Profile Image</div>
           )}
+
           <input
             type="file"
             accept='image/*'
@@ -211,11 +244,12 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
             style={{ display: 'none' }}
             onChange={(e) => onSelectFile(e, true)}
           />
+
           {isOwnProfile && (
-          <AddCircleIcon
-            className="change-profile-picture-icon"
-            onClick={() => profileImageRef.current.click()}
-          />
+            <AddCircleIcon
+              className="change-profile-picture-icon"
+              onClick={() => profileImageRef.current.click()}
+            />
           )}
         </div>
       </div>
@@ -239,6 +273,7 @@ const ProfileTimeline = ({ userData, updateUser, setUserData, reportInitiator, i
           </>
         )}
       </div> */}
+
       {/* Profile Info */}
       <div className="profile-info">
         <h2 className={`usernamebio ${darkMode ? 'dark' : ''}`}>{userData?.username}</h2>

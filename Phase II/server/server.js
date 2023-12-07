@@ -20,7 +20,8 @@ const PostComplaint = require('./models/PostComplaints.js');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const util = require('util');
-const TabooWord = require('./models/TabooWord.js')
+const TabooWord = require('./models/TabooWord.js');
+const { addAbortListener } = require('events');
 
 //add s3 authenticatio here to make posts with images.
 
@@ -71,7 +72,6 @@ const generateRandomPassword = (length = 20) => {
 };
 
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
-
 const readFileAsync = util.promisify(fs.readFile);
 
 dotenv.config();
@@ -397,7 +397,6 @@ app.post('/login', (req, res) => {
         });
 });
 
-
 //+1 warningCount to complaining user when complaint is denied
 app.post('/add-warning-count-to-initiator/:initiatorId', async (req, res) => {
     const { initiatorId } = req.params;
@@ -659,18 +658,18 @@ app.post('/follow-user', auth, async(req, res) => {
 });
 
 app.post('/tip-user', auth, async(req, res) => {
-    const { userID, trendyUserID, tipAmount } = req.body;
+    const { currentTippedUserID, tipInitiatorID, tipAmount } = req.body;
 
     try{
-        User.findById({ _id: userID })
-            .then(async(user) => {
-                User.findById({ _id: trendyUserID })
-                    .then(async(trendyUser) => {
-                        user.balance -= tipAmount;
-                        trendyUser.tips += tipAmount;
+        User.findById({ _id: tipInitiatorID })
+            .then(async(tipInitiator) => {
+                User.findById({ _id: currentTippedUserID })
+                    .then(async(currentTippedUserID) => {
+                        tipInitiator.balance -= tipAmount;
+                        currentTippedUserID.tips += tipAmount;
                         
-                        await user.save();
-                        await trendyUser.save().then((res) => console.log(res));
+                        await tipInitiator.save();
+                        await currentTippedUserID.save().then((res) => console.log(res));
                         console.log('User tipped the user successfully!');
                     });
             })

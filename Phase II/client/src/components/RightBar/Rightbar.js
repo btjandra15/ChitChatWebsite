@@ -11,8 +11,6 @@ const token = cookies.get("TOKEN");
 const Rightbar = ({loggedIn, userData}) => {
     const [trendyUsers, setTrendyUsers] = useState([]);
     const [mostLikedPosts, setMostLikedPosts] = useState([]);
-    const [openTipBox, setOpenTipBox] = useState(false);
-    const [tipAmount, setTipAmount] = useState(0);
     const [allUsers, setAllUsers] = useState([]);
     const [suggestedUsers, setSuggestedUsers] = useState([]);
  
@@ -41,40 +39,6 @@ const Rightbar = ({loggedIn, userData}) => {
 
             alert("Successfully followed this user!");    
         }
-    }
-
-    const tipUser = (userID, trendyUserID) => {
-        if(tipAmount > 0){
-            setTipAmount(parseInt(tipAmount));
-            
-            const updateTipAmountConfig = {
-                method: "POST",
-                url: `http://localhost:3001/tip-user`,
-                data: {
-                    userID: userID,
-                    trendyUserID: trendyUserID,
-                    tipAmount: tipAmount
-                },
-                headers: {
-                    Authorization: `Bearer: ${token}`
-                }
-            }
-
-            axios(updateTipAmountConfig)
-                .then((res) => {
-                    console.log(res);
-                    alert("You have successfully tipped the user");
-                })
-                .catch((err) => {
-                    console.error(err);
-                })
-        }else{
-            alert("Tip an amount greater than 0");
-        }
-    }
-
-    const showPoup = () => {
-        setOpenTipBox(!openTipBox);
     }
 
     useEffect(() => {
@@ -126,22 +90,6 @@ const Rightbar = ({loggedIn, userData}) => {
                                             <div className="buttons">
                                                 <button onClick={() => followUser(userData._id, user._id)}>Follow</button>
                                                 <button>Dimiss</button>
-                                                <button onClick={showPoup}>Tip</button>
-
-                                                {
-                                                    openTipBox ?
-                                                    <div className="popup">
-                                                        <div className="popup-inner">
-                                                            <h3>Tip User</h3>
-                                                            <p>@{user.username}</p>
-                                                            <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
-                                                            <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
-                                                            <button className='close-button' onClick={showPoup}>Close</button>
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    null
-                                                }
                                             </div>
                                         </div>
                                     )
@@ -163,21 +111,6 @@ const Rightbar = ({loggedIn, userData}) => {
                                             <div className="buttons">
                                                 <button onClick={() => followUser(userData._id, user._id)}>Follow</button>
                                                 <button>Dimiss</button>
-                                                <button onClick={showPoup}>Tip</button>
-
-                                                {
-                                                    openTipBox ?
-                                                    <div className="popup">
-                                                        <div className="popup-inner">
-                                                            <h3>Tip User</h3>
-                                                            <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
-                                                            <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
-                                                            <button className='close-button' onClick={showPoup}>Test</button>
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    null
-                                                }
                                             </div>
                                         </div>
                                     )
