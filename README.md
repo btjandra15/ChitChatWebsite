@@ -30,18 +30,18 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 - [x] The super-user processes user applications with accept or deny
   - [x] If accepted, a temporary password is sent to the user and the user must change it when they first log in and an amount of money should be deposited to the system
   - [x] If denied, a justification should be provided
-- [ ] When a TU/OU/CU logins, the system will suggest accounts for the user to follow based on this user's reading, liking, tipping, following history
+- [x] When a TU/OU/CU logins, the system will suggest accounts for the user to follow based on this user's reading, liking, tipping, following history
 - [x] A TU/OU/CU can construct their profiles which again are subjected to comments/reports by others (Same warning policy will apply if the profile contains misinformation)
 - [x] TU/OU can post messages with <= 20 words (An image is equivalent to 10 words while a video is equivalent to 15 words) for free
   - [x] Any messages > 20 words will be billed by the system automatically with the amount (# - 20) * $0.1
   - [x] A CU's message is billed # * $1 without the free ones
   - [x] If the user does not have enough money in the account, a warning is issued, and when the user logging will be automatically directed to the payment page
-- [ ] Any user receiving a warning can dispute with the SU
-  - [ ] If the dispute is won, the warning is removed
-  - [ ] If the warning is initialized by another user, the user who reported/complained will be warned once
-  - [ ] If the warning is by a surfer, the complained user is rewarded with 3 likes from the SU
-  - [ ] Any CU/OU with 3 outstanding warnings will be given the choice of paying out the fine to remove the complaints or be removed from the system
-  - [ ] Any TU with 3 outstanding warnings will be demoted to OU without any warnings
+- [x] Any user receiving a warning can dispute with the SU
+  - [x] If the dispute is won, the warning is removed
+  - [x] If the warning is initialized by another user, the user who reported/complained will be warned once
+  - [x] If the warning is by a surfer, the complained user is rewarded with 3 likes from the SU
+  - [x] Any CU/OU with 3 outstanding warnings will be given the choice of paying out the fine to remove the complaints or be removed from the system
+  - [x] Any TU with 3 outstanding warnings will be demoted to OU without any warnings
 - [x]  All users can search for messages based on author, keywords, with/without images and/or videos, # of likes/dislikes
 - [ ]  CU is allowed to post ads and job applications that others can click and apply
   - [ ]  CU will pay the system (SU) by $0.1 for each click and application
