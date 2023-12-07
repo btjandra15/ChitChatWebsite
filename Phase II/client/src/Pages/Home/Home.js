@@ -98,6 +98,10 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
                            updateUser(user._id, 'trendyUser', true);
                         else
                             updateUser(user._id, 'trendyUser', false);
+
+                        if(user.warningCount >= 3){
+                            updateUser(user._id, 'trendyUser', false);
+                        }
                     }
 
                     return null;

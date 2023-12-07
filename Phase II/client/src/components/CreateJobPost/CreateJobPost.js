@@ -68,14 +68,10 @@ const CreatePost = () => {
             alert("You are not a Corporate User! You received a warning!");
 
             const warningCount = userData.warningCount;
+            const chargeAmount = 10;
 
-            axios.put(`http://localhost:3001/update-user/${userData._id}`, { fieldToUpdate: 'warningCount', newValue: warningCount + 1 })
-                .then(() => {
-                    console.log("Successfully updated user");
-                })
-                .catch((err) => {
-                    console.error(`Error updating User: ${err}`);
-                });
+            updateUser(userData._id, 'warningCount', warningCount + 1);
+            updateUser(userData._id, 'chargesAmount', userData.chargesAmount + chargeAmount);
 
             return;
         }
