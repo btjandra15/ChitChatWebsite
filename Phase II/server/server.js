@@ -23,13 +23,6 @@ const util = require('util');
 const TabooWord = require('./models/TabooWord.js')
 
 //add s3 authenticatio here to make posts with images.
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: 'AKIA5IQUIWIGKRA5DD5L',
-        secretAccessKey: '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',
-    },
-    region: 'us-east-1',
-});
 
 // Generate a random secure string (32 bytes)
 const JWT_SECRET = process.env.JWT_SECRET;

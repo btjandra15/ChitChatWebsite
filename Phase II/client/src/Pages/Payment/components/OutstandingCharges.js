@@ -2,11 +2,6 @@ import React, { useState } from 'react'
 import './OutstandingCharges.scss'
 
 const OutstandingCharges = ({ user, onPayWarning, onPayCharge }) => {
-    const [outstandingCharges, setOutstandingCharges] = useState([
-        { amount: 20, warning: 'Late payment' },
-        { amount: 10, warning: 'Overdraft fee' },
-    ]);
-
     const handlePayCharge = (index) => {
         // const updatedCharges = [...outstandingCharges];
         // const chargeToPay = updatedCharges[index];
@@ -25,19 +20,12 @@ const OutstandingCharges = ({ user, onPayWarning, onPayCharge }) => {
             <h3>Outstanding Charges:</h3>
             
             <ul>
-                {outstandingCharges.map((charge, index) => (
-                    <li key={index}>
-                        <span>Amount: ${charge.amount}</span>
-                        <span>Warning: {charge.warning}</span>
-                        <button onClick={() => handlePayCharge(index)}>Pay</button>
-                    </li>
-                ))}
                 {user && user.warningCount === 3 && (
-                <li>
-                    <span>Amount: $100</span>
-                    <span>3 outstanding warnings</span>
-                    <button onClick={onPayWarning}>Pay</button>
-                </li>
+                    <li>
+                        <span>Amount: $100</span>
+                        <span>3 outstanding warnings</span>
+                        <button onClick={onPayWarning}>Pay</button>
+                    </li>
                 )}
                 {user && user.chargesAmount.map((charge, index) => (
                     <li key={index}>

@@ -51,7 +51,6 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
 
     const handleWarningAction = (userId, action) => {
         const deleteUser = 'http://localhost:3001/delete-user';
-    
         const confirmed = window.confirm('Are you sure you want to proceed?');
         
         if (confirmed) {
@@ -207,6 +206,7 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
                             ))}
                     </div>
                 </div>
+                
                 {/* Show the WarningModal if needed*/}
                 {userData && userData.warningCount >= 3 && (userData.userType === 'Corporate User' || userData.userType === 'Ordinary User') && (
                     <WarningModal userId={userData._id} onConfirm={handleWarningAction} />
