@@ -1087,7 +1087,7 @@ app.put('/update-post-complaint/:id', async (req, res) => {
   });
 
   //Admin approves complaint (dispute gets denied if exists, receiver gets email)
-  app.post('/approve-complaint/:id', async (req, res) => {
+app.post('/approve-complaint/:id', async (req, res) => {
     const { id } = req.params;
   
     try {
@@ -1137,7 +1137,7 @@ app.put('/update-post-complaint/:id', async (req, res) => {
       console.error('Error accepting complaint:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
 
 app.post('/deny-complaint/:id', async (req, res) => {
     const { id } = req.params;

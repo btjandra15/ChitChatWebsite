@@ -300,7 +300,7 @@ const PostComponent = ({ post, index }) => {
 
   const deletePost = async (postId) => {
     try {
-      if (userData.adminUser) {
+      if (userData.adminUser || userData._id === post.authorId) {
         const response = await fetch(
           `http://localhost:3001/delete-post/${postId}`,
           {

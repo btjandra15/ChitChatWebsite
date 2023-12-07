@@ -93,6 +93,7 @@ const Rightbar = ({loggedIn, userData}) => {
     
                 const shuffleUsers = allUserResponse.data.sort(() => Math.random() - 0.5);
                 const suggested = shuffleUsers.slice(0, 3);
+                
                 setSuggestedUsers(suggested);
             } catch (error) {
                 console.error(`Error: ${error}`);
