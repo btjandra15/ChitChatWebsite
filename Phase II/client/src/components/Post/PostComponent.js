@@ -386,16 +386,17 @@ const PostComponent = ({ post, index }) => {
       <div className="text-body" key={index}>
         <div className="text-header">
           <div className="text-name">
-            <h3>
-              {post.authorFirstName} {post.authorLastName}
-            </h3>
+            <h3>{post.authorFirstName} {post.authorLastName} </h3>
             <h3 className="username">@{post.authorUsername}</h3>
+
             <button onClick={() => followPost(post._id, userData._id)}>
               Follow
             </button>
+
             <button onClick={handleReportClick} className="report-button">
               Report
             </button>
+
             <ReportModal
               isOpen={isReportModalOpen}
               onClose={handleCloseReportModal}
