@@ -11,7 +11,6 @@ import { updateUser } from '../../utils/updateUser';
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
-
 const Payment = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);

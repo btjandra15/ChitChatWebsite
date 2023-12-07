@@ -388,8 +388,8 @@ const PostComponent = ({ post, index }) => {
         <div className="text-header">
           <div className="text-name">
             <h3>
-              <Link to={`/profile/${post.authorUsername}`}>
-              {post.authorFirstName} {post.authorLastName}
+              <Link to={`/profile/${post.authorUsername}`} className="profile-link">
+                {post.authorFirstName} {post.authorLastName}
               </Link>
             </h3>
             <h3 className="username">@{post.authorUsername}</h3>
