@@ -127,61 +127,63 @@ const Complaints = () => {
 
   return (
     <div className="complaints">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Initiator</th>
-            <th>Receiver</th>
-            <th>Content</th>
-            <th>Reason</th>
-            <th>Dispute</th>
-            <th>Status</th>
-            <th>Resolve</th>
-          </tr>
-        </thead>
-        <tbody>
-          {postComplaints.map((complaint) => (
-            <tr key={complaint._id} className="complaint-item">
-              <td>{complaint._id}</td>
-              <td>{complaint.initiatorUsername}</td>
-              <td>{complaint.receiverUsername}</td>
-              <td>{complaint.content}</td>
-              <td>{complaint.reason}</td>
-              <td>{complaint.dispute}</td>
-              <td>{complaint.status}</td>
-              <td>
-              {complaint.status === "pending" ? (
-                <div className='button-options'>
-                  <button onClick={() => handleApproveClick(complaint)}>Approve</button>
-                  <button onClick={() => handleDenyClick(complaint)}>Deny</button>
-                </div>
-              ) : (
-                <div className='resolved'>
-                  <CheckCircleOutlineRoundedIcon/>
-                </div>
-              )}
-              </td>
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Initiator</th>
+              <th>Receiver</th>
+              <th>Content</th>
+              <th>Reason</th>
+              <th>Dispute</th>
+              <th>Status</th>
+              <th>Resolve</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {postComplaints.map((complaint) => (
+              <tr key={complaint._id} className="complaint-item">
+                <td>{complaint._id}</td>
+                <td>{complaint.initiatorUsername}</td>
+                <td>{complaint.receiverUsername}</td>
+                <td>{complaint.content}</td>
+                <td>{complaint.reason}</td>
+                <td>{complaint.dispute}</td>
+                <td>{complaint.status}</td>
+                <td>
+                {complaint.status === "pending" ? (
+                  <div className='button-options'>
+                    <button onClick={() => handleApproveClick(complaint)}>Approve</button>
+                    <button onClick={() => handleDenyClick(complaint)}>Deny</button>
+                  </div>
+                ) : (
+                  <div className='resolved'>
+                    <CheckCircleOutlineRoundedIcon/>
+                  </div>
+                )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {selectedComplaint && (
-        <ApproveComplaint
-          isOpen={isApproveModalOpen}
-          onClose={handleCloseApproveModal}
-          onSubmit={(disputeDenyReason) => handleDisputeDenySubmit(selectedComplaint, disputeDenyReason)}
-        />
-      )}
+        {selectedComplaint && (
+          <ApproveComplaint
+            isOpen={isApproveModalOpen}
+            onClose={handleCloseApproveModal}
+            onSubmit={(disputeDenyReason) => handleDisputeDenySubmit(selectedComplaint, disputeDenyReason)}
+          />
+        )}
 
-      {selectedComplaint && (
-        <DenyComplaint
-          isOpen={isDenyModalOpen}
-          onClose={handleCloseDenyModal}
-          onSubmit={(complaintDenyReason) => handleComplaintDenySubmit(selectedComplaint, complaintDenyReason)}
-        />
-      )}
+        {selectedComplaint && (
+          <DenyComplaint
+            isOpen={isDenyModalOpen}
+            onClose={handleCloseDenyModal}
+            onSubmit={(complaintDenyReason) => handleComplaintDenySubmit(selectedComplaint, complaintDenyReason)}
+          />
+        )}
+      </div>
     </div>
   );
 };

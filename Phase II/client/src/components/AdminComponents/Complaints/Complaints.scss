@@ -1,5 +1,15 @@
 .complaints {
     padding: 20px;
+
+    .table-container {
+      max-height: 220px; /* Set your desired maximum height */
+      overflow-y: auto;
+    }
+
+    .table-container::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+      }
   }
   
   table {
