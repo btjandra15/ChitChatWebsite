@@ -98,16 +98,20 @@ const JobPostings = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
               setAllUserData(res.data);
 
               res.data.map((user) => {
-                  const subscribedUsersCount = user.subscribersList.length;
+                  const subscribedUsersCount = user.followingList.length;
                   const likeDislikeDifference = user.likes - user.dislikes;
                   const trendyMessagesCount = user.trendyMessages.length;
 
                   if(user.userType !== 'Trendy User'){
-                      if(subscribedUsersCount > 10 && trendyMessagesCount > 2 && (likeDislikeDifference > 10 || user.tips > 100))
-                         updateUser(user._id, 'trendyUser', true);
-                      else
-                          updateUser(user._id, 'trendyUser', false);
-                  }
+                    if(subscribedUsersCount > 10 && trendyMessagesCount >= 2 && (likeDislikeDifference > 10 || user.tips > 100))
+                       updateUser(user._id, 'trendyUser', true);
+                    else
+                        updateUser(user._id, 'trendyUser', false);
+
+                    if(user.warningCount >= 3){
+                        updateUser(user._id, 'trendyUser', false);
+                    }
+                }
 
                   return null;
               });
