@@ -64,7 +64,7 @@ const TipProfileModal = ({ isOpen, onClose, userData, reportInitiator }) => {
 
         <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)} className='tip-box'/>
 
-        <button className="submit" onClick={() => handleSubmit}>
+        <button className="submit" onClick={handleSubmit}>
           Tip User
         </button>
       </div>
