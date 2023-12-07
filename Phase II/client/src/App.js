@@ -1,5 +1,5 @@
 import Admin from './Pages/Admin/Admin';
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Routes, Route } from 'react-router-dom';
 import Signup from "./Pages/Signup/Signup"
 import Login from './Pages/Login/Login'
 import Home from './Pages/Home/Home';
@@ -19,6 +19,13 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [postData, setPostData] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState(postData);
+
+  const ErrorMessage = () => (
+    <div>
+      <h2>Access Denied</h2>
+      <p>You do not have permission to access this page.</p>
+    </div>
+  );
 
   const handleSearch = async (type, query) => {
     try {
@@ -86,7 +93,17 @@ function App() {
             <Route path='/' element={<Home onSearch={handleSearch} filteredPosts={filteredPosts}/>}/>
 
             {/*Admin Route*/}
-            <Route path='/admin' element={<Admin/>}/>
+            <Route
+              path='/admin'
+              element={
+                userData && userData.adminUser ? (
+                  <Admin />
+                ) : (
+                  // You can customize this part to redirect to another page or show an error message
+                  <ErrorMessage />
+                )
+              }
+            />
 
             {/*Signup Route*/}
             <Route path='/signup' element={<Signup/>}/>
@@ -95,7 +112,7 @@ function App() {
             <Route path='/login' element={<Login/>}/> 
 
             {/*Profile Route*/}
-            <Route path={`/profile/${userData ? userData.username : null}`} element={<Profile/>}/>
+            <Route path="/profile/:username" element={<Profile/>} />
 
             {/*Trending Route*/}
             <Route path='/trending' element={<Trending/>}/> 

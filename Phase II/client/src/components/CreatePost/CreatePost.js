@@ -71,46 +71,105 @@ const CreatePost = () => {
     }
 
     const submitPost = async() => {
-        // Define your list of taboo words
-        const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
+        // // Define your list of taboo words
+        // const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
     
-        // Function to replace taboo words with asterisks
-        const replaceTabooWords = (text, tabooWords) => {
-            let tabooCount = 0;
-            let processedText = text;
+        // // Function to replace taboo words with asterisks
+        // const replaceTabooWords = (text, tabooWords) => {
+        //     let tabooCount = 0;
+        //     let processedText = text;
     
-            tabooWords.forEach(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'gi');
-                if (processedText.match(regex)) {
-                    tabooCount++;
-                    if (tabooCount <= 2) {
-                        processedText = processedText.replace(regex, '*');
-                    }
-                }
-            });
+        //     tabooWords.forEach(word => {
+        //         const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        //         if (processedText.match(regex)) {
+        //             tabooCount++;
+        //             if (tabooCount <= 2) {
+        //                 processedText = processedText.replace(regex, '*');
+        //             }
+        //         }
+        //     });
     
-            return { processedText, tabooCount };
+        //     return { processedText, tabooCount };
+        // };
+    
+        // // Process the text to handle taboo words
+        // const { processedText, tabooCount } = replaceTabooWords(text, tabooWords);
+    
+        // // Check if there are more than two taboo words
+        // if (tabooCount > 2) {
+        //     alert("Post contains too many taboo words!");
+
+        //     const warningCount = userData.warningCount;
+
+        //     axios.put(`http://localhost:3001/update-user/${userData._id}`, { fieldToUpdate: 'warningCount', newValue: warningCount + 1 })
+        //         .then(() => {
+        //             console.log("Successfuly updated user");
+        //         })
+        //         .catch((err) => {
+        //             console.error(`Error updating User: ${err}`);
+        //         });
+
+        //     return;
+        // }
+
+        // Fetch taboo words from the server
+        const fetchTabooWords = async () => {
+            try {
+            const response = await axios.get('http://localhost:3001/get-all-taboo-words');
+            return response.data;
+            } catch (error) {
+            console.error('Error fetching taboo words:', error);
+            return [];
+            }
         };
-    
-        // Process the text to handle taboo words
-        const { processedText, tabooCount } = replaceTabooWords(text, tabooWords);
-    
-        // Check if there are more than two taboo words
-        if (tabooCount > 2) {
-            alert("Post contains too many taboo words!");
 
+        // Fetch taboo words
+        const tabooWords = await fetchTabooWords();
+
+        const replaceTabooWords = (text, tabooWords) => {
+            let processedText = text;
+            let tabooCount = 0;
+          
+            tabooWords.forEach((word) => {
+              const regex = new RegExp(`\\b${word.word}\\b`, 'gi');
+              const matches = processedText.match(regex);
+          
+              if (matches) {
+                // Increment tabooCount only once for each unique taboo word
+                tabooCount += matches.length;
+              }
+          
+              processedText = processedText.replace(regex, '*');
+            });
+          
+            return { processedText, tabooCount };
+          };
+          
+          // Process the text to handle taboo words
+          const { processedText, tabooCount } = replaceTabooWords(text, tabooWords);
+          
+          // Check if there are two or more taboo words
+          if (tabooCount > 2) {
+            alert('Post contains too many taboo words!');
+          
+            // Issue a warning to the user
             const warningCount = userData.warningCount;
-
-            axios.put(`http://localhost:3001/update-user/${userData._id}`, { fieldToUpdate: 'warningCount', newValue: warningCount + 1 })
-                .then(() => {
-                    console.log("Successfuly updated user");
-                })
-                .catch((err) => {
-                    console.error(`Error updating User: ${err}`);
-                });
-
+          
+            axios
+              .put(`http://localhost:3001/update-user/${userData._id}`, {
+                fieldToUpdate: 'warningCount',
+                newValue: warningCount + 1,
+              })
+              .then(() => {
+                console.log('Successfully updated user');
+              })
+              .catch((err) => {
+                console.error(`Error updating User: ${err}`);
+              });
+          
+            // Block the message and return
             return;
-        }
+          }
     
         if(text === ""){
             alert("Please enter a caption!");

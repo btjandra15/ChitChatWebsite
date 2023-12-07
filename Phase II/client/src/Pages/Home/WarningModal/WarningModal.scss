@@ -1,0 +1,119 @@
+// /* WarningModal.css (or use inline styles) */
+
+// .overlay {
+//     position: fixed;
+//     top: 0;
+//     bottom: 0;
+//     left: 0;
+//     right: 0;
+//     background-color: rgba(0, 0, 0, 0.5);
+//     z-index: 1000;
+// }
+
+// .modal {
+//     position: fixed;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     background-color: #FFF;
+//     padding: 50px;
+//     z-index: 1001;
+//     width: 400px; /* Adjust the width as needed */
+
+//     button.close {
+//         position: absolute;
+//         top: 10px;
+//         right: 10px;
+//         font-size: 18px;
+//         cursor: pointer;
+//         background: none;
+//         border: none;
+//         color: #000;
+//     }
+
+//     h2 {
+//         color: #000;
+//         text-align: center;
+//         margin-bottom: 20px;
+//     }
+
+//     p {
+//         color: #000;
+//         margin-bottom: 20px;
+//     }
+
+//     button.submit {
+//         color: white;
+//         padding: 10px 20px;
+//         font-size: 16px;
+//         border: none;
+//         cursor: pointer;
+//         border-radius: 5px;
+//         display: block;
+//         margin: 0 auto;
+//         background-color: #007BFF; /* Set your desired background color */
+//     }
+// }
+
+/* WarningModal.css (or use inline styles) */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: #FFF;
+    padding: 20px;
+    width: 300px; /* Adjust the width as needed */
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+button.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #333; /* Adjust the color as needed */
+}
+
+h2 {
+    color: #333; /* Adjust the color as needed */
+    margin-bottom: 20px;
+}
+
+p {
+    color: #555; /* Adjust the color as needed */
+    margin-bottom: 20px;
+}
+
+button.submit {
+    color: #FFF;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #007BFF; /* Set your desired background color */
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.submit:hover {
+    background-color: #0056b3; /* Set your desired hover background color */
+}
+
+

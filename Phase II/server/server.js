@@ -20,6 +20,7 @@ const PostComplaint = require('./models/PostComplaints.js');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const util = require('util');
+const TabooWord = require('./models/TabooWord.js')
 
 //add s3 authenticatio here to make posts with images.
 const s3 = new S3Client({
@@ -156,6 +157,22 @@ app.get('/get-user', auth, (req, res) => {
             res.status(500).json({message: `Error ${error.message}`});
         })
 })
+
+app.get('/get-other-user/:username', async (req, res) => {
+    try {
+      const username = req.params.username;
+      const user = await User.findOne({ username });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json(user);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 // Get user by accepting a parameter (userId)
 app.get('/get-user/:userId', (req, res) => {
@@ -1016,7 +1033,7 @@ app.post('/remove-user-reported/:postId', async (req, res) => {
 });
 // Post Endpoints
 
-// Post Complaints Endpoints
+// Post/Profile Complaints Endpoints
 app.get('/get-post-complaints', async (req, res) => {
     try {
       const postComplaints = await PostComplaint.find();
@@ -1025,7 +1042,22 @@ app.get('/get-post-complaints', async (req, res) => {
       console.error(error);
       res.status(500).json({ message: 'An error occurred while fetching post complaints' });
     }
-  });
+});
+
+// Endpoint to get user complaints
+app.get('/get-user-complaints/:userId', async (req, res) => {
+    const userId = req.params.userId;
+  
+    try {
+      // Find complaints where the receiverId matches the userId
+      const userComplaints = await PostComplaint.find({ receiverId: userId });
+  
+      res.status(200).json(userComplaints);
+    } catch (error) {
+      console.error('Error fetching user complaints:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.post('/create-post-complaint', async (req, res) => {
 const { initiatorId, initiatorUsername, receiverId, receiverUsername, postId, content, reason } = req.body;
@@ -1148,7 +1180,7 @@ app.post('/deny-complaint/:id', async (req, res) => {
     }
 });
 
-// Post Complaints Endpoints
+// Post/Profile Complaints Endpoints
 
 //COMMENTS ENDPOINTS
 app.get('/get-comments', async(req, res) => {
@@ -1324,3 +1356,44 @@ app.put('/update-user-balance/:userId', async (req, res) => {
       res.status(500).json({ message: 'Error updating balance', error: error.message });
     }
   });
+
+  //Taboo Words Endpoints
+  app.get('/get-all-taboo-words', async (req, res) => {
+    try {
+      const tabooWords = await TabooWord.find();
+      res.json(tabooWords);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.post('/delete-taboo-word', async (req, res) => {
+    const { tabooWordId } = req.body;
+    try {
+      const deletedTabooWord = await TabooWord.findByIdAndDelete(tabooWordId);
+      if (!deletedTabooWord) {
+        return res.status(404).json({ error: 'Taboo word not found' });
+      }
+      res.json({ data: 'Taboo word deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.post('/create-taboo-word', async (req, res) => {
+    const { word } = req.body;
+    try {
+      const existingTabooWord = await TabooWord.findOne({ word });
+      if (existingTabooWord) {
+        return res.status(400).json({ error: 'Taboo word already exists' });
+      }
+      const newTabooWord = new TabooWord({ word });
+      const savedTabooWord = await newTabooWord.save();
+      res.json({ data: 'Taboo word created successfully', tabooWordId: savedTabooWord._id });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+
+  //Taboo Words Enpoints

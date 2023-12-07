@@ -45,18 +45,49 @@ const Payment = () => {
     // }
   };
 
-  const handlePayCharge = (index) => {
-    // const updatedCharges = [...outstandingCharges];
-    // const chargeToPay = updatedCharges[index];
-
-    // if (balance >= chargeToPay.amount) {
-    //   setBalance(balance - chargeToPay.amount);
-    //   updatedCharges.splice(index, 1);
-    //   setOutstandingCharges(updatedCharges);
-    // } else {
-    //   alert('Insufficient balance to pay this charge');
-    // }
+  const handlePayWarning = () => {
+    // Call the API to update user's warning count and subtract the charge
+    axios.put(`http://localhost:3001/update-user/${userData._id}`, {
+      fieldToUpdate: 'warningCount',
+      newValue: userData.warningCount - 3,
+    })
+    .then(() => {
+      // Subtract the charge from the user's balance
+      updateUser(userData._id, 'balance', userData.balance - 100);
+      // Reload the page to reflect the updated balance
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error('Error updating user warnings:', error);
+    });
   };
+
+  const handlePayCharge = (amount, index) => {
+    // Call the API to update user's balance
+    const updatedBalance = userData.balance - amount;
+    updateUser(userData._id, 'balance', updatedBalance);
+
+    // Remove the charge from the chargesAmount array
+    const updatedCharges = [...userData.chargesAmount];
+    updatedCharges.splice(index, 1);
+    updateUser(userData._id, 'chargesAmount', updatedCharges);
+
+    // Reload the page to reflect the updated balance and charges
+    window.location.reload();
+  };
+
+  // const handlePayCharge = (index) => {
+  //   // const updatedCharges = [...outstandingCharges];
+  //   // const chargeToPay = updatedCharges[index];
+
+  //   // if (balance >= chargeToPay.amount) {
+  //   //   setBalance(balance - chargeToPay.amount);
+  //   //   updatedCharges.splice(index, 1);
+  //   //   setOutstandingCharges(updatedCharges);
+  //   // } else {
+  //   //   alert('Insufficient balance to pay this charge');
+  //   // }
+  // };
 
   useEffect(() => {
     const loggedInUserConfig = {
@@ -126,7 +157,9 @@ const Payment = () => {
                       </div>
 
                       <div className="outstanding-charges">
-                        <OutstandingCharges/>
+                        {userData && (
+                          <OutstandingCharges user={userData} onPayWarning={handlePayWarning} onPayCharge={handlePayCharge} />
+                        )}
                       </div>
                     </div>
 

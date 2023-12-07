@@ -51,6 +51,30 @@
     }
 }
 
+.report-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 20px;
+    top: 100%;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    text {
+        margin-left: 5px; /* Adjust the spacing between the icon and text */
+        font-size: small;
+    }
+  
+    @include themify($themes) {
+      background-color: themed('reportButtonBg');
+      color: themed('reportButtonTextColor');
+    }
+}
+
 .profile-info {
     padding-top: 10px;
 }

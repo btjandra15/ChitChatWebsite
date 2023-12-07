@@ -11,6 +11,7 @@ import TestImage from "../../images/cityBackground.jpg";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import CreateComment from "../CreateComment/CreateComment";
 import ReportModal from "./ReportModal";
+import { Link } from "react-router-dom";
 
 // For generating random id for Surfer
 const { v4: uuidv4 } = require("uuid");
@@ -387,7 +388,9 @@ const PostComponent = ({ post, index }) => {
         <div className="text-header">
           <div className="text-name">
             <h3>
+              <Link to={`/profile/${post.authorUsername}`}>
               {post.authorFirstName} {post.authorLastName}
+              </Link>
             </h3>
             <h3 className="username">@{post.authorUsername}</h3>
             <button onClick={() => followPost(post._id, userData._id)}>

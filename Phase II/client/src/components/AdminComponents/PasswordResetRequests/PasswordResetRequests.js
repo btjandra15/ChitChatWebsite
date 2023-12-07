@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DenyResetModal from './DenyResetModal/DenyResetModal'
+import DenyResetModal from './DenyResetModal/DenyResetModal.js'
 import './PasswordResetRequests.scss';
 
 function PasswordResetRequests() {

@@ -8,6 +8,7 @@ import Leftbar from "../../components/LeftBar/Leftbar";
 import PostComponent from "../../components/Post/PostComponent";
 import CreatePost from "../../components/CreatePost/CreatePost";
 import Rightbar from "../../components/RightBar/Rightbar";
+import WarningModal from "./WarningModal/WarningModal";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -46,6 +47,32 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
 
     const handleSort = (option) => {
         setSortOption(option);
+    };
+
+    const handleWarningAction = (userId, action) => {
+        const deleteUser = 'http://localhost:3001/delete-user';
+    
+        const confirmed = window.confirm('Are you sure you want to proceed?');
+        
+        if (confirmed) {
+            if (action === "payFine") {
+                // Redirect to the payment page
+                window.location.href = 'http://localhost:3000/payment'; // Adjust the URL as needed
+            } else if (action === "removeFromSystem") {
+                // Make an API call to delete the user
+                axios.post(deleteUser, { userId })
+                    .then((response) => {
+                        console.log('User deleted successfully:', response.data);
+                        window.alert('You have been deleted from the system.');
+                        // Redirect or perform any additional actions (e.g., log out the user)
+                        window.location.href = 'http://localhost:3000/'; // Redirect to home or login page
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting user:', error);
+                        window.alert('Failed to delete user. Please try again.');
+                    });
+            }
+        }
     };
 
     const logout = () => {
@@ -184,6 +211,10 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
                             ))}
                     </div>
                 </div>
+                {/* Show the WarningModal if needed*/}
+                {userData && userData.warningCount >= 3 && (userData.userType === 'Corporate User' || userData.userType === 'Ordinary User') && (
+                    <WarningModal userId={userData._id} onConfirm={handleWarningAction} />
+                )}
 
                 {/* RIGHT CONTENT */}
                 <Rightbar loggedIn={loggedIn} userData={userData}/>

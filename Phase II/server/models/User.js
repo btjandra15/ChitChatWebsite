@@ -91,9 +91,9 @@ const UserSchema = new mongoose.Schema({
         default: []
     },
     chargesAmount: {
-        type: Number,
+        type: Array,
         require: true,
-        default: 0,
+        default: [],
     },
     tippedUsers: {
         type: Array,
