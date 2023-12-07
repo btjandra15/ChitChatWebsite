@@ -1190,22 +1190,73 @@ app.get('/get-comments', async(req, res) => {
     }
 });
 
+// Endpoint to get comments for a specific post
+app.get('/get-comments-for-post/:postId', async (req, res) => {
+    const { postId } = req.params;
+  
+    try {
+      const comments = await Comment.find({ postID: postId });
+      res.status(200).json(comments);
+    } catch (err) {
+      console.error("Error fetching comments for post:", err);
+      res.status(500).json({ message: "Error retrieving comments from the database", error: err });
+    }
+  });
+  
+
+// app.post('/create-comment', auth, async(req, res) => {
+//     const { postId, content } = req.body;
+//     const userId = req.user.userId;
+
+//     try{
+//         const newCommment = new Comment({
+//             postID: postId,
+//             authorID: userId,
+//             content: content,
+//         });
+
+//         const result = await newCommment.save();
+
+//         res.status(201).json({ message: "Comment created successfully", result });
+//     }catch(e){
+//         console.error(e);
+//     }
+// });
 app.post('/create-comment', auth, async(req, res) => {
     const { postId, content } = req.body;
     const userId = req.user.userId;
 
-    try{
-        const newCommment = new Comment({
+    try {
+        // Create and save the new comment
+        const newComment = new Comment({
             postID: postId,
             authorID: userId,
             content: content,
         });
 
-        const result = await newCommment.save();
+        const savedComment = await newComment.save();
 
-        res.status(201).json({ message: "Comment created successfully", result });
-    }catch(e){
+        // Error handling for saving comment
+        if (!savedComment) {
+            return res.status(500).json({ message: "Failed to save comment" });
+        }
+
+        // Find the post and push the new comment's ID into the comments array
+        const updatedPost = await Post.findByIdAndUpdate(postId, {
+            $push: { comments: savedComment._id }
+        });
+
+        // Error handling for updating post
+        if (!updatedPost) {
+            // If post update fails, remove the saved comment to avoid orphan comments
+            await Comment.findByIdAndRemove(savedComment._id);
+            return res.status(500).json({ message: "Failed to update post with comment" });
+        }
+
+        res.status(201).json({ message: "Comment created successfully", comment: savedComment });
+    } catch (e) {
         console.error(e);
+        res.status(500).json({ message: "Error creating comment", error: e });
     }
 });
 //COMMENTS ENDPOINTS
@@ -1394,3 +1445,6 @@ app.put('/update-user-balance/:userId', async (req, res) => {
 
 
   //Taboo Words Enpoints
+
+
+  

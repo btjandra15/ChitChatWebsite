@@ -334,31 +334,51 @@ const PostComponent = ({ post, index }) => {
     }
   };
 
+  // const openComment = () => {
+  //   setOpenComments(!openComments);
+
+  //   const commentConfig = {
+  //     method: "GET",
+  //     url: "http://localhost:3001/get-comments",
+  //     data: {
+  //       postID: post._id,
+  //     },
+  //   };
+
+  //   axios(commentConfig)
+  //     .then((res) => {
+  //       // Filter comments with the same postID as the original post
+  //       const filteredComments = res.data.filter(
+  //         (comment) =>
+  //           comment.postID === post._id && comment.authorID === post.authorId
+  //       );
+
+  //       setCommentData(filteredComments);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
   const openComment = () => {
-    setOpenComments(!openComments);
-
-    const commentConfig = {
-      method: "GET",
-      url: "http://localhost:3001/get-comments",
-      data: {
-        postID: post._id,
-      },
-    };
-
-    axios(commentConfig)
+    setOpenComments((prevOpenComments) => !prevOpenComments);
+  
+    // Only fetch comments if we're about to open the comment section
+    if (!openComments) {
+      axios.get(`http://localhost:3001/get-comments-for-post/${post._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the authorization token if your endpoint is protected
+        },
+      })
       .then((res) => {
-        // Filter comments with the same postID as the original post
-        const filteredComments = res.data.filter(
-          (comment) =>
-            comment.postID === post._id && comment.authorID === post.authorId
-        );
-
-        setCommentData(filteredComments);
+        setCommentData(res.data); // Assuming the backend sends the comments array directly
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Error fetching comments:", err);
       });
-  };
+    }
+  };  
+  
 
   useEffect(() => {
     const getLoggedInUser = () => {
