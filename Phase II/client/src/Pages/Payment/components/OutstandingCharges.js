@@ -20,10 +20,10 @@ const OutstandingCharges = ({ user, onPayWarning, onPayCharge }) => {
             <h3>Outstanding Charges:</h3>
             
             <ul>
-                {user && user.warningCount === 3 && (
+                {user && user.warningCount >= 3 && (
                     <li>
                         <span>Amount: $100</span>
-                        <span>3 outstanding warnings</span>
+                        <span>3 or more outstanding warnings</span>
                         <button onClick={onPayWarning}>Pay</button>
                     </li>
                 )}

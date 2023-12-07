@@ -559,8 +559,12 @@ app.post('/demote-to-ordinary/:userId', async (req, res) => {
     const { userId } = req.params;
 
     try {
-        // Find the user by ID and update their userType to 'Ordinary'
-        const updatedUser = await User.findByIdAndUpdate(userId, { userType: 'Ordinary User', warningCount: 0 }, { new: true });
+        // Find the user by ID and update their userType and trendyUser
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { userType: 'Ordinary User', trendyUser: false },
+            { new: true }
+        );
 
         if (!updatedUser) {
             return res.status(404).json({ error: 'User not found' });

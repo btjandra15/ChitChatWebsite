@@ -74,6 +74,27 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
         }
     };
 
+    const DemoteTrendyUser = (userData) => {
+        if (userData && userData.trendyUser && userData.warningCount >= 3) {
+            axios.post(`http://localhost:3001/demote-to-ordinary/${userData._id}`)
+                .then(() => {
+                    // Display a popup or some notification about the demotion
+                    window.alert('You have been demoted to an Ordinary User.');
+    
+                    // Optionally, you can also update the local state or perform any other actions
+                    setUserData({ ...userData, userType: 'Ordinary User' });
+    
+                    // Refresh the page
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error demoting user:', error);
+                    // Handle the error as needed
+                });
+        }
+    };    
+    
+
     const logout = () => {
         cookies.remove("TOKEN", { path: "/" });
         setLoggedIn(false);
@@ -184,6 +205,10 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
         getLoggedInUser();
         getAllPosts();
     }, [])
+
+    useEffect(() => {
+        DemoteTrendyUser(userData);
+    }, [userData]);
 
     return(
         <div className={`theme-${darkMode ? 'dark' : 'light'}`}>

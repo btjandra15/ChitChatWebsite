@@ -48,7 +48,7 @@ const Payment = () => {
     // Call the API to update user's warning count and subtract the charge
     axios.put(`http://localhost:3001/update-user/${userData._id}`, {
       fieldToUpdate: 'warningCount',
-      newValue: userData.warningCount - 3,
+      newValue: 0,
     })
     .then(() => {
       // Subtract the charge from the user's balance
