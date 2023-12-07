@@ -123,12 +123,12 @@ const Profile = () => {
     }
   }, [userData]);
 
-
   return (
     <div className={`theme-${darkMode ? "dark" : "light"}`}>
       <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
       <div className="main-content">
         <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
+        
         <div style={{ flex: 6 }}>
           <div className="middleBar">
             {/* <ProfileTimeline
@@ -144,6 +144,7 @@ const Profile = () => {
               isOwnProfile={isOwnProfile}
               reportInitiator={userData}
             />
+            
             {isOwnProfile && userComplaints && userComplaints.length > 0 && (
               <div>
                 <p>This profile has received complaints</p>
@@ -155,6 +156,7 @@ const Profile = () => {
                 )}
               </div>
             )}
+
             {postData.map((post, index) => (
               <div key={index}>
                 <PostComponent post={post} />
