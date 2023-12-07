@@ -658,9 +658,9 @@ app.post('/tip-user', auth, async(req, res) => {
                     .then(async(trendyUser) => {
                         user.balance -= tipAmount;
                         trendyUser.tips += tipAmount;
-
+                        
                         await user.save();
-                        await trendyUser.save();
+                        await trendyUser.save().then((res) => console.log(res));
                         console.log('User tipped the user successfully!');
                     });
             })

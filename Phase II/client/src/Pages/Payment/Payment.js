@@ -32,6 +32,7 @@ const Payment = () => {
     if (transactionAmount > 0) {
       updateUser(userData._id, 'balance', userData.balance + transactionAmount)
       setTransactionAmount(0);
+      alert(`Successfully added ${transactionAmount}`)
     }else{
       alert("Please put an amount greater than 0!");
     }

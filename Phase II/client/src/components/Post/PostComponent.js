@@ -224,12 +224,13 @@ const PostComponent = ({ post, index }) => {
 
     axios(followPostConfig)
       .then(() => {
-        alert("You have successfully followed this post!");
       })
       .catch((err) => {
         alert("You already followed this post!");
         console.log(err);
       });
+
+    alert("You have successfully followed this post!");
   };
 
   const reportPost = (postId, userId) => {
@@ -378,10 +379,6 @@ const PostComponent = ({ post, index }) => {
 
   return (
     <div className="post">
-      {/* <div className='Avatar_symbol'>
-            <Avatar/>
-          </div>  */}
-
       <div className="text-body" key={index}>
         <div className="text-header">
           <div className="text-name">
@@ -481,7 +478,7 @@ const PostComponent = ({ post, index }) => {
               <span>{post.dislikes} Dislikes</span>
 
               <ModeCommentIcon className="icon" onClick={openComment} />
-              <span>{post.comments} Comments</span>
+              <span>Comments</span>
 
               <WarningAmberIcon className="icon" />
               <span>{post.reports} Compliants</span>

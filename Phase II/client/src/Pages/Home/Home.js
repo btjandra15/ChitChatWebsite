@@ -89,7 +89,7 @@ const Home = ({ onSearch, filteredPosts: homeFilteredPosts }) => {
                 setAllUserData(res.data);
 
                 res.data.map((user) => {
-                    const subscribedUsersCount = user.subscribersList.length;
+                    const subscribedUsersCount = user.followingList.length;
                     const likeDislikeDifference = user.likes - user.dislikes;
                     const trendyMessagesCount = user.trendyMessages.length;
 

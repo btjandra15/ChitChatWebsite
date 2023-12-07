@@ -34,18 +34,16 @@ const Rightbar = ({loggedIn, userData}) => {
 
             axios(subscribeUserConfig)
                 .then((res) => {
-                    console.log("Successfully followed this user!");
                 })
                 .catch((err) => {
                     console.error(err);
                 })
+
+            alert("Successfully followed this user!");    
         }
     }
 
     const tipUser = (userID, trendyUserID) => {
-        // console.log(tipAmount);
-        // console.log(trendyUserID);
-
         if(tipAmount > 0){
             setTipAmount(parseInt(tipAmount));
             
@@ -135,6 +133,7 @@ const Rightbar = ({loggedIn, userData}) => {
                                                     <div className="popup">
                                                         <div className="popup-inner">
                                                             <h3>Tip User</h3>
+                                                            <p>@{user.username}</p>
                                                             <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
                                                             <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
                                                             <button className='close-button' onClick={showPoup}>Close</button>
@@ -173,7 +172,7 @@ const Rightbar = ({loggedIn, userData}) => {
                                                             <h3>Tip User</h3>
                                                             <input type="number" value={tipAmount} onChange={(e) => setTipAmount(e.target.value)}/>
                                                             <button onClick={() => tipUser(userData._id, user._id)}>Tip</button>
-                                                            <button className='close-button' onClick={showPoup}>Close</button>
+                                                            <button className='close-button' onClick={showPoup}>Test</button>
                                                         </div>
                                                     </div>
                                                     :
