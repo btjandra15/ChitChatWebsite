@@ -178,7 +178,7 @@ const Profile = () => {
           </div>
         </div>
 
-        <Rightbar loggedIn={loggedIn} post={postData} />
+        <Rightbar loggedIn={loggedIn} userData={userData}/>
       </div>
     </div>
   );

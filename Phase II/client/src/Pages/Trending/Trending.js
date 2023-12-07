@@ -146,7 +146,8 @@ const Trending = () => {
                 </div>
 
                 {/* RIGHT CONTENT */}
-                <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData}/>
+                <Rightbar loggedIn={loggedIn} userData={userData} post={postData} allUserData={allUserData}/>
+                {/* <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData}/> */}
             </div>
         </div>
     )
