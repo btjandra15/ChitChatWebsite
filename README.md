@@ -45,6 +45,6 @@ Brandon Tjandra, Sohail Ahmad, Muhammad Rahman
 - [x]  All users can search for messages based on author, keywords, with/without images and/or videos, # of likes/dislikes
 - [x]  CU is allowed to post ads and job applications that others can click and apply
   - [x]  CU will pay the system (SU) by $0.1 for each click and application
-- [ ]  Any TU/OU who posts ads or job opportunities will be fined $10 and one warning
+- [x]  Any TU/OU who posts ads or job opportunities will be fined $10 and one warning
 - [x] Custom Features
   - [x] User can turn on or off dark mode and saves the choice even when the user reloads the page
