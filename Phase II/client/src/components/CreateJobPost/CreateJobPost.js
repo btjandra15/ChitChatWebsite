@@ -65,6 +65,12 @@ const CreatePost = () => {
     const submitPost = async() => {
 
         if (userData.userType !== 'Corporate User') {
+            // Charge the user 10 dollars
+            const updatedChargesAmount = [...userData.chargesAmount, 10];
+
+            // Update the user's chargesAmount
+            updateUser(userData._id, 'chargesAmount', updatedChargesAmount);
+
             alert("You are not a Corporate User! You received a warning!");
 
             const warningCount = userData.warningCount;

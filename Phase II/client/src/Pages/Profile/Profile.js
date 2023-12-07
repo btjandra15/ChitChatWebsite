@@ -1,171 +1,185 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./Profile.scss"; 
-import Cookies from 'universal-cookie';
-import axios from 'axios';
+import "./Profile.scss";
+import Cookies from "universal-cookie";
+import axios from "axios";
 import { DarkModeContext } from "../../context/darkModeContext";
-import Navbar from "../../components/Navbar/Navbar.js"
+import Navbar from "../../components/Navbar/Navbar.js";
 import Leftbar from "../../components/LeftBar/Leftbar";
 import Rightbar from "../../components/RightBar/Rightbar.js";
 import PostComponent from "../../components/Post/PostComponent";
-import ComplaintsView from "./components/ComplaintsView/ComplaintsView.js"
-
-// New component for profile timeline
+import ComplaintsView from "./components/ComplaintsView/ComplaintsView.js";
+import { useParams } from "react-router-dom";
 import ProfileTimeline from "./components/ProfileTimeline/ProfileTimeline.js";
+import UserComplaintsView from "./components/UserComplaintsView/UserComplaintsView.js";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 
 const Profile = () => {
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [allUserData, setAllUserData] = useState([]);
-    const { darkMode } = useContext(DarkModeContext);
-    const [ postData, setPostData ] = useState([]);
-    const [selectedPostId, setSelectedPostId] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [otherUserData, setOtherUserData] = useState(null);
+  const { darkMode } = useContext(DarkModeContext);
+  const [postData, setPostData] = useState([]);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const { username } = useParams();
+  const [selectedUserComplaints, setSelectedUserComplaints] = useState(null);
+  const [userComplaints, setUserComplaints] = useState([]);
 
-    const handleViewComplaints = (postId) => {
-        setSelectedPostId((prevId) => (prevId === postId ? null : postId));
-    };
+  const handleViewProfileComplaints = (userComplaints) => {
+    setSelectedUserComplaints((prevId) => (prevId === userComplaints ? null : userComplaints));
+  }
+  
+  const handleViewComplaints = (postId) => {
+    setSelectedPostId((prevId) => (prevId === postId ? null : postId));
+  };
 
-    const logout = () => {
-        cookies.remove("TOKEN", { path: "/" });
-        setLoggedIn(false);
+  const logout = () => {
+    cookies.remove("TOKEN", { path: "/" });
+    setLoggedIn(false);
+  };
+
+  const updateUser = (userId, fieldToUpdateParam, newValueParam) => {
+    return axios
+      .put(`http://localhost:3001/update-user/${userId}`, {
+        fieldToUpdate: fieldToUpdateParam,
+        newValue: newValueParam,
+      })
+      .then(() => {
+        console.log("Successfully updated user");
+      })
+      .catch((err) => {
+        console.error(`Error updating User: ${err}`);
+      });
+  };
+
+  // Fetch the logged-in user data
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/get-user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setLoggedIn(true);
+        setUserData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [token]);
+
+  // Fetch user's own posts when on their profile
+  useEffect(() => {
+    if (userData && userData.username === username) {
+      axios
+        .get(`http://localhost:3001/api/posts/user/${userData._id}`)
+        .then((response) => {
+          setPostData(response.data);
+        })
+        .catch((error) => console.error("Error fetching user posts", error));
     }
 
-    const updateUser = (userId, fieldToUpdateParam, newValueParam) => {
-        // Return the axios promise directly
-        return axios.put(`http://localhost:3001/update-user/${userId}`, {
-            fieldToUpdate: fieldToUpdateParam,
-            newValue: newValueParam
+    setIsOwnProfile(userData && username === userData.username);
+  }, [userData, username]);
+
+  // Fetch someone else's profile data and posts
+  useEffect(() => {
+    if (username && (!userData || (userData && userData.username !== username))) {
+      axios
+        .get(`http://localhost:3001/get-other-user/${username}`)
+        .then((res) => {
+          // setLoggedIn(true);
+          setOtherUserData(res.data);
+
+          axios
+            .get(`http://localhost:3001/api/posts/user/${res.data._id}`)
+            .then((response) => {
+              setPostData(response.data);
+            })
+            .catch((error) =>
+              console.error("Error fetching user posts", error)
+            );
         })
-        .then(() => {
-            console.log("Successfully updated user");
-        })
-        .catch((err) => {
-            console.error(`Error updating User: ${err}`);
+        .catch((error) => {
+          console.log(error);
         });
-    };    
+    }
+  }, [username, userData]);
 
-    useEffect(() => {
-        const loggedInUserConfig = {
-            method: "GET",
-            url: `http://localhost:3001/get-user`,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
+  useEffect(() => {
+    if (userData) {
+      axios
+        .get(`http://localhost:3001/get-user-complaints/${userData._id}`)
+        .then((response) => {
+          const profileComplaints = response.data.filter(
+            (complaint) => complaint.content === 'Profile'
+          );
+          setUserComplaints(profileComplaints);
+        })
+        .catch((error) => console.error('Error fetching user complaints', error));
+    }
+  }, [userData]);
 
-        const allUserConfig = {
-            method: "GET",
-            url: `http://localhost:3001/get-all-users`,
-        }
-    
-        const postConfig = {
-            method: 'GET',
-            url: 'http://localhost:3001/get-post',
-        }
 
-        //Gets all Users & checks to see if they meet the trendy requirements
-        axios(allUserConfig)
-            .then((res) => {
-                setAllUserData(res.data);
-
-                res.data.map((user) => {
-                    const subscribedUsersCount = user.subscribersList.length;
-                    const likeDislikeDifference = user.likes - user.dislikes;
-                    const trendyMessagesCount = user.trendyMessages.length;
-
-                    if(user.userType !== 'Trendy User'){
-                        if(subscribedUsersCount > 10 && trendyMessagesCount > 2 && (likeDislikeDifference > 10 || user.tips > 100))
-                           updateUser(user._id, 'trendyUser', true);
-                        else
-                            updateUser(user._id, 'trendyUser', false);
-                    }
-
-                    return null;
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-
-         // Checks the current logged in user
-         axios(loggedInUserConfig)
-         .then((res) => {
-             setLoggedIn(true);
-             setUserData(res.data);
-
-             // Fetch posts for the logged-in user
-             axios.get(`http://localhost:3001/api/posts/user/${res.data._id}`)
-                 .then(response => {
-                     setPostData(response.data);
-                 })
-                 .catch(error => console.error('Error fetching user posts', error));
-         })
-         .catch((error) => {
-             console.log(error);
-         });
-
-        //Gets all post & checks to see if they meet the trendy requirements
-        axios(postConfig)
-            .then((res) => {
-              setPostData(res.data);
-
-              res.data.map((post) => {
-                const difference = post.likes - post.dislikes;
-                const views = post.views;
-
-                if(difference > 3 && views > 10){
-                    if(post.trendyPost === false){
-                        axios.put(`http://localhost:3001/update-post/${post._id}`, { fieldToUpdate: 'trendyPost', newValue: true })
-                            .then((res) => {
-                                console.log("TrendyPost status updated sucessfully");
-                            })
-                            .catch((err) => {
-                                console.error(`Error updating Trendypost: ${err}`);
-                            })
-                    }
-                }
-
-                return null;
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            })
-    }, [])
-    
-    return (
-        <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
-          <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
-          <div className="main-content">
-            <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
-            <div style={{ flex: 6 }}>
-              <div className='middleBar'>
-              {loggedIn && <ProfileTimeline userData={userData} updateUser={updateUser} setUserData={setUserData} />}
-                {postData.map((post, index) => (
-                  <div key={index}>
-                    <PostComponent post={post} />
-                    {post.userReported && post.userReported.length > 0 && (
-                      <div>
-                        <p>This post received complaint(s)</p>
-                        <button onClick={() => handleViewComplaints(post._id)}>
-                          {selectedPostId === post._id ? 'Hide Complaints' : 'View Complaints'}
-                        </button>
-                        {selectedPostId === post._id && <ComplaintsView postId={selectedPostId} />}
-                      </div>
+  return (
+    <div className={`theme-${darkMode ? "dark" : "light"}`}>
+      <Navbar loggedIn={loggedIn} userData={userData} logout={logout} />
+      <div className="main-content">
+        <Leftbar loggedIn={loggedIn} userData={userData} logout={logout} />
+        <div style={{ flex: 6 }}>
+          <div className="middleBar">
+            {/* <ProfileTimeline
+              userData={userData}
+              updateUser={updateUser}
+              setUserData={setUserData}
+            /> */}
+            <ProfileTimeline
+              userData={isOwnProfile ? userData : otherUserData} // Pass userData only if it's the user's own profile
+              updateUser={updateUser}
+              setUserData={isOwnProfile ? setUserData : setOtherUserData}
+              username={isOwnProfile ? null : username} // Pass the username only if it's someone else's profile
+              isOwnProfile={isOwnProfile}
+              reportInitiator={userData}
+            />
+            {isOwnProfile && userComplaints && userComplaints.length > 0 && (
+              <div>
+                <p>This profile has received complaints</p>
+                <button onClick={() => handleViewProfileComplaints(userComplaints)}>
+                  {selectedUserComplaints === userComplaints ? 'Hide Complaints' : 'View Complaints'}
+                </button>
+                {selectedUserComplaints === userComplaints && (
+                  <UserComplaintsView userComplaints={userComplaints} />
+                )}
+              </div>
+            )}
+            {postData.map((post, index) => (
+              <div key={index}>
+                <PostComponent post={post} />
+                {isOwnProfile && post.userReported && post.userReported.length > 0 && (
+                  <div>
+                    <p>This post received complaint(s)</p>
+                    <button onClick={() => handleViewComplaints(post._id)}>
+                      {selectedPostId === post._id
+                        ? "Hide Complaints"
+                        : "View Complaints"}
+                    </button>
+                    {selectedPostId === post._id && (
+                      <ComplaintsView postId={selectedPostId} />
                     )}
                   </div>
-                ))}
+                )}
               </div>
-            </div>
-      
-            <Rightbar loggedIn={loggedIn} post={postData} allUserData={allUserData} />
+            ))}
           </div>
         </div>
-      );      
+
+        <Rightbar loggedIn={loggedIn} post={postData} />
+      </div>
+    </div>
+  );
 };
 
 export default Profile;
-
-

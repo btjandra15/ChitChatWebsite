@@ -1,0 +1,75 @@
+/* Styles for the boxed section */
+.boxed-section {
+    height: 80%; /* Set a fixed height for the container */
+    padding: 10px;
+    overflow: hidden; /* Hide any content overflow */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Styles for the container of taboo word rows */
+  .taboo-word-container {
+    overflow-y: auto; /* Enable vertical scrolling */
+    flex-grow: 1; /* Take remaining vertical space */
+  }
+
+  .taboo-word-container::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+  
+  /* Styles for the taboo word rows */
+  .taboo-word-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .taboo-word {
+    width: 50%;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  /* Styles for the delete button */
+  .delete-button {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+  
+  /* Styles for adding a new taboo word */
+  .add-taboo-word {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Add some margin for separation */
+  }
+  
+  .add-taboo-word input {
+    width: 70%;
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  .add-button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-button:hover {
+    background-color: #218838;
+  }
+  

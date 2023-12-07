@@ -49,7 +49,7 @@ const Complaints = () => {
       const user = await axios.get(`http://localhost:3001/get-user/${complaint.receiverId}`);
 
       // if reciever is a TU and has 3 warnings, demote to OU
-      if (user.data.userType === 'Trendy User' && user.data.warningCount === 3) {
+      if (user.data.userType === 'Trendy User' && user.data.warningCount >= 3) {
         await axios.post(`http://localhost:3001/demote-to-ordinary/${complaint.receiverId}`);
       }
 
@@ -73,7 +73,7 @@ const Complaints = () => {
         user = userResponse.data;
         
         // if initiator is a TU and has 3 warnings, demote to OU
-        if (user.data.userType === 'Trendy User' && user.data.warningCount === 3) {
+        if (user.data.userType === 'Trendy User' && user.data.warningCount >= 3) {
           await axios.post(`http://localhost:3001/demote-to-ordinary/${complaint.initiatorId}`);
         }
       }
