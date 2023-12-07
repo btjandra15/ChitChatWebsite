@@ -96,7 +96,7 @@ const Trending = () => {
                 const difference = post.likes - post.dislikes;
                 const views = post.views;
 
-                if(difference > 3 || views > 10){
+                if(difference > 3 && views > 10){
                     if(post.trendyPost === false){
                         axios.put(`http://localhost:3001/update-post/${post._id}`, { fieldToUpdate: 'trendyPost', newValue: true })
                             .then((res) => {
