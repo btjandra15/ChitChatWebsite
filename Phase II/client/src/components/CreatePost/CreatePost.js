@@ -287,7 +287,7 @@ const CreatePost = () => {
                                 </label>
 
                                 <span>Keywords: </span>
-                                <input type="text" value={inputValue} onChange={handleKeywordsChange} placeholder='Type keywords...'/>
+                                <input type="text" value={inputValue} onChange={handleKeywordsChange} placeholder='Type keywords...' className='keywords-input'/>
                                 <button onClick={handleAddKeyword}>Add keyword</button>
 
                                 <ul>

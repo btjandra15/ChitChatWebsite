@@ -76,7 +76,7 @@ const Navbar = (props) => {
             </div>
 
             <div className="right">
-                <Link className='right-icons'>
+                <Link className='right-icons' to={`/profile/${userData?.username}`}>
                     <Person2Outlined />
                 </Link>
 

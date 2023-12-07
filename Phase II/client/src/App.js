@@ -11,6 +11,7 @@ import Cookies from 'universal-cookie';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import JobPostings from './Pages/Postings/JobPostings';
+import ChatRoom from './Pages/ChatRoom/ChatRoom';
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -125,6 +126,9 @@ function App() {
 
             {/*Settings Route*/}
             <Route path='/settings' element={<Settings/>}/> 
+
+            {/* Chat Room (VERY EARLY TESTING) */}
+            <Route path='chat'element={<ChatRoom/>}/>
           </Routes>
       </div>
   );
