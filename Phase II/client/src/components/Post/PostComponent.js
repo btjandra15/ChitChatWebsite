@@ -277,7 +277,7 @@ const PostComponent = ({ post, index }) => {
         (post) => post._id === postId && post.userLiked.includes(userId)
       )
     ) {
-      // If the user has already liked the post, you can choose to do nothing or show a message
+      // If the user has already liked the post
       console.log("User has already liked the post.");
       return;
     }
@@ -334,32 +334,6 @@ const PostComponent = ({ post, index }) => {
     }
   };
 
-  // const openComment = () => {
-  //   setOpenComments(!openComments);
-
-  //   const commentConfig = {
-  //     method: "GET",
-  //     url: "http://localhost:3001/get-comments",
-  //     data: {
-  //       postID: post._id,
-  //     },
-  //   };
-
-  //   axios(commentConfig)
-  //     .then((res) => {
-  //       // Filter comments with the same postID as the original post
-  //       const filteredComments = res.data.filter(
-  //         (comment) =>
-  //           comment.postID === post._id && comment.authorID === post.authorId
-  //       );
-
-  //       setCommentData(filteredComments);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
   const openComment = () => {
     setOpenComments((prevOpenComments) => !prevOpenComments);
   
@@ -371,7 +345,7 @@ const PostComponent = ({ post, index }) => {
         },
       })
       .then((res) => {
-        setCommentData(res.data); // Assuming the backend sends the comments array directly
+        setCommentData(res.data); 
       })
       .catch((err) => {
         console.error("Error fetching comments:", err);
@@ -527,9 +501,9 @@ const PostComponent = ({ post, index }) => {
                 <div className="text-header" key={comment._id}>
                   <div className="text-name">
                     <h3>
-                      {post.authorFirstName} {post.authorLastName}
+                      {comment.firstname} {comment.lastname}
                     </h3>
-                    <h3 className="username">@{post.authorUsername}</h3>
+                    <h3 className="username">@{comment.authorUsername}</h3>
                     <button
                       onClick={() => followPost(comment._id, userData._id)}
                     >

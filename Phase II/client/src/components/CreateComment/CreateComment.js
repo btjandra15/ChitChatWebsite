@@ -27,7 +27,7 @@ const CreateComment = ({post}) => {
 
     const submitComment = async() => {
         // Define your list of taboo words
-        const tabooWords = ['fuck', 'shit', 'ass']; // Update this list with your actual taboo words
+        const tabooWords = ['fuck', 'shit', 'ass']; 
     
         // Function to replace taboo words with asterisks
         const replaceTabooWords = (text, tabooWords) => {

@@ -1204,34 +1204,23 @@ app.get('/get-comments-for-post/:postId', async (req, res) => {
   });
   
 
-// app.post('/create-comment', auth, async(req, res) => {
-//     const { postId, content } = req.body;
-//     const userId = req.user.userId;
-
-//     try{
-//         const newCommment = new Comment({
-//             postID: postId,
-//             authorID: userId,
-//             content: content,
-//         });
-
-//         const result = await newCommment.save();
-
-//         res.status(201).json({ message: "Comment created successfully", result });
-//     }catch(e){
-//         console.error(e);
-//     }
-// });
-app.post('/create-comment', auth, async(req, res) => {
+  app.post('/create-comment', auth, async (req, res) => {
     const { postId, content } = req.body;
     const userId = req.user.userId;
 
     try {
-        // Create and save the new comment
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         const newComment = new Comment({
             postID: postId,
             authorID: userId,
             content: content,
+            firstname: user.firstName,
+            lastname: user.lastName,
+            authorUsername: user.username
         });
 
         const savedComment = await newComment.save();

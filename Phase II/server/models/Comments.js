@@ -3,17 +3,30 @@ const mongoose = require('mongoose');
 const CommentSchema = new mongoose.Schema({
     postID: {
         type: String,
-        require: true,
+        required: true,
     },
     authorID: {
         type: String,
-        require: true,
+        required: true,
     },
     content: {
         type: String,
-        require: true,
+        required: true,
+    },
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
+        type: String,
+        required: true,
+    },
+    authorUsername: {
+        type: String,
+        required: true,
     }
 });
+
 
 const Comment = mongoose.model('Comment', CommentSchema);
 
